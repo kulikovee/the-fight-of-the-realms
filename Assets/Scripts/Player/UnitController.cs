@@ -12,9 +12,13 @@ public class UnitController : MonoBehaviour
     private ActionsContoller actions;
     private HpBarController hpBar;
     private Vector3 defaultPosition;
+    private Quaternion defaultRotation;
 
     private float hp = 100f;
     private float maxHp = 100f;
+
+    private float lastHitAt = 0f;
+    private float hitTimeout = 0.25f;
 
     private float lastAttackAt = 0f;
     private float attackTimeout = 0.375f;
@@ -29,20 +33,23 @@ public class UnitController : MonoBehaviour
         hpBar = GetComponent<HpBarController>();
         actions = ActionsContoller.GetActions();
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
     }
 
     void Update()
     {
         var axis = device.GetUpdatedAxis();
         var isDead = !IsAlive();
-        var isAttack = !isDead && !IsAttackAvailable() && lastAttackAt != 0f;
-        var isRun = !isDead && !isAttack && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
+        var isHit = !isDead && IsHitHappend();
+        var isAttack = !isDead && !isHit && !IsAttackAvailable() && lastAttackAt != 0f;
+        var isRun = !isDead && !isHit && !isAttack && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
 
         animator.SetBool("die", isDead);
         animator.SetBool("attack", isAttack);
         animator.SetBool("run", isRun);
+        animator.SetBool("hit", isHit);
 
-        if (axis.GetAction() != 0)
+        if (axis.GetAction() != 0 && !isHit)
         {
             Attack();
         }
@@ -90,6 +97,7 @@ public class UnitController : MonoBehaviour
 
     public void ReceiveHit(float amountHp)
     {
+        lastHitAt = Time.time;
         AddHp(-amountHp);
 
         if (!IsAlive())
@@ -129,9 +137,15 @@ public class UnitController : MonoBehaviour
         return Time.time - lastAttackAt >= attackTimeout;
     }
 
+    public bool IsHitHappend()
+    {
+        return lastHitAt != 0f && Time.time - lastHitAt <= hitTimeout;
+    }
+
     public void ResetPosition()
     {
         characterAdapter.SetPosition(defaultPosition);
+        characterAdapter.SetRotation(defaultRotation);
         device.GetUpdatedAxis().ResetAxis();
     }
 

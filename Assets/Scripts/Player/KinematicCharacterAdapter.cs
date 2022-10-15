@@ -50,6 +50,11 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     {
         motor.SetPosition(position);
     }
+    
+    public void SetRotation(Quaternion rotation)
+    {
+        motor.SetRotation(rotation);
+    }
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {

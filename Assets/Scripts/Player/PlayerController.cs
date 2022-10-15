@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // configurable params
     public int playerId;
     public TextMeshProUGUI playerText;
+
     private UnitController unit;
     private ActionsContoller actions;
 

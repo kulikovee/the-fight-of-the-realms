@@ -16,13 +16,13 @@ PlayerSettings:
   productName: The Fight of the Realms
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
-  m_SplashScreenBackgroundColor: {r: 0.9056604, g: 0.9056604, b: 0.9056604, a: 1}
+  m_SplashScreenBackgroundColor: {r: 0.3372549, g: 0.41960785, b: 0.5568628, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 1
   m_SplashScreenOverlayOpacity: 1
   m_SplashScreenAnimation: 1
-  m_SplashScreenLogoStyle: 0
-  m_SplashScreenDrawMode: 0
+  m_SplashScreenLogoStyle: 1
+  m_SplashScreenDrawMode: 1
   m_SplashScreenBackgroundAnimationZoom: 1
   m_SplashScreenLogoAnimationZoom: 1
   m_SplashScreenBackgroundLandscapeAspect: 1
@@ -39,8 +39,10 @@ PlayerSettings:
     y: 0
     width: 1
     height: 1
-  m_SplashScreenLogos: []
-  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: 0d8eb9170e07268419cf46f2edf52d51,
+  m_SplashScreenLogos:
+  - logo: {fileID: 10404, guid: 0000000000000000e000000000000000, type: 0}
+    duration: 2
+  m_VirtualRealitySplashScreen: {fileID: 2800000, guid: 6a9a1f796156bb4468326be0d3c851dc,
     type: 3}
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1024
@@ -275,7 +277,7 @@ PlayerSettings:
   - m_BuildTarget: 
     m_Icons:
     - serializedVersion: 2
-      m_Icon: {fileID: 2800000, guid: 0d8eb9170e07268419cf46f2edf52d51, type: 3}
+      m_Icon: {fileID: 2800000, guid: 6a9a1f796156bb4468326be0d3c851dc, type: 3}
       m_Width: 128
       m_Height: 128
       m_Kind: 0

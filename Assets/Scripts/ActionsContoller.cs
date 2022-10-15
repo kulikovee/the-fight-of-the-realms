@@ -24,7 +24,7 @@ public class ActionsContoller : MonoBehaviour
 
     public static ActionsContoller GetActions()
     {
-        return GameObject.Find("State").GetComponent<ActionsContoller>();
+        return GameObject.FindObjectOfType<ActionsContoller>();
     }
 
     public void RoundRestart()
