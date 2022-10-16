@@ -4,6 +4,8 @@ using UnityEngine;
 public class AidKitController : MonoBehaviour
 {
     public Animator animator;
+    public AudioSource createAidKitSound;
+    public AudioSource takeAidKitSound;
     PlayerController[] players;
     bool isDead = true;
 
@@ -25,7 +27,7 @@ public class AidKitController : MonoBehaviour
             if (
                 !isDead
                 && player.GetUnit().IsAlive() 
-                && Vector3.Distance(player.transform.position - Vector3.up * 0.3f, transform.position) < 0.3f
+                && Vector3.Distance(player.transform.position, transform.position + Vector3.up * 0.4f) < 0.6f
             )
             {
                 Take(player);
@@ -36,6 +38,7 @@ public class AidKitController : MonoBehaviour
     void Take(PlayerController byPlayer)
     {
         isDead = true;
+        takeAidKitSound.Play();
         byPlayer.GetUnit().RestoreHp();
         animator.Play("Die");
         StartCoroutine(ShowAfterDelay());
@@ -45,6 +48,7 @@ public class AidKitController : MonoBehaviour
     {
         yield return new WaitForSeconds(15f);
         isDead = false;
+        createAidKitSound.Play();
         animator.Play("Show");
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 359), 0);
     }

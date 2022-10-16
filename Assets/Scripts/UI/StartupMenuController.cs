@@ -33,7 +33,16 @@ public class StartupMenuController : MonoBehaviour
         actions = ActionsContoller.GetActions();
         animator = GetComponent<Animator>();
 
+        Debug.Log("Startup start. Animator found = " + animator != null);
+
         Cursor.visible = false;
+    }
+
+    void OnDestroy()
+    {
+        ActionsContoller.OnFirstShowStartupMenu -= FirstShowStartupMenu;
+        ActionsContoller.OnShowStartupMenu -= ShowStartupMenu;
+        ActionsContoller.OnEndGame -= Show;
     }
 
     void Update()

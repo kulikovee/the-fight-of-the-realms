@@ -23,6 +23,16 @@ public class PlayerController : MonoBehaviour
         unit = GetComponent<UnitController>();
     }
 
+    void OnDestroy()
+    {
+        ActionsContoller.OnResetPlayersText -= SetPlayerTextDefault;
+        ActionsContoller.OnJoinedPlayersText -= JoinedPlayersText;
+        ActionsContoller.OnEndGame -= ResetPlayer;
+        ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
+        ActionsContoller.OnRoundStart -= Unfreeze;
+        ActionsContoller.OnUnitKilled -= UpdateScore;
+    }
+
     public UnitController GetUnit()
     {
         return unit;

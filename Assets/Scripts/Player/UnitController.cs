@@ -11,7 +11,6 @@ public class UnitController : MonoBehaviour
     private KinematicCharacterAdapter characterAdapter;
     private ActionsContoller actions;
     private HpBarController hpBar;
-    private Collider collider;
     private Vector3 defaultPosition;
     private Quaternion defaultRotation;
 
@@ -32,7 +31,6 @@ public class UnitController : MonoBehaviour
         characterAdapter = GetComponent<KinematicCharacterAdapter>();
         device = GetComponent<DeviceController>();
         hpBar = GetComponent<HpBarController>();
-        collider = GetComponent<Collider>();
         actions = ActionsContoller.GetActions();
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);

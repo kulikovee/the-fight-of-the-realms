@@ -13,6 +13,12 @@ public class UnitsContoller : MonoBehaviour
         ActionsContoller.OnUnitKilled += RestartRound;
         actions = ActionsContoller.GetActions();
     }
+
+    void OnDestroy()
+    {
+        ActionsContoller.OnUnitKilled -= RestartRound;
+    }
+
     void RestartRound(UnitController dead, UnitController killer)
     {
         var alivePlayersCount = 0;

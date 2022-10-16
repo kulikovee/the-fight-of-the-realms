@@ -14,6 +14,11 @@ public class LogoController : MonoBehaviour
         Time.timeScale = 0;
     }
 
+    void OnDestroy()
+    {
+        ActionsContoller.OnStartGame -= Hide;
+    }
+
     public void Hide()
     {
         if (gameObject.activeSelf)

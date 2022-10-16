@@ -31,6 +31,13 @@ public class ScoreController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    void OnDestroy()
+    {
+        ActionsContoller.OnStartGame -= Show;
+        ActionsContoller.OnUpdateScore -= UpdateScore;
+        ActionsContoller.OnStartGame -= ResetScore;
+    }
+
     /** Called from animation: Score Update **/
     public void PlayScoreUpdateSound()
     {

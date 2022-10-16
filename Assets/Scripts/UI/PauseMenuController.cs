@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class PauseMenuController : MonoBehaviour
     public AudioSource hideSound;
 
     // consts
-    private const int optionsCount = 2;
     private const float togglePauseTimeout = 0.25f;
     private const float toggleValueTimeout = 0.2f;
 
@@ -21,6 +21,7 @@ public class PauseMenuController : MonoBehaviour
     private Animator animator;
 
     // togglers
+    private int optionsCount = 0;
     private int selectedOption = 0;
     private float lastPauseAt = 0;
     private float lastValueAt = 0;
@@ -32,6 +33,13 @@ public class PauseMenuController : MonoBehaviour
 
         actions = ActionsContoller.GetActions();
         animator = GetComponent<Animator>();
+        optionsCount = GameObject.FindObjectsOfType<PauseMenuItemController>().Length;
+    }
+    
+    void OnDestroy()
+    {
+        ActionsContoller.OnEndGame -= Disable;
+        ActionsContoller.OnStartGame -= Enable;
     }
 
     void Update()
@@ -128,10 +136,13 @@ public class PauseMenuController : MonoBehaviour
     {
         switch (selectedOption)
         {
-            case PauseResumeController.optionId:
+            case 0:
                 SetVisibility(false);
                 break;
-            case PauseExitController.optionId:
+            case 1:
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                break;
+            case 2:
                 Application.Quit();
                 break;
             default:

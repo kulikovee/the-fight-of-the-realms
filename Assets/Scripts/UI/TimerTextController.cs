@@ -11,6 +11,11 @@ public class TimerTextController : MonoBehaviour
         text = GetComponent<TextMeshProUGUI>();
     }
 
+    void OnDestroy()
+    {
+        ActionsContoller.OnTimerUpdate -= UpdateTimer;
+    }
+
     void UpdateTimer(int seconds)
     {
         text.SetText("Start in " + seconds + "...");
