@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,12 +29,10 @@ public class StartupMenuController : MonoBehaviour
     {
         ActionsContoller.OnFirstShowStartupMenu += FirstShowStartupMenu;
         ActionsContoller.OnShowStartupMenu += ShowStartupMenu;
-        ActionsContoller.OnEndGame += Show;
+        ActionsContoller.OnEndGame += ShowAfterDelay;
 
         actions = ActionsContoller.GetActions();
         animator = GetComponent<Animator>();
-
-        Debug.Log("Startup start. Animator found = " + animator != null);
 
         Cursor.visible = false;
     }
@@ -42,7 +41,7 @@ public class StartupMenuController : MonoBehaviour
     {
         ActionsContoller.OnFirstShowStartupMenu -= FirstShowStartupMenu;
         ActionsContoller.OnShowStartupMenu -= ShowStartupMenu;
-        ActionsContoller.OnEndGame -= Show;
+        ActionsContoller.OnEndGame -= ShowAfterDelay;
     }
 
     void Update()
@@ -123,6 +122,16 @@ public class StartupMenuController : MonoBehaviour
                 animator.Play("Startup Menu Hide");
             }
         }
+    }
+    void ShowAfterDelay()
+    {
+        StartCoroutine(_ShowAfterDelay());
+    }
+    
+    IEnumerator _ShowAfterDelay()
+    {
+        yield return new WaitForSeconds(5f);
+        Show();
     }
 
     void Show()

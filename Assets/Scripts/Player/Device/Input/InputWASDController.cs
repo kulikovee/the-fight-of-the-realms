@@ -27,8 +27,8 @@ public class InputWASDController : MonoBehaviour
         bool isDown = Input.GetKey(KeyCode.S);
         bool isRight = Input.GetKey(KeyCode.D);
         bool isLeft = Input.GetKey(KeyCode.A);
-        bool isAction = Input.GetKey(KeyCode.Space);
-        bool isAction2 = Input.GetKey(KeyCode.LeftShift);
+        bool isAction = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(1);
+        bool isAction2 = Input.GetKey(KeyCode.LeftShift) || Input.GetMouseButton(0);
 
         axis.SetX((isLeft ? -1 : (isRight ? 1 : 0)) * keyboardMovementFactor);
         axis.SetY((isDown ? -1 : (isUp ? 1 : 0)) * keyboardMovementFactor);

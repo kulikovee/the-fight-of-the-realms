@@ -4,6 +4,8 @@ using TMPro;
 
 public class ScoreController : MonoBehaviour
 {
+    public static int killsToWin = 15;
+
     public List<AudioSource> scoreUpdateSounds;
     public TextMeshProUGUI scoreText0;
     public TextMeshProUGUI scoreText1;
@@ -15,7 +17,6 @@ public class ScoreController : MonoBehaviour
     private ActionsContoller actions;
     private bool isShown = false;
 
-    private int winScore = 25;
     private int playerScore0 = 0;
     private int playerScore1 = 0;
     private int playerScore2 = 0;
@@ -55,6 +56,11 @@ public class ScoreController : MonoBehaviour
 
     public void UpdateScore(bool isFirstPlayer, bool isSecondPlayer, bool isThirdPlayer, bool isForthPlayer)
     {
+        if (GetWinnerPlayerId() > -1)
+        {
+            return;
+        }
+
         if (isFirstPlayer)
         {
             playerScore0++;
@@ -87,21 +93,11 @@ public class ScoreController : MonoBehaviour
             animator.Play("Score Update");
         }
 
-        var wonPlayerId = -1;
+        var winnerPlayerId = GetWinnerPlayerId();
 
-        var playerScores = new List<int> { playerScore0, playerScore1, playerScore2, playerScore3 };
-
-        for(var playerId = 0; playerId < playerScores.Count; playerId++)
+        if (winnerPlayerId > -1)
         {
-            if (playerScores[playerId] == winScore)
-            {
-                wonPlayerId = playerId;
-            }
-        }
-
-        if (wonPlayerId > -1)
-        {
-            actions.PlayerWon(wonPlayerId);
+            actions.PlayerWon(winnerPlayerId);
             gameOverSound.Play();
         }
     }
@@ -121,5 +117,21 @@ public class ScoreController : MonoBehaviour
         scoreText1.text = "P2: " + playerScore1;
         scoreText2.text = "P3: " + playerScore2;
         scoreText3.text = "P4: " + playerScore3;
+    }
+
+    private int GetWinnerPlayerId()
+    {
+        var wonPlayerId = -1;
+        var playerScores = new List<int> { playerScore0, playerScore1, playerScore2, playerScore3 };
+
+        for (var playerId = 0; playerId < playerScores.Count; playerId++)
+        {
+            if (playerScores[playerId] == killsToWin)
+            {
+                wonPlayerId = playerId;
+            }
+        }
+
+        return wonPlayerId;
     }
 }

@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class PlayerWonController : MonoBehaviour
 {
+    public static List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#f3f" };
+
     public AudioSource wonSound;
     private Animator animator;
     private TextMeshProUGUI text;
     private ActionsContoller actions;
-    private List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#f3f" };
 
     void Start()
     {
@@ -28,7 +29,7 @@ public class PlayerWonController : MonoBehaviour
     {
         var color = playerColors[playerId];
         var playerNumber = playerId + 1;
-        text.text = $"<color={color}>Player {playerNumber}</color> won the tournament!";
+        text.text = $"<color={color}>Player {playerNumber}</color> won the tournament!<br>He finished <u>{ScoreController.killsToWin}</u> Players!";
         animator.Play("Show");
     }
 
@@ -40,7 +41,7 @@ public class PlayerWonController : MonoBehaviour
     }
 
     /** Called from animation: Show **/
-    public void Hidden()
+    public void EndGame()
     {
         actions.EndGame();
     }

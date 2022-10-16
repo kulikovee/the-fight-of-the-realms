@@ -6,6 +6,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     private KinematicCharacterMotor motor;
     private DeviceController device;
     private float gravity = 3f;
+    private float movementSpeed = 8f;
 
     private void Awake()
     {
@@ -28,8 +29,8 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     {
         var axis = device.GetUpdatedAxis();
 
-        currentVelocity.x = axis.GetX() * 10f;
-        currentVelocity.z = axis.GetY() * 10f;
+        currentVelocity.x = axis.GetX() * movementSpeed;
+        currentVelocity.z = axis.GetY() * movementSpeed;
 
         if (motor.GroundingStatus.IsStableOnGround)
         {

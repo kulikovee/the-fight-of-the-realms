@@ -50,6 +50,6 @@ public class AidKitController : MonoBehaviour
         isDead = false;
         createAidKitSound.Play();
         animator.Play("Show");
-        transform.rotation = Quaternion.Euler(0, Random.Range(0, 359), 0);
+        transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
     }
 }

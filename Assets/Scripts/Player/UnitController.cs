@@ -85,8 +85,8 @@ public class UnitController : MonoBehaviour
             }
 
             var sound = attackedUnits.Count > 0
-                ? attackHitSounds[Random.Range(0, attackHitSounds.Count - 1)]
-                : attackWaveSounds[Random.Range(0, attackWaveSounds.Count - 1)];
+                ? attackHitSounds[Random.Range(0, attackHitSounds.Count)]
+                : attackWaveSounds[Random.Range(0, attackWaveSounds.Count)];
 
             if (!sound.isPlaying)
             {
@@ -142,8 +142,9 @@ public class UnitController : MonoBehaviour
         return lastHitAt != 0f && Time.time - lastHitAt <= hitTimeout;
     }
 
-    public void ResetPosition()
+    public void ResetUnit()
     {
+        RestoreHp();
         characterAdapter.SetPosition(defaultPosition);
         characterAdapter.SetRotation(defaultRotation);
         device.GetUpdatedAxis().ResetAxis();

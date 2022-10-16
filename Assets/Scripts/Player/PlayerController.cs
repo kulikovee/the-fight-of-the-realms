@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        ActionsContoller.OnResetPlayersText += SetPlayerTextDefault;
+        ActionsContoller.OnResetPlayersText += ResetPlayerTextToDefault;
         ActionsContoller.OnJoinedPlayersText += JoinedPlayersText;
         ActionsContoller.OnEndGame += ResetPlayer;
         ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     void OnDestroy()
     {
-        ActionsContoller.OnResetPlayersText -= SetPlayerTextDefault;
+        ActionsContoller.OnResetPlayersText -= ResetPlayerTextToDefault;
         ActionsContoller.OnJoinedPlayersText -= JoinedPlayersText;
         ActionsContoller.OnEndGame -= ResetPlayer;
         ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
@@ -40,15 +40,15 @@ public class PlayerController : MonoBehaviour
 
     public void FreezeAndResetPosition()
     {
-        unit.RestoreHp();
         unit.SetFrozen(true);
-        unit.ResetPosition();
+        unit.ResetUnit();
     }
 
     public void Unfreeze()
     {
         unit.SetFrozen(false);
     }
+
     public void UpdateScore(UnitController dead, UnitController killer)
     {
         if (killer == unit)
@@ -65,12 +65,12 @@ public class PlayerController : MonoBehaviour
     public void ResetPlayer()
     {
         unit.GetDevice().ResetDeviceId();
-        unit.ResetPosition();
+        unit.ResetUnit();
         unit.SetFrozen(true);
-        SetPlayerTextDefault();
+        ResetPlayerTextToDefault();
     }
 
-    public void SetPlayerTextDefault()
+    public void ResetPlayerTextToDefault()
     {
         playerText.SetText("Player " + (playerId + 1) + "\nPress any button");
     }
