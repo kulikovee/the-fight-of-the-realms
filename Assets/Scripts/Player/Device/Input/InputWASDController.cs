@@ -27,11 +27,13 @@ public class InputWASDController : MonoBehaviour
         bool isDown = Input.GetKey(KeyCode.S);
         bool isRight = Input.GetKey(KeyCode.D);
         bool isLeft = Input.GetKey(KeyCode.A);
-        bool isJump = Input.GetKey(KeyCode.Space);
+        bool isAction = Input.GetKey(KeyCode.Space);
+        bool isAction2 = Input.GetKey(KeyCode.LeftShift);
 
         axis.SetX((isLeft ? -1 : (isRight ? 1 : 0)) * keyboardMovementFactor);
         axis.SetY((isDown ? -1 : (isUp ? 1 : 0)) * keyboardMovementFactor);
-        axis.SetAction(isJump ? 1 : 0);
+        axis.SetAction(isAction ? 1 : 0);
+        axis.SetAction2(isAction2 ? 1 : 0);
     }
 
     public static bool IsPressed()

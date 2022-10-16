@@ -5,7 +5,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 {
     private KinematicCharacterMotor motor;
     private DeviceController device;
-    // private float gravity = 3f;
+    private float gravity = 3f;
 
     private void Awake()
     {
@@ -20,7 +20,8 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 
     public bool IsColliderValidForCollisions(Collider collider)
     {
-        return true;
+        var unit = collider.GetComponent<UnitController>();
+        return unit == null ? true : !unit.GetDevice().IsFrozen();
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
@@ -30,7 +31,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
         currentVelocity.x = axis.GetX() * 10f;
         currentVelocity.z = axis.GetY() * 10f;
 
-        /*if (motor.GroundingStatus.IsStableOnGround)
+        if (motor.GroundingStatus.IsStableOnGround)
         {
             if (axis.GetAction() > 0)
             {
@@ -43,7 +44,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
         } else
         {
             currentVelocity.y -= gravity;
-        }*/
+        }
     }
     
     public void SetPosition(Vector3 position)

@@ -32,15 +32,17 @@ public class InputNumpadController : MonoBehaviour
         bool isDown = Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.Keypad5);
         bool isRight = Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.Keypad6);
         bool isLeft = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.Keypad4);
-        bool isJump = Input.GetKey(KeyCode.Keypad0)
+        bool isAction2 = Input.GetKey(KeyCode.Keypad0)
             || Input.GetKey(KeyCode.RightControl)
             || Input.GetKey(KeyCode.RightCommand)
             || Input.GetKey(KeyCode.RightApple)
             || Input.GetKey(KeyCode.RightShift);
+        bool isAction = Input.GetKey(KeyCode.Keypad1);
 
         axis.SetX((isLeft ? -1 : (isRight ? 1 : 0)) * keyboardMovementFactor);
         axis.SetY((isDown ? -1 : (isUp ? 1 : 0)) * keyboardMovementFactor);
-        axis.SetAction(isJump ? 1 : 0);
+        axis.SetAction(isAction ? 1 : 0);
+        axis.SetAction2(isAction2 ? 1 : 0);
     }
 
     public static bool IsPressed()

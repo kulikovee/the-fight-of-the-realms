@@ -21,6 +21,7 @@ public class ActionsContoller : MonoBehaviour
     public static event IntDelegate OnSelectPauseOption;
     public static event FourBoolDelegate OnUpdateScore;
     public static event TwoUnitDelegate OnUnitKilled;
+    public static event IntDelegate OnPlayerWon;
 
     public static ActionsContoller GetActions()
     {
@@ -86,6 +87,11 @@ public class ActionsContoller : MonoBehaviour
     public void TimerUpdate(int seconds)
     {
         OnTimerUpdate?.Invoke(seconds);
+    }
+
+    public void PlayerWon(int playerId)
+    {
+        OnPlayerWon?.Invoke(playerId);
     }
 
     public void SelectPauseOption(int option)

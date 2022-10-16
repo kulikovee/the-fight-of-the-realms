@@ -11,6 +11,7 @@ public class UnitController : MonoBehaviour
     private KinematicCharacterAdapter characterAdapter;
     private ActionsContoller actions;
     private HpBarController hpBar;
+    private Collider collider;
     private Vector3 defaultPosition;
     private Quaternion defaultRotation;
 
@@ -23,7 +24,7 @@ public class UnitController : MonoBehaviour
     private float lastAttackAt = 0f;
     private float attackTimeout = 0.375f;
     private float attackPower = 25f;
-    private float attackRadius = 1f;
+    private float attackRadius = 0.8f;
     private float attackDistance = 0.5f;
 
     void Start()
@@ -31,6 +32,7 @@ public class UnitController : MonoBehaviour
         characterAdapter = GetComponent<KinematicCharacterAdapter>();
         device = GetComponent<DeviceController>();
         hpBar = GetComponent<HpBarController>();
+        collider = GetComponent<Collider>();
         actions = ActionsContoller.GetActions();
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
@@ -49,7 +51,7 @@ public class UnitController : MonoBehaviour
         animator.SetBool("run", isRun);
         animator.SetBool("hit", isHit);
 
-        if (axis.GetAction() != 0 && !isHit)
+        if (axis.GetAction2() != 0 && !isHit)
         {
             Attack();
         }
@@ -62,7 +64,7 @@ public class UnitController : MonoBehaviour
             lastAttackAt = Time.time;
 
             var attackedUnits = new List<UnitController>() { };
-            var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up * 1.25f;
+            var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up;
             var colliders = Physics.OverlapSphere(attackPoint, attackRadius);
 
             foreach (var collider in colliders)
@@ -113,10 +115,10 @@ public class UnitController : MonoBehaviour
 
     public void Die()
     {
-        device.SetFrozen(true);
+        SetFrozen(true);
     }
 
-    public void Revive()
+    public void RestoreHp()
     {
         SetHp(maxHp);
     }

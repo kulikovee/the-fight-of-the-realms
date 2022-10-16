@@ -31,7 +31,8 @@ public class InputAIController : MonoBehaviour
 
         axis.SetX(aiControls.x);
         axis.SetY(aiControls.y);
-        axis.SetAction(Random.Range(0f, 1f) >= 0.5f ? 1f : 0f);
+        axis.SetAction(Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
+        axis.SetAction2(Random.Range(0f, 1f) >= 0.5f ? 1f : 0f);
 
         return axis;
     }

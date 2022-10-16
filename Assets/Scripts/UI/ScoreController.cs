@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 using TMPro;
 
 public class ScoreController : MonoBehaviour
@@ -16,7 +15,7 @@ public class ScoreController : MonoBehaviour
     private ActionsContoller actions;
     private bool isShown = false;
 
-    private int winScore = 10;
+    private int winScore = 25;
     private int playerScore0 = 0;
     private int playerScore1 = 0;
     private int playerScore2 = 0;
@@ -81,17 +80,23 @@ public class ScoreController : MonoBehaviour
             animator.Play("Score Update");
         }
 
-        if (playerScore0 == winScore || playerScore1 == winScore || playerScore2 == winScore || playerScore3 == winScore)
-        {
-            gameOverSound.Play();
-            StartCoroutine(EndGame());
-        }
-    }
+        var wonPlayerId = -1;
 
-    IEnumerator EndGame()
-    {
-        yield return new WaitForSeconds(0.5f);
-        actions.EndGame();
+        var playerScores = new List<int> { playerScore0, playerScore1, playerScore2, playerScore3 };
+
+        for(var playerId = 0; playerId < playerScores.Count; playerId++)
+        {
+            if (playerScores[playerId] == winScore)
+            {
+                wonPlayerId = playerId;
+            }
+        }
+
+        if (wonPlayerId > -1)
+        {
+            actions.PlayerWon(wonPlayerId);
+            gameOverSound.Play();
+        }
     }
 
     public void ResetScore()

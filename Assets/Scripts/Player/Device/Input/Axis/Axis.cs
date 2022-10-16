@@ -5,6 +5,7 @@ public class Axis
     private float x = 0f;
     private float y = 0f;
     private float action = 0f;
+    private float action2 = 0f;
     private float cancel = 0f;
     private float pause = 0f;
     
@@ -35,6 +36,16 @@ public class Axis
     public float GetAction()
     {
         return action;
+    }
+
+    public void SetAction2(float newAction)
+    {
+        action2 = newAction;
+    }  
+
+    public float GetAction2()
+    {
+        return action2;
     }
 
     public void SetPause(float newPause)

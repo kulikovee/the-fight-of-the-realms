@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     public void FreezeAndResetPosition()
     {
-        unit.Revive();
+        unit.RestoreHp();
         unit.SetFrozen(true);
         unit.ResetPosition();
     }
