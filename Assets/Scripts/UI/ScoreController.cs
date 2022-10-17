@@ -1,51 +1,73 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using System.Collections;
 
 public class ScoreController : MonoBehaviour
 {
+    // Global Configuration
     public static int killsToWin = 15;
 
+    // Configurable
     public List<AudioSource> scoreUpdateSounds;
-    public TextMeshProUGUI scoreText0;
-    public TextMeshProUGUI scoreText1;
-    public TextMeshProUGUI scoreText2;
-    public TextMeshProUGUI scoreText3;
     public AudioSource gameOverSound;
 
-    private Animator animator;
-    private ActionsContoller actions;
-    private bool isShown = false;
+    // Params
+    bool isShown = false;
+    Animator animator;
+    ActionsContoller actions;
 
-    private int playerScore0 = 0;
-    private int playerScore1 = 0;
-    private int playerScore2 = 0;
-    private int playerScore3 = 0;
+    // Players
+    public PlayerController[] playerControllers;
 
-    private void Start()
+    void Start()
     {
-        ActionsContoller.OnStartGame += Show;
+        ActionsContoller.OnStartGame += ShowScorePanel;
         ActionsContoller.OnUpdateScore += UpdateScore;
-        ActionsContoller.OnStartGame += ResetScore;
 
+        playerControllers = GameObject.FindObjectsOfType<PlayerController>();
         actions = ActionsContoller.GetActions();
         animator = GetComponent<Animator>();
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnStartGame -= Show;
+        ActionsContoller.OnStartGame -= ShowScorePanel;
         ActionsContoller.OnUpdateScore -= UpdateScore;
-        ActionsContoller.OnStartGame -= ResetScore;
     }
-
     /** Called from animation: Score Update **/
     public void PlayScoreUpdateSound()
     {
         scoreUpdateSounds[Random.Range(0, scoreUpdateSounds.Count)].Play();
     }
 
-    public void Show()
+    void UpdateScore(int scoreUpdatePlayerId)
+    {
+        // Check previous winner
+        if (GetWinnerPlayer() != null)
+        {
+            return;
+        }
+
+        FindPlayerById(scoreUpdatePlayerId).AddScorePoint();
+        animator.Play("Score Update");
+
+        // Check current winner
+        var winnerPlayer = GetWinnerPlayer();
+
+        if (winnerPlayer != null)
+        {
+            actions.EndRound();
+            actions.PlayerWon(winnerPlayer.playerId);
+            gameOverSound.Play();
+        }
+        else
+        {
+            // Restart if no winner and players dead
+            RestartRoundIfPlayersDead();
+        }
+    }
+    void ShowScorePanel()
     {
         if (!isShown)
         {
@@ -54,84 +76,59 @@ public class ScoreController : MonoBehaviour
         }
     }
 
-    public void UpdateScore(bool isFirstPlayer, bool isSecondPlayer, bool isThirdPlayer, bool isForthPlayer)
+    PlayerController FindPlayerById(int playerId)
     {
-        if (GetWinnerPlayerId() > -1)
+        foreach (var player in playerControllers)
         {
-            return;
-        }
-
-        if (isFirstPlayer)
-        {
-            playerScore0++;
-        }
-
-        if (isSecondPlayer)
-        {
-            playerScore1++;
-        }
-
-        if (isThirdPlayer)
-        {
-            playerScore2++;
-        }
-
-        if (isForthPlayer)
-        {
-            playerScore3++;
-        }
-
-        UpdateScoreText();
-
-        if (
-            isFirstPlayer
-            || isSecondPlayer
-            || isThirdPlayer
-            || isForthPlayer
-        )
-        {
-            animator.Play("Score Update");
-        }
-
-        var winnerPlayerId = GetWinnerPlayerId();
-
-        if (winnerPlayerId > -1)
-        {
-            actions.PlayerWon(winnerPlayerId);
-            gameOverSound.Play();
-        }
-    }
-
-    public void ResetScore()
-    {
-        playerScore0 = 0;
-        playerScore1 = 0;
-        playerScore2 = 0;
-        playerScore3 = 0;
-        UpdateScoreText();
-    }
-
-    private void UpdateScoreText()
-    {
-        scoreText0.text = "P1: " + playerScore0;
-        scoreText1.text = "P2: " + playerScore1;
-        scoreText2.text = "P3: " + playerScore2;
-        scoreText3.text = "P4: " + playerScore3;
-    }
-
-    private int GetWinnerPlayerId()
-    {
-        var wonPlayerId = -1;
-        var playerScores = new List<int> { playerScore0, playerScore1, playerScore2, playerScore3 };
-
-        for (var playerId = 0; playerId < playerScores.Count; playerId++)
-        {
-            if (playerScores[playerId] == killsToWin)
+            if (player.playerId == playerId)
             {
-                wonPlayerId = playerId;
+                return player;
             }
         }
 
-        return wonPlayerId;
+        return null;
+    }
+
+    PlayerController GetWinnerPlayer()
+    {
+        foreach(var player in playerControllers)
+        {
+            if (player.score >= killsToWin)
+            {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
+    void RestartRoundIfPlayersDead()
+    {
+        var alivePlayersCount = 0;
+        var aliveControlledPlayersCount = 0;
+
+        foreach (var player in playerControllers)
+        {
+            if (player.GetUnit().IsAlive())
+            {
+                alivePlayersCount++;
+
+                if (player.GetUnit().GetDevice().IsSelected())
+                {
+                    aliveControlledPlayersCount++;
+                }
+            }
+        }
+
+        if (alivePlayersCount <= 1 || aliveControlledPlayersCount == 0)
+        {
+            StartCoroutine(RestartAfterDelay());
+        }
+    }
+
+    IEnumerator RestartAfterDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        actions.RoundRestart();
     }
 }

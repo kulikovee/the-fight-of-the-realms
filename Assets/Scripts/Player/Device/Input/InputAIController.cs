@@ -2,38 +2,128 @@ using UnityEngine;
 
 public class InputAIController : MonoBehaviour
 {
-    private const float aiTargetUpdateTimeout = 0.35f;
+    const float aiAxisUpdateTimeout = 0.25f;
+    const float aiTargetUpdateTimeout = 0.4f;
 
-    private readonly Axis axis = new();
-    private float aiLastTargetUpdate = 0f;
-    private Vector3 aiControls = new();
+    readonly Axis axis = new();
+    float aiTargetUpdatedAt = 0f;
+    float aiAxisUpdatedAt = 0f;
+    Vector3 aiAxisVelocity = new(0, 0, 0);
+    Vector3 target = Vector3.zero;
+    bool isAttack = false;
+    PlayerController player;
+    PlayerController[] players;
+    AidKitController aid;
+
+    private void Start()
+    {
+        player = GetComponent<PlayerController>();
+        players = GameObject.FindObjectsOfType<PlayerController>();
+        aid = GameObject.FindObjectOfType<AidKitController>();
+    }
 
     public Axis GetUpdatedAxis()
     {
         return UpdateAxis();
     }
 
-    private Axis UpdateAxis()
+    Axis UpdateAxis()
     {
-        aiControls *= 0.975f;
 
-        if (aiLastTargetUpdate + aiTargetUpdateTimeout > Time.time)
+        if (Time.time - aiAxisUpdatedAt < aiAxisUpdateTimeout)
         {
             return axis;
         }
 
-        aiLastTargetUpdate = Time.time;
+        aiAxisUpdatedAt = Time.time;
 
-        float randomDeltaX = Random.Range(-1f, 1f);
-        float randomDeltaZ = Random.Range(-1, 1f);
+        if (Time.time - aiTargetUpdatedAt > aiTargetUpdateTimeout)
+        {
+            aiTargetUpdatedAt = Time.time;
+            UpdateTarget();
+        }
 
-        aiControls += new Vector3(randomDeltaX, randomDeltaZ, 0);
+        aiAxisVelocity.x = Random.Range(-0.4f, 0.4f);
+        aiAxisVelocity.z = Random.Range(-0.4f, 0.4f);
 
-        axis.SetX(aiControls.x);
-        axis.SetY(aiControls.y);
+        var distance = Vector3.Distance(target, transform.position) / 4f;
+        axis.SetX((target.x - transform.position.x) * distance + aiAxisVelocity.x);
+        axis.SetY((target.z - transform.position.z) * distance + aiAxisVelocity.z);
         axis.SetAction(Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
-        axis.SetAction2(Random.Range(0f, 1f) >= 0.5f ? 1f : 0f);
+        axis.SetAction2(isAttack ? 1 : 0);
 
         return axis;
+    }
+
+    void UpdateTarget()
+    {
+        target = Vector3.zero;
+        isAttack = false;
+
+        Vector3 position = transform.position;
+        
+        // To take First Aid
+        if (!aid.isDead)
+        {
+            isAttack = true;
+            target = aid.transform.position;
+        }
+        else
+        {
+            // To attack Players
+            foreach (var targetPlayer in players)
+            {
+                if (targetPlayer.GetUnit().IsAlive() && targetPlayer != player)
+                {
+                    var playerPosition = targetPlayer.transform.position;
+                    var distanceToPlayer = Vector3.Distance(position, playerPosition);
+                    var distanceToTarget = Vector3.Distance(position, target);
+
+                    if (target == Vector3.zero || distanceToPlayer < distanceToTarget)
+                    {
+                        target = playerPosition;
+
+                        if (distanceToPlayer < 2f)
+                        {
+                            isAttack = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (target.y >= 0.4f)
+        {
+            // If target on top
+            if (position.y <= 2)
+            {
+                // If AI on bottom
+                var targetX = position.x;
+                var targetZ = position.z;
+                var deltaX = 3.6f;
+                var deltaZ = 3.8f;
+                var groundY = 0.3f;
+                var isUpdateZ = Mathf.Abs(position.z) < deltaZ - 0.2f || Mathf.Abs(position.z) > deltaZ + 0.4f;
+
+                if (isUpdateZ && position.y < groundY)
+                {
+                    targetZ = position.z < 0 ? -deltaZ : deltaZ;
+
+                    if (Mathf.Abs(position.x) < deltaX - 0.2f || Mathf.Abs(position.x) > deltaX + 0.4f)
+                    {
+                        // AI should go to right / left corner in `x`
+                        targetX = position.x < 0 ? -deltaX : deltaX;
+                    }
+                }
+                else
+                {
+                    // AI should get up to center
+                    targetX = 0;
+                }
+
+
+                target = new Vector3(targetX, target.y, targetZ);
+            }
+        }
     }
 }

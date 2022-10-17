@@ -16,20 +16,19 @@ public class StartupMenuController : MonoBehaviour
 
     // animation
     public bool isVisible = false;
-    private Animator animator;
+    Animator animator;
 
     // links
-    private ActionsContoller actions;
+    ActionsContoller actions;
 
     // timer
-    private int secondsToStartGame = 16;
-    private float startTimerAt;
+    int secondsToStartGame = 16;
+    float startTimerAt;
 
     void Start()
     {
         ActionsContoller.OnFirstShowStartupMenu += FirstShowStartupMenu;
-        ActionsContoller.OnShowStartupMenu += ShowStartupMenu;
-        ActionsContoller.OnEndGame += ShowAfterDelay;
+        ActionsContoller.OnEndGame += ShowStartupMenu;
 
         actions = ActionsContoller.GetActions();
         animator = GetComponent<Animator>();
@@ -40,8 +39,7 @@ public class StartupMenuController : MonoBehaviour
     void OnDestroy()
     {
         ActionsContoller.OnFirstShowStartupMenu -= FirstShowStartupMenu;
-        ActionsContoller.OnShowStartupMenu -= ShowStartupMenu;
-        ActionsContoller.OnEndGame -= ShowAfterDelay;
+        ActionsContoller.OnEndGame -= ShowStartupMenu;
     }
 
     void Update()
@@ -59,41 +57,9 @@ public class StartupMenuController : MonoBehaviour
         }
     }
 
-    private void CheckSkipJoinTimeout()
-    {
-        var skipDeviceIds = new List<int>();
-        if (InputWASDController.IsSkip() && IsDeviceSelected(DeviceController.KEYBOARD_WASD))
-        {
-            skipDeviceIds.Add(DeviceController.KEYBOARD_WASD);
-        }
-
-        InputGamepadController.GetSkipGamepadIds().ForEach((gamePadId) =>
-        {
-            if (IsDeviceSelected(gamePadId))
-            {
-                skipDeviceIds.Add(DeviceController.KEYBOARD_WASD);
-            }
-        });
-
-        if (skipDeviceIds.Count > 0)
-        {
-            TimerFinished();
-        }
-    }
-
-    private void FirstShowStartupMenu()
-    {
-        SetVisible(true, true);
-    }
-
-    private void ShowStartupMenu()
-    {
-        SetVisible(true);
-    }
-
     public void ResetPlayerText()
     {
-        actions.ResetPlayersText();
+        actions.ResetJoinedPlayers();
     }
 
     public void SetVisible(bool visible, bool skipSounds = false)
@@ -123,18 +89,13 @@ public class StartupMenuController : MonoBehaviour
             }
         }
     }
-    void ShowAfterDelay()
-    {
-        StartCoroutine(_ShowAfterDelay());
-    }
     
-    IEnumerator _ShowAfterDelay()
+    void FirstShowStartupMenu()
     {
-        yield return new WaitForSeconds(5f);
-        Show();
+        SetVisible(true, true);
     }
 
-    void Show()
+    void ShowStartupMenu()
     {
         SetVisible(true);
     }
@@ -154,6 +115,29 @@ public class StartupMenuController : MonoBehaviour
         return players;
     }
 
+    void CheckSkipJoinTimeout()
+    {
+        var skipDeviceIds = new List<int>();
+        if (InputWASDController.IsSkip() && IsDeviceSelected(DeviceController.KEYBOARD_WASD))
+        {
+            skipDeviceIds.Add(DeviceController.KEYBOARD_WASD);
+        }
+
+        InputGamepadController.GetSkipGamepadIds().ForEach((gamePadId) =>
+        {
+            if (IsDeviceSelected(gamePadId))
+            {
+                skipDeviceIds.Add(DeviceController.KEYBOARD_WASD);
+            }
+        });
+
+        if (skipDeviceIds.Count > 0)
+        {
+            TimerFinished();
+        }
+    }
+
+
     void StartGame()
     {
         actions.StartGame();
@@ -172,7 +156,7 @@ public class StartupMenuController : MonoBehaviour
 
         if (timeLeft >= 0)
         {
-            actions.TimerUpdate(timeLeft);
+            actions.UpdateTimer(timeLeft);
         }
 
         if (timeLeft <= 0)
@@ -242,7 +226,7 @@ public class StartupMenuController : MonoBehaviour
         }
     }
 
-    private void SetNextPlayerDevice(int deviceId)
+    void SetNextPlayerDevice(int deviceId)
     {
         PlayerController player = null;
         var players = GetPlayers();
@@ -259,7 +243,7 @@ public class StartupMenuController : MonoBehaviour
         if (player != null)
         {
             player.GetUnit().GetDevice().SetId(deviceId);
-            actions.JoinedPlayersText();
+            actions.PlayerJoined();
         } else
         {
             foreach (var _player in players)
@@ -267,14 +251,14 @@ public class StartupMenuController : MonoBehaviour
                 if (!_player.GetUnit().GetDevice().IsSelected())
                 {
                     _player.GetUnit().GetDevice().SetId(deviceId);
-                    actions.JoinedPlayersText();
+                    actions.PlayerJoined();
                     break;
                 }
             }
         }
     }
 
-    private void AddSecondsToTimer(float seconds = 5f)
+    void AddSecondsToTimer(float seconds = 5f)
     {
         if (GetSecondsToStart() < seconds)
         {

@@ -6,20 +6,18 @@ public class ActionsContoller : MonoBehaviour
 {
     public delegate void VoidDelegate();
     public delegate void IntDelegate(int value);
-    public delegate void FourBoolDelegate(bool value1, bool value2, bool value3, bool value4);
     public delegate void TwoUnitDelegate(UnitController dead, UnitController killer);
 
     public static event VoidDelegate OnRoundEnd;
     public static event VoidDelegate OnRoundStart;
-    public static event VoidDelegate OnShowStartupMenu;
     public static event VoidDelegate OnFirstShowStartupMenu;
-    public static event VoidDelegate OnResetPlayersText;
-    public static event VoidDelegate OnJoinedPlayersText;
+    public static event VoidDelegate OnJoinedPlayersReset;
+    public static event VoidDelegate OnPlayerJoined;
     public static event VoidDelegate OnEndGame;
     public static event VoidDelegate OnStartGame;
     public static event IntDelegate OnTimerUpdate;
     public static event IntDelegate OnSelectPauseOption;
-    public static event FourBoolDelegate OnUpdateScore;
+    public static event IntDelegate OnUpdateScore;
     public static event TwoUnitDelegate OnUnitKilled;
     public static event IntDelegate OnPlayerWon;
 
@@ -30,17 +28,17 @@ public class ActionsContoller : MonoBehaviour
 
     public void RoundRestart()
     {
-        RoundEnd();
+        EndRound();
         StartCoroutine(StartRoundAfterDelay());
     }
 
     IEnumerator StartRoundAfterDelay()
     {
         yield return new WaitForSeconds(3f);
-        RoundStart();
+        StartRound();
     }
 
-    public void RoundEnd()
+    public void EndRound()
     {
         OnRoundEnd?.Invoke();
     }
@@ -49,14 +47,10 @@ public class ActionsContoller : MonoBehaviour
     {
         OnUnitKilled?.Invoke(dead, killer);
     }
-    public void RoundStart()
+
+    public void StartRound()
     {
         OnRoundStart?.Invoke();
-    }
-
-    public void ShowStartupMenu()
-    {
-        OnShowStartupMenu?.Invoke();
     }
 
     public void FirstShowStartupMenu()
@@ -64,14 +58,14 @@ public class ActionsContoller : MonoBehaviour
         OnFirstShowStartupMenu?.Invoke();
     }
 
-    public void ResetPlayersText()
+    public void ResetJoinedPlayers()
     {
-        OnResetPlayersText?.Invoke();
+        OnJoinedPlayersReset?.Invoke();
     }
 
-    public void JoinedPlayersText()
+    public void PlayerJoined()
     {
-        OnJoinedPlayersText?.Invoke();
+        OnPlayerJoined?.Invoke();
     }
     
     public void EndGame()
@@ -84,7 +78,7 @@ public class ActionsContoller : MonoBehaviour
         OnStartGame?.Invoke();
     }
 
-    public void TimerUpdate(int seconds)
+    public void UpdateTimer(int seconds)
     {
         OnTimerUpdate?.Invoke(seconds);
     }
@@ -99,8 +93,8 @@ public class ActionsContoller : MonoBehaviour
         OnSelectPauseOption?.Invoke(option);
     }
 
-    public void UpdateScore(bool isFirstPlayerScore, bool isSecondPlayerScore, bool isThirdPlayerScore, bool isForthPlayerScore)
+    public void UpdateScore(int playerId)
     {
-        OnUpdateScore?.Invoke(isFirstPlayerScore, isSecondPlayerScore, isThirdPlayerScore, isForthPlayerScore);
+        OnUpdateScore?.Invoke(playerId);
     }
 }

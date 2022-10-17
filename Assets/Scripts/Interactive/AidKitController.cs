@@ -6,8 +6,9 @@ public class AidKitController : MonoBehaviour
     public Animator animator;
     public AudioSource createAidKitSound;
     public AudioSource takeAidKitSound;
+    public bool isDead = true;
+
     PlayerController[] players;
-    bool isDead = true;
 
     void Start()
     {
@@ -39,7 +40,7 @@ public class AidKitController : MonoBehaviour
     {
         isDead = true;
         takeAidKitSound.Play();
-        byPlayer.GetUnit().RestoreHp();
+        byPlayer.GetUnit().AddHp(30);
         animator.Play("Die");
         StartCoroutine(ShowAfterDelay());
     }

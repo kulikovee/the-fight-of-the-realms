@@ -1,23 +1,26 @@
-using KinematicCharacterController;
+using System;
 using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public int playerId;
-    public TextMeshProUGUI playerText;
+    public int score = 0;
+    public TextMeshProUGUI playerJoinedText;
+    public TextMeshProUGUI playerScoreText;
 
-    private UnitController unit;
-    private ActionsContoller actions;
+    UnitController unit;
+    ActionsContoller actions;
 
     void Start()
     {
-        ActionsContoller.OnResetPlayersText += ResetPlayerTextToDefault;
-        ActionsContoller.OnJoinedPlayersText += JoinedPlayersText;
+        ActionsContoller.OnJoinedPlayersReset += ResetJoinedTextToDefault;
+        ActionsContoller.OnPlayerJoined += UpdateJoinedText;
         ActionsContoller.OnEndGame += ResetPlayer;
         ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
         ActionsContoller.OnRoundStart += Unfreeze;
         ActionsContoller.OnUnitKilled += UpdateScore;
+        ActionsContoller.OnStartGame += ResetScoreToDefault;
 
         actions = ActionsContoller.GetActions();
         unit = GetComponent<UnitController>();
@@ -25,12 +28,13 @@ public class PlayerController : MonoBehaviour
 
     void OnDestroy()
     {
-        ActionsContoller.OnResetPlayersText -= ResetPlayerTextToDefault;
-        ActionsContoller.OnJoinedPlayersText -= JoinedPlayersText;
+        ActionsContoller.OnJoinedPlayersReset -= ResetJoinedTextToDefault;
+        ActionsContoller.OnPlayerJoined -= UpdateJoinedText;
         ActionsContoller.OnEndGame -= ResetPlayer;
         ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
         ActionsContoller.OnRoundStart -= Unfreeze;
         ActionsContoller.OnUnitKilled -= UpdateScore;
+        ActionsContoller.OnStartGame -= ResetScoreToDefault;
     }
 
     public UnitController GetUnit()
@@ -49,17 +53,24 @@ public class PlayerController : MonoBehaviour
         unit.SetFrozen(false);
     }
 
-    public void UpdateScore(UnitController dead, UnitController killer)
+    public void UpdateScore(UnitController _dead, UnitController killer)
     {
         if (killer == unit)
         {
-            actions.UpdateScore(
-                playerId == 0,
-                playerId == 1,
-                playerId == 2,
-                playerId == 3
-            );
+            actions.UpdateScore(playerId);
         }
+    }
+
+    internal void AddScorePoint()
+    {
+        score++;
+        UpdatedScoreText();
+    }
+
+    internal void ResetScoreToDefault()
+    {
+        score = 0;
+        UpdatedScoreText();
     }
 
     public void ResetPlayer()
@@ -67,19 +78,24 @@ public class PlayerController : MonoBehaviour
         unit.GetDevice().ResetDeviceId();
         unit.ResetUnit();
         unit.SetFrozen(true);
-        ResetPlayerTextToDefault();
+        ResetJoinedTextToDefault();
     }
 
-    public void ResetPlayerTextToDefault()
+    public void UpdatedScoreText()
     {
-        playerText.SetText("Player " + (playerId + 1) + "\nPress any button");
+        playerScoreText.text = $"P{playerId + 1}: {score}";
     }
 
-    public void JoinedPlayersText()
+    public void ResetJoinedTextToDefault()
+    {
+        playerJoinedText.SetText("Player " + (playerId + 1) + "\nPress any button");
+    }
+
+    public void UpdateJoinedText()
     {
         if (unit.GetDevice().IsSelected())
         {
-            playerText.SetText("Player " + (playerId + 1) + "\n<b>Joined!</b>");
+            playerJoinedText.SetText("Player " + (playerId + 1) + "\n<b>Joined!</b>");
         }
     }
 }

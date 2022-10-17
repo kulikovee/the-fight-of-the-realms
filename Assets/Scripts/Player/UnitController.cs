@@ -62,7 +62,7 @@ public class UnitController : MonoBehaviour
             lastAttackAt = Time.time;
 
             var attackedUnits = new List<UnitController>() { };
-            var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up;
+            var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up * 0.5f;
             var colliders = Physics.OverlapSphere(attackPoint, attackRadius);
 
             foreach (var collider in colliders)
@@ -121,9 +121,10 @@ public class UnitController : MonoBehaviour
         SetHp(maxHp);
     }
 
-    public void AddHp(float amount)
+    public void AddHp(float addAmount)
     {
-        SetHp(hp + amount);
+        var missingHp = maxHp - hp;
+        SetHp(hp + Mathf.Min(addAmount, missingHp));
     }
 
     public void SetHp(float amount)

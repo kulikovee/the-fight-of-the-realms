@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,9 +7,9 @@ public class PlayerWonController : MonoBehaviour
     public static List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#f3f" };
 
     public AudioSource wonSound;
-    private Animator animator;
-    private TextMeshProUGUI text;
-    private ActionsContoller actions;
+    Animator animator;
+    TextMeshProUGUI text;
+    ActionsContoller actions;
 
     void Start()
     {
