@@ -4,13 +4,15 @@ using UnityEngine;
 public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 {
     private KinematicCharacterMotor motor;
+    private UnitController unit;
     private DeviceController device;
-    private float gravity = 3f;
+    private float gravity = 1f;
     private float movementSpeed = 8f;
 
     private void Awake()
     {
         motor = GetComponent<KinematicCharacterMotor>();
+        unit = GetComponent<UnitController>();
         motor.CharacterController = this;
     }
 
@@ -21,30 +23,26 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 
     public bool IsColliderValidForCollisions(Collider collider)
     {
-        var unit = collider.GetComponent<UnitController>();
-        return unit == null ? true : !unit.GetDevice().IsFrozen();
+        var colliderUnit = collider.GetComponent<UnitController>();
+        return colliderUnit == null || (unit.IsAlive() && colliderUnit.IsAlive());
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
-        var axis = device.GetUpdatedAxis();
+        ApplyGravity(ref currentVelocity);
+
+        var axis = 
+            unit.IsAlive() 
+                ? device.GetUpdatedAxis() 
+                : DeviceController.frozenAxis;
 
         currentVelocity.x = axis.GetX() * movementSpeed;
         currentVelocity.z = axis.GetY() * movementSpeed;
 
-        if (motor.GroundingStatus.IsStableOnGround)
+        if (motor.GroundingStatus.IsStableOnGround && axis.GetAction() > 0)
         {
-            if (axis.GetAction() > 0)
-            {
-                currentVelocity.y = axis.GetAction() * 10f;
-                motor.ForceUnground();
-            } else if (currentVelocity.y <= 0)
-            {
-                currentVelocity.y = 0;
-            }
-        } else
-        {
-            currentVelocity.y -= gravity;
+            currentVelocity.y = axis.GetAction() * 10f;
+            motor.ForceUnground();
         }
     }
     
@@ -60,6 +58,11 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
+        if (!unit.IsAlive())
+        {
+            return;
+        }
+
         var axis = device.GetUpdatedAxis();
         var rotateAt = new Vector3(axis.GetX(), 0, axis.GetY());
 
@@ -83,4 +86,14 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     public void PostGroundingUpdate(float deltaTime) { }
 
     public void ProcessHitStabilityReport(Collider hitCollider, Vector3 hitNormal, Vector3 hitPoint, Vector3 atCharacterPosition, Quaternion atCharacterRotation, ref HitStabilityReport hitStabilityReport) { }
+
+    void ApplyGravity(ref Vector3 currentVelocity)
+    {
+        currentVelocity.y -= gravity;
+
+        if (motor.GroundingStatus.IsStableOnGround)
+        {
+            currentVelocity.y = 0;
+        }
+    }
 }

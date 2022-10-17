@@ -4,6 +4,8 @@ using UnityEngine;
 public class UnitController : MonoBehaviour
 {
     public Animator animator;
+    public AnimationClip attackAnimation;
+    public AnimationClip hitAnimation;
     public List<AudioSource> attackWaveSounds;
     public List<AudioSource> attackHitSounds;
 
@@ -18,10 +20,8 @@ public class UnitController : MonoBehaviour
     private float maxHp = 100f;
 
     private float lastHitAt = 0f;
-    private float hitTimeout = 0.25f;
 
     private float lastAttackAt = 0f;
-    private float attackTimeout = 0.375f;
     private float attackPower = 25f;
     private float attackRadius = 0.8f;
     private float attackDistance = 0.5f;
@@ -40,62 +40,65 @@ public class UnitController : MonoBehaviour
     {
         var axis = device.GetUpdatedAxis();
         var isDead = !IsAlive();
-        var isHit = !isDead && IsHitHappend();
-        var isAttack = !isDead && !isHit && !IsAttackAvailable() && lastAttackAt != 0f;
-        var isRun = !isDead && !isHit && !isAttack && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
+        var isPlayingAnimation = isDead;
+
+        var isHit = !isPlayingAnimation && IsHitHappend();
+        isPlayingAnimation |= isHit;
+
+        var isAttack = !isPlayingAnimation && ((!IsAttackAvailable() && lastAttackAt != 0f) || axis.GetAction2() != 0);
+        isPlayingAnimation |= isAttack;
+
+        var isRun = !isPlayingAnimation && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
+
+        var isAttackUpdated = animator.GetBool("attack") != isAttack;
 
         animator.SetBool("die", isDead);
         animator.SetBool("attack", isAttack);
         animator.SetBool("run", isRun);
         animator.SetBool("hit", isHit);
 
-        if (axis.GetAction2() != 0 && !isHit)
+        if (isAttack && isAttackUpdated)
         {
-            Attack();
+            lastAttackAt = Time.time;
         }
     }
 
     public void Attack()
     {
-        if (IsAlive() && IsAttackAvailable())
+        var attackedUnits = new List<UnitController>() { };
+        var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up * 0.5f;
+        var colliders = Physics.OverlapSphere(attackPoint, attackRadius);
+
+        foreach (var collider in colliders)
         {
-            lastAttackAt = Time.time;
+            var unit = collider.gameObject.GetComponent<UnitController>();
 
-            var attackedUnits = new List<UnitController>() { };
-            var attackPoint = transform.position + transform.forward * attackDistance + Vector3.up * 0.5f;
-            var colliders = Physics.OverlapSphere(attackPoint, attackRadius);
-
-            foreach (var collider in colliders)
+            if (unit != null && unit != this && unit.IsAlive())
             {
-                var unit = collider.gameObject.GetComponent<UnitController>();
-
-                if (unit != null && unit != this && unit.IsAlive())
-                {
-                    unit.ReceiveHit(attackPower);
-                    attackedUnits.Add(unit);
-                }
+                unit.GetHit(attackPower);
+                attackedUnits.Add(unit);
             }
+        }
 
-            foreach (var unit in attackedUnits)
+        foreach (var unit in attackedUnits)
+        {
+            if (!unit.IsAlive())
             {
-                if (!unit.IsAlive())
-                {
-                    actions.UnitKilled(unit, this);
-                }
+                actions.UnitKilled(unit, this);
             }
+        }
 
-            var sound = attackedUnits.Count > 0
-                ? attackHitSounds[Random.Range(0, attackHitSounds.Count)]
-                : attackWaveSounds[Random.Range(0, attackWaveSounds.Count)];
+        var sound = attackedUnits.Count > 0
+            ? attackHitSounds[Random.Range(0, attackHitSounds.Count)]
+            : attackWaveSounds[Random.Range(0, attackWaveSounds.Count)];
 
-            if (!sound.isPlaying)
-            {
-                sound.Play();
-            }
+        if (!sound.isPlaying)
+        {
+            sound.Play();
         }
     }
 
-    public void ReceiveHit(float amountHp)
+    public void GetHit(float amountHp)
     {
         lastHitAt = Time.time;
         AddHp(-amountHp);
@@ -113,7 +116,6 @@ public class UnitController : MonoBehaviour
 
     public void Die()
     {
-        SetFrozen(true);
     }
 
     public void RestoreHp()
@@ -135,12 +137,12 @@ public class UnitController : MonoBehaviour
 
     public bool IsAttackAvailable()
     {
-        return Time.time - lastAttackAt >= attackTimeout;
+        return Time.time - lastAttackAt >= attackAnimation.length;
     }
 
     public bool IsHitHappend()
     {
-        return lastHitAt != 0f && Time.time - lastHitAt <= hitTimeout;
+        return lastHitAt != 0f && Time.time - lastHitAt <= hitAnimation.length;
     }
 
     public void ResetUnit()

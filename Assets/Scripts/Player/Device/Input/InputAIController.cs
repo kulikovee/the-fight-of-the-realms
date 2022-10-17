@@ -49,7 +49,7 @@ public class InputAIController : MonoBehaviour
         var distance = Vector3.Distance(target, transform.position) / 4f;
         axis.SetX((target.x - transform.position.x) * distance + aiAxisVelocity.x);
         axis.SetY((target.z - transform.position.z) * distance + aiAxisVelocity.z);
-        axis.SetAction(Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
+        axis.SetAction(distance > 2f && Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
         axis.SetAction2(isAttack ? 1 : 0);
 
         return axis;

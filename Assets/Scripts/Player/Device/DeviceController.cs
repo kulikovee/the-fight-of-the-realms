@@ -5,6 +5,7 @@ public class DeviceController : MonoBehaviour
     public static int NO_DEVICE = -100;
     public static int KEYBOARD_WASD = -3;
     public static int KEYBOARD_NUMPAD = -2;
+    public static Axis frozenAxis = new();
 
     private InputAIController inputAI;
     private InputWASDController inputWASD;
@@ -14,7 +15,6 @@ public class DeviceController : MonoBehaviour
     private int deviceId = NO_DEVICE;
     private int previousDeviceId = NO_DEVICE;
     private bool isFrozen = true;
-    private readonly Axis frozenAxis = new();
 
     public void Start()
     {
