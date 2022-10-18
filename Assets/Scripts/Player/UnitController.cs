@@ -9,31 +9,49 @@ public class UnitController : MonoBehaviour
     public List<AudioSource> attackWaveSounds;
     public List<AudioSource> attackHitSounds;
 
+    public float maxHp = 150f;
+    public float attackPower = 25f;
+    public float speed = 1f;
+    public string team = "";
+    public bool canTakeItems = true;
+
+    public bool isStunOnHit = true;
+
     private DeviceController device;
     private KinematicCharacterAdapter characterAdapter;
+
     private ActionsContoller actions;
     private HpBarController hpBar;
     private Vector3 defaultPosition;
     private Quaternion defaultRotation;
 
-    private float hp = 100f;
-    private float maxHp = 100f;
-
-    private float lastHitAt = 0f;
-
-    private float lastAttackAt = 0f;
-    private float attackPower = 25f;
+    private float hp = 0;
     private float attackRadius = 0.8f;
     private float attackDistance = 0.5f;
+    private bool isAttack = false;
+    private bool isHit = false;
 
     void Start()
     {
+        ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
+        ActionsContoller.OnRoundStart += Unfreeze;
+        ActionsContoller.OnEndGame += ResetUnitDeviceAndFreeze;
+
         characterAdapter = GetComponent<KinematicCharacterAdapter>();
         device = GetComponent<DeviceController>();
         hpBar = GetComponent<HpBarController>();
         actions = ActionsContoller.GetActions();
+
+        hp = maxHp;
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
+    }
+
+    private void OnDestroy()
+    {
+        ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
+        ActionsContoller.OnRoundStart += Unfreeze;
+        ActionsContoller.OnEndGame += ResetUnitDeviceAndFreeze;
     }
 
     void Update()
@@ -42,25 +60,18 @@ public class UnitController : MonoBehaviour
         var isDead = !IsAlive();
         var isPlayingAnimation = isDead;
 
-        var isHit = !isPlayingAnimation && IsHitHappend();
-        isPlayingAnimation |= isHit;
+        var isHitAnimation = !isPlayingAnimation && isStunOnHit && isHit;
+        isPlayingAnimation |= isHitAnimation;
 
-        var isAttack = !isPlayingAnimation && ((!IsAttackAvailable() && lastAttackAt != 0f) || axis.GetAction2() != 0);
-        isPlayingAnimation |= isAttack;
+        var isAttackAnimation = !isPlayingAnimation && (!isAttack || axis.GetAction2() != 0);
+        isPlayingAnimation |= isAttackAnimation;
 
-        var isRun = !isPlayingAnimation && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
-
-        var isAttackUpdated = animator.GetBool("attack") != isAttack;
+        var isRunAnimation = !isPlayingAnimation && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
 
         animator.SetBool("die", isDead);
-        animator.SetBool("attack", isAttack);
-        animator.SetBool("run", isRun);
-        animator.SetBool("hit", isHit);
-
-        if (isAttack && isAttackUpdated)
-        {
-            lastAttackAt = Time.time;
-        }
+        animator.SetBool("hit", isHitAnimation);
+        animator.SetBool("attack", isAttackAnimation);
+        animator.SetBool("run", isRunAnimation);
     }
 
     public void Attack()
@@ -73,7 +84,7 @@ public class UnitController : MonoBehaviour
         {
             var unit = collider.gameObject.GetComponent<UnitController>();
 
-            if (unit != null && unit != this && unit.IsAlive())
+            if (unit != null && unit != this && unit.IsAlive() && !IsSameTeam(unit))
             {
                 unit.GetHit(attackPower);
                 attackedUnits.Add(unit);
@@ -100,7 +111,6 @@ public class UnitController : MonoBehaviour
 
     public void GetHit(float amountHp)
     {
-        lastHitAt = Time.time;
         AddHp(-amountHp);
 
         if (!IsAlive())
@@ -116,6 +126,11 @@ public class UnitController : MonoBehaviour
 
     public void Die()
     {
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        characterAdapter.SetPosition(position);
     }
 
     public void RestoreHp()
@@ -135,16 +150,6 @@ public class UnitController : MonoBehaviour
         hpBar.UpdateValue(hp / maxHp);
     }
 
-    public bool IsAttackAvailable()
-    {
-        return Time.time - lastAttackAt >= attackAnimation.length;
-    }
-
-    public bool IsHitHappend()
-    {
-        return lastHitAt != 0f && Time.time - lastHitAt <= hitAnimation.length;
-    }
-
     public void ResetUnit()
     {
         RestoreHp();
@@ -161,5 +166,37 @@ public class UnitController : MonoBehaviour
     public DeviceController GetDevice()
     {
         return device;
+    }
+    public void FreezeAndResetPosition()
+    {
+        SetFrozen(true);
+        ResetUnit();
+    }
+
+    public void Unfreeze()
+    {
+        SetFrozen(false);
+    }
+
+    public void ResetUnitDeviceAndFreeze()
+    {
+        GetDevice().ResetDeviceId();
+        SetFrozen(true);
+        ResetUnit();
+    }
+
+    public bool IsSameTeam(UnitController unit)
+    {
+        return team != "" && unit.team != "" && unit.team == team;
+    }
+    
+    public void SetIsAttack(bool _isAttack)
+    {
+        isAttack = _isAttack;
+    }
+
+    public void SetIsHit(bool _isHit)
+    {
+        isHit = _isHit;
     }
 }

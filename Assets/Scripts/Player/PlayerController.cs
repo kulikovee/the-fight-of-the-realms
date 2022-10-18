@@ -17,8 +17,6 @@ public class PlayerController : MonoBehaviour
         ActionsContoller.OnJoinedPlayersReset += ResetJoinedTextToDefault;
         ActionsContoller.OnPlayerJoined += UpdateJoinedText;
         ActionsContoller.OnEndGame += ResetPlayer;
-        ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
-        ActionsContoller.OnRoundStart += Unfreeze;
         ActionsContoller.OnUnitKilled += UpdateScore;
         ActionsContoller.OnStartGame += ResetScoreToDefault;
 
@@ -31,8 +29,6 @@ public class PlayerController : MonoBehaviour
         ActionsContoller.OnJoinedPlayersReset -= ResetJoinedTextToDefault;
         ActionsContoller.OnPlayerJoined -= UpdateJoinedText;
         ActionsContoller.OnEndGame -= ResetPlayer;
-        ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
-        ActionsContoller.OnRoundStart -= Unfreeze;
         ActionsContoller.OnUnitKilled -= UpdateScore;
         ActionsContoller.OnStartGame -= ResetScoreToDefault;
     }
@@ -42,28 +38,19 @@ public class PlayerController : MonoBehaviour
         return unit;
     }
 
-    public void FreezeAndResetPosition()
-    {
-        unit.SetFrozen(true);
-        unit.ResetUnit();
-    }
-
-    public void Unfreeze()
-    {
-        unit.SetFrozen(false);
-    }
-
-    public void UpdateScore(UnitController _dead, UnitController killer)
+    public void UpdateScore(UnitController dead, UnitController killer)
     {
         if (killer == unit)
         {
-            actions.UpdateScore(playerId);
+            var scorePoints = dead.team == "enemy" ? 3 : 1;
+            actions.UpdateScore(playerId, scorePoints);
+            AddScorePoint(scorePoints);
         }
     }
 
-    internal void AddScorePoint()
+    internal void AddScorePoint(int scoreUpdate)
     {
-        score++;
+        score += scoreUpdate;
         UpdatedScoreText();
     }
 
@@ -75,9 +62,6 @@ public class PlayerController : MonoBehaviour
 
     public void ResetPlayer()
     {
-        unit.GetDevice().ResetDeviceId();
-        unit.ResetUnit();
-        unit.SetFrozen(true);
         ResetJoinedTextToDefault();
     }
 

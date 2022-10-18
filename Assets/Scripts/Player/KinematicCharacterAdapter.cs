@@ -7,7 +7,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     private UnitController unit;
     private DeviceController device;
     private float gravity = 1f;
-    private float movementSpeed = 8f;
+    private float movementFactor = 8f;
 
     private void Awake()
     {
@@ -16,7 +16,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
         motor.CharacterController = this;
     }
 
-    private void Start()
+    void Start()
     {
         device = GetComponent<DeviceController>();
     }
@@ -24,20 +24,34 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
     public bool IsColliderValidForCollisions(Collider collider)
     {
         var colliderUnit = collider.GetComponent<UnitController>();
-        return colliderUnit == null || (unit.IsAlive() && colliderUnit.IsAlive());
+
+        if (colliderUnit != null)
+        {
+            return unit.IsAlive() && colliderUnit.IsAlive();
+        } else
+        {
+            var colliderItem = collider.GetComponent<AidKitController>();
+
+            if (colliderItem)
+            {
+                return unit.canTakeItems;
+            }
+        }
+
+        return true;
     }
 
     public void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)
     {
         ApplyGravity(ref currentVelocity);
 
-        var axis = 
-            unit.IsAlive() 
-                ? device.GetUpdatedAxis() 
+        var axis =
+            unit.IsAlive() && IsCloseEnoughToMove()
+                ? device.GetUpdatedAxis()
                 : DeviceController.frozenAxis;
 
-        currentVelocity.x = axis.GetX() * movementSpeed;
-        currentVelocity.z = axis.GetY() * movementSpeed;
+        currentVelocity.x = axis.GetX() * movementFactor * unit.speed;
+        currentVelocity.z = axis.GetY() * movementFactor * unit.speed;
 
         if (motor.GroundingStatus.IsStableOnGround && axis.GetAction() > 0)
         {
@@ -58,7 +72,7 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
 
     public void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
-        if (!unit.IsAlive())
+        if (!unit.IsAlive() || !IsCloseEnoughToMove())
         {
             return;
         }
@@ -70,6 +84,11 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
         {
             currentRotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(rotateAt), deltaTime * 10f);
         }
+    }
+
+    bool IsCloseEnoughToMove()
+    {
+        return transform.position.z > -50;
     }
 
     public void AfterCharacterUpdate(float deltaTime) { }

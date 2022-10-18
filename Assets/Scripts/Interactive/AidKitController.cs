@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AidKitController : MonoBehaviour
@@ -6,13 +7,14 @@ public class AidKitController : MonoBehaviour
     public Animator animator;
     public AudioSource createAidKitSound;
     public AudioSource takeAidKitSound;
+    public List<Vector3> respawnPoints;
     public bool isDead = true;
 
-    PlayerController[] players;
+    UnitController[] units;
 
     void Start()
     {
-        players = GameObject.FindObjectsOfType<PlayerController>();
+        units = GameObject.FindObjectsOfType<UnitController>();
         StartCoroutine(ShowAfterDelay());
     }
 
@@ -23,24 +25,25 @@ public class AidKitController : MonoBehaviour
             return;
         }
 
-        foreach (var player in players)
+        foreach (var unit in units)
         {
             if (
                 !isDead
-                && player.GetUnit().IsAlive() 
-                && Vector3.Distance(player.transform.position, transform.position + Vector3.up * 0.4f) < 0.6f
+                && unit.IsAlive()
+                && unit.canTakeItems
+                && Vector3.Distance(unit.transform.position, transform.position + Vector3.up * 0.4f) < 0.6f
             )
             {
-                Take(player);
+                Take(unit);
             }
         }
     }
 
-    void Take(PlayerController byPlayer)
+    void Take(UnitController byUnit)
     {
         isDead = true;
         takeAidKitSound.Play();
-        byPlayer.GetUnit().AddHp(30);
+        byUnit.AddHp(50);
         animator.Play("Die");
         StartCoroutine(ShowAfterDelay());
     }
@@ -51,6 +54,7 @@ public class AidKitController : MonoBehaviour
         isDead = false;
         createAidKitSound.Play();
         animator.Play("Show");
+        transform.position = respawnPoints[Random.Range(0, respawnPoints.Count)];
         transform.rotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
     }
 }

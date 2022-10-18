@@ -6,6 +6,7 @@ public class ActionsContoller : MonoBehaviour
 {
     public delegate void VoidDelegate();
     public delegate void IntDelegate(int value);
+    public delegate void TwoIntDelegate(int value1, int value2);
     public delegate void TwoUnitDelegate(UnitController dead, UnitController killer);
 
     public static event VoidDelegate OnRoundEnd;
@@ -17,7 +18,7 @@ public class ActionsContoller : MonoBehaviour
     public static event VoidDelegate OnStartGame;
     public static event IntDelegate OnTimerUpdate;
     public static event IntDelegate OnSelectPauseOption;
-    public static event IntDelegate OnUpdateScore;
+    public static event TwoIntDelegate OnUpdateScore;
     public static event TwoUnitDelegate OnUnitKilled;
     public static event IntDelegate OnPlayerWon;
 
@@ -46,11 +47,6 @@ public class ActionsContoller : MonoBehaviour
     public void UnitKilled(UnitController dead, UnitController killer)
     {
         OnUnitKilled?.Invoke(dead, killer);
-    }
-
-    public void StartRound()
-    {
-        OnRoundStart?.Invoke();
     }
 
     public void FirstShowStartupMenu()
@@ -93,8 +89,13 @@ public class ActionsContoller : MonoBehaviour
         OnSelectPauseOption?.Invoke(option);
     }
 
-    public void UpdateScore(int playerId)
+    public void UpdateScore(int playerId, int scoreUpdate)
     {
-        OnUpdateScore?.Invoke(playerId);
+        OnUpdateScore?.Invoke(playerId, scoreUpdate);
+    }
+    
+    private void StartRound()
+    {
+        OnRoundStart?.Invoke();
     }
 }

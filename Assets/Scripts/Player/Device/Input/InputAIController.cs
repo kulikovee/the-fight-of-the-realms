@@ -11,14 +11,14 @@ public class InputAIController : MonoBehaviour
     Vector3 aiAxisVelocity = new(0, 0, 0);
     Vector3 target = Vector3.zero;
     bool isAttack = false;
-    PlayerController player;
-    PlayerController[] players;
+    UnitController unit;
+    UnitController[] units;
     AidKitController aid;
 
     private void Start()
     {
-        player = GetComponent<PlayerController>();
-        players = GameObject.FindObjectsOfType<PlayerController>();
+        unit = GetComponent<UnitController>();
+        units = GameObject.FindObjectsOfType<UnitController>();
         aid = GameObject.FindObjectOfType<AidKitController>();
     }
 
@@ -63,7 +63,7 @@ public class InputAIController : MonoBehaviour
         Vector3 position = transform.position;
         
         // To take First Aid
-        if (!aid.isDead)
+        if (!aid.isDead && unit.canTakeItems)
         {
             isAttack = true;
             target = aid.transform.position;
@@ -71,15 +71,20 @@ public class InputAIController : MonoBehaviour
         else
         {
             // To attack Players
-            foreach (var targetPlayer in players)
+            foreach (var targetUnit in units)
             {
-                if (targetPlayer.GetUnit().IsAlive() && targetPlayer != player)
+                if (targetUnit.IsSameTeam(unit))
                 {
-                    var playerPosition = targetPlayer.transform.position;
+                    continue;
+                }
+
+                if (targetUnit.IsAlive() && targetUnit != unit)
+                {
+                    var playerPosition = targetUnit.transform.position;
                     var distanceToPlayer = Vector3.Distance(position, playerPosition);
                     var distanceToTarget = Vector3.Distance(position, target);
 
-                    if (target == Vector3.zero || distanceToPlayer < distanceToTarget)
+                    if (distanceToPlayer < 50 && (target == Vector3.zero || distanceToPlayer < distanceToTarget))
                     {
                         target = playerPosition;
 

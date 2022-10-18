@@ -14,43 +14,73 @@ public class ScoreController : MonoBehaviour
 
     // Params
     bool isShown = false;
+    bool isRestarting = false;
     Animator animator;
     ActionsContoller actions;
+    LevelController level;
 
     // Players
-    public PlayerController[] playerControllers;
+    public List<PlayerController> players = new() { };
+    public List<UnitController> enemies = new() { };
 
     void Start()
     {
         ActionsContoller.OnStartGame += ShowScorePanel;
         ActionsContoller.OnUpdateScore += UpdateScore;
+        ActionsContoller.OnUnitKilled += CheckWinner;
 
-        playerControllers = GameObject.FindObjectsOfType<PlayerController>();
         actions = ActionsContoller.GetActions();
+        level = LevelController.GetLevel();
         animator = GetComponent<Animator>();
+
+        foreach (var unit in GameObject.FindObjectsOfType<UnitController>())
+        {
+            if (unit.team == "enemy")
+            {
+                enemies.Add(unit);
+            }
+            else
+            {
+                var player = unit.GetComponent<PlayerController>();
+                if (player != null)
+                {
+                    players.Add(player);
+                }
+            }
+        }
     }
 
     void OnDestroy()
     {
         ActionsContoller.OnStartGame -= ShowScorePanel;
         ActionsContoller.OnUpdateScore -= UpdateScore;
+        ActionsContoller.OnUnitKilled -= CheckWinner;
     }
+
     /** Called from animation: Score Update **/
     public void PlayScoreUpdateSound()
     {
         scoreUpdateSounds[Random.Range(0, scoreUpdateSounds.Count)].Play();
     }
 
-    void UpdateScore(int scoreUpdatePlayerId)
+    void CheckWinner(UnitController _dead, UnitController killer)
     {
+        if (killer.team == "enemy")
+        {
+            // Restart if no winner and players dead
+            RestartRoundIfLevelCompleted();
+        }
+    }
+
+    void UpdateScore(int scoreUpdatePlayerId, int scoreUpdate)
+    {
+        animator.Play("Score Update");
+
         // Check previous winner
         if (GetWinnerPlayer() != null)
         {
             return;
         }
-
-        FindPlayerById(scoreUpdatePlayerId).AddScorePoint();
-        animator.Play("Score Update");
 
         // Check current winner
         var winnerPlayer = GetWinnerPlayer();
@@ -60,13 +90,13 @@ public class ScoreController : MonoBehaviour
             actions.EndRound();
             actions.PlayerWon(winnerPlayer.playerId);
             gameOverSound.Play();
-        }
-        else
+        } else
         {
             // Restart if no winner and players dead
-            RestartRoundIfPlayersDead();
+            RestartRoundIfLevelCompleted();
         }
     }
+
     void ShowScorePanel()
     {
         if (!isShown)
@@ -76,22 +106,9 @@ public class ScoreController : MonoBehaviour
         }
     }
 
-    PlayerController FindPlayerById(int playerId)
-    {
-        foreach (var player in playerControllers)
-        {
-            if (player.playerId == playerId)
-            {
-                return player;
-            }
-        }
-
-        return null;
-    }
-
     PlayerController GetWinnerPlayer()
     {
-        foreach(var player in playerControllers)
+        foreach(var player in players)
         {
             if (player.score >= killsToWin)
             {
@@ -102,12 +119,19 @@ public class ScoreController : MonoBehaviour
         return null;
     }
 
-    void RestartRoundIfPlayersDead()
+    void RestartRoundIfLevelCompleted()
     {
+        if (isRestarting)
+        {
+            return;
+        }
+
         var alivePlayersCount = 0;
         var aliveControlledPlayersCount = 0;
+        var aliveEnemiesCount = 0;
+        var alivePlayersToRestart = level.IsDeathmatch() ? 1 : 0;
 
-        foreach (var player in playerControllers)
+        foreach (var player in players)
         {
             if (player.GetUnit().IsAlive())
             {
@@ -118,10 +142,20 @@ public class ScoreController : MonoBehaviour
                     aliveControlledPlayersCount++;
                 }
             }
+        }  
+        
+        foreach (var enemy in enemies)
+        {
+            if (enemy.IsAlive())
+            {
+                aliveEnemiesCount++;
+            }
         }
 
-        if (alivePlayersCount <= 1 || aliveControlledPlayersCount == 0)
+
+        if (alivePlayersCount <= alivePlayersToRestart || aliveControlledPlayersCount == 0 || (level.IsBoss() && aliveEnemiesCount == 0))
         {
+            isRestarting = true;
             StartCoroutine(RestartAfterDelay());
         }
     }
@@ -129,6 +163,7 @@ public class ScoreController : MonoBehaviour
     IEnumerator RestartAfterDelay()
     {
         yield return new WaitForSeconds(3f);
+        isRestarting = false;
         actions.RoundRestart();
     }
 }
