@@ -11,10 +11,14 @@ public class AidKitController : MonoBehaviour
     public bool isDead = true;
 
     UnitController[] units;
+    ActionsContoller actions;
+    LevelController level;
 
     void Start()
     {
         units = GameObject.FindObjectsOfType<UnitController>();
+        actions = ActionsContoller.GetActions();
+        level = LevelController.GetLevel();
         StartCoroutine(ShowAfterDelay());
     }
 
@@ -35,6 +39,7 @@ public class AidKitController : MonoBehaviour
             )
             {
                 Take(unit);
+                actions.PickUpItem(unit, this);
             }
         }
     }
@@ -50,7 +55,7 @@ public class AidKitController : MonoBehaviour
 
     IEnumerator ShowAfterDelay()
     {
-        yield return new WaitForSeconds(15f);
+        yield return new WaitForSeconds(level.IsRabbitsCollection() ? 5f : 15f);
         isDead = false;
         createAidKitSound.Play();
         animator.Play("Show");

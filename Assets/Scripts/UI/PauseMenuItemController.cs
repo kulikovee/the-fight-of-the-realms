@@ -37,7 +37,7 @@ public class PauseMenuItemController : MonoBehaviour
 
     void UpdateSelection(int option)
     {
-        text.SetText(option == optionId ? $"<b>{buttonText}</b>" : $"{buttonText}");
+        text.fontStyle = option == optionId ? FontStyles.Bold : FontStyles.Normal;
         panel.color = new Color(buttonColor.r, buttonColor.g, buttonColor.b, option == optionId ? 1 : 0.7f);
         panelOutline.effectColor = new Color(outlineColor.r, outlineColor.g, outlineColor.b, option == optionId ? 1 : 0);
     }

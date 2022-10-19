@@ -49,9 +49,9 @@ public class UnitController : MonoBehaviour
 
     private void OnDestroy()
     {
-        ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
-        ActionsContoller.OnRoundStart += Unfreeze;
-        ActionsContoller.OnEndGame += ResetUnitDeviceAndFreeze;
+        ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
+        ActionsContoller.OnRoundStart -= Unfreeze;
+        ActionsContoller.OnEndGame -= ResetUnitDeviceAndFreeze;
     }
 
     void Update()

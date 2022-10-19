@@ -141,7 +141,7 @@ public class StartupMenuController : MonoBehaviour
     void StartGame()
     {
         actions.StartGame();
-        actions.RoundRestart();
+        actions.RestartRound();
         SetVisible(false);
     }
 

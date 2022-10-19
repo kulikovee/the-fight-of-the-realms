@@ -10,6 +10,6 @@ public class ScoreHitController : MonoBehaviour
     void Start()
     {
         text = GetComponent<TextMeshProUGUI>();
-        text.text = $"Finish <u>{ScoreController.killsToWin}</b></u> Players to win the tournament";
+        text.text = $"Reach <u><b>{ScoreController.killsToWin}</b></u> score points to win the tournament";
     }
 }

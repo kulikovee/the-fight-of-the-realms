@@ -67,20 +67,21 @@ public class ScoreController : MonoBehaviour
     {
         if (killer.team == "enemy")
         {
-            // Restart if no winner and players dead
-            RestartRoundIfLevelCompleted();
+            // Restart if boss killed all players
+            RestartIfRoundEnded();
         }
     }
 
-    void UpdateScore(int scoreUpdatePlayerId, int scoreUpdate)
+    void UpdateScore(PlayerController player, int scorePoints)
     {
-        animator.Play("Score Update");
-
         // Check previous winner
         if (GetWinnerPlayer() != null)
         {
             return;
         }
+
+        animator.Play("Score Update");
+        player.AddScorePoint(scorePoints);
 
         // Check current winner
         var winnerPlayer = GetWinnerPlayer();
@@ -88,12 +89,12 @@ public class ScoreController : MonoBehaviour
         if (winnerPlayer != null)
         {
             actions.EndRound();
-            actions.PlayerWon(winnerPlayer.playerId);
+            actions.PlayerWon(winnerPlayer);
             gameOverSound.Play();
         } else
         {
             // Restart if no winner and players dead
-            RestartRoundIfLevelCompleted();
+            RestartIfRoundEnded();
         }
     }
 
@@ -119,41 +120,14 @@ public class ScoreController : MonoBehaviour
         return null;
     }
 
-    void RestartRoundIfLevelCompleted()
+    void RestartIfRoundEnded()
     {
         if (isRestarting)
         {
             return;
         }
 
-        var alivePlayersCount = 0;
-        var aliveControlledPlayersCount = 0;
-        var aliveEnemiesCount = 0;
-        var alivePlayersToRestart = level.IsDeathmatch() ? 1 : 0;
-
-        foreach (var player in players)
-        {
-            if (player.GetUnit().IsAlive())
-            {
-                alivePlayersCount++;
-
-                if (player.GetUnit().GetDevice().IsSelected())
-                {
-                    aliveControlledPlayersCount++;
-                }
-            }
-        }  
-        
-        foreach (var enemy in enemies)
-        {
-            if (enemy.IsAlive())
-            {
-                aliveEnemiesCount++;
-            }
-        }
-
-
-        if (alivePlayersCount <= alivePlayersToRestart || aliveControlledPlayersCount == 0 || (level.IsBoss() && aliveEnemiesCount == 0))
+        if (IsRoundEnded())
         {
             isRestarting = true;
             StartCoroutine(RestartAfterDelay());
@@ -163,7 +137,65 @@ public class ScoreController : MonoBehaviour
     IEnumerator RestartAfterDelay()
     {
         yield return new WaitForSeconds(3f);
+        actions.RestartRound();
         isRestarting = false;
-        actions.RoundRestart();
+    }
+
+    bool IsRoundEnded()
+    {
+        if (level.IsRabbitsCollection())
+        {
+            // Check if Rabbits level completed
+            if (level.rabbitsCollected >= level.rabbitsCollectToWin)
+            {
+                return true;
+            }
+        } else
+        {
+            // Check if all players dead
+            var alivePlayersCount = 0;
+            var aliveControlledPlayersCount = 0;
+            // If boss level, wait for all players dead
+            var alivePlayersToRestart = level.IsBoss() ? 0 : 1;
+
+            foreach (var player in players)
+            {
+                if (player.GetUnit().IsAlive())
+                {
+                    alivePlayersCount++;
+
+                    if (player.GetUnit().GetDevice().IsSelected())
+                    {
+                        aliveControlledPlayersCount++;
+                    }
+                }
+            }
+
+            if (alivePlayersCount <= alivePlayersToRestart || aliveControlledPlayersCount == 0)
+            {
+                return true;
+            }
+        }
+
+        if (level.IsBoss())
+        {
+            // Check if Boss dead
+            var aliveEnemiesCount = 0;
+
+            foreach (var enemy in enemies)
+            {
+                if (enemy.IsAlive())
+                {
+                    aliveEnemiesCount++;
+                }
+            }
+
+            if (aliveEnemiesCount == 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

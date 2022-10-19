@@ -2,8 +2,19 @@ using UnityEngine;
 
 public class InputAIController : MonoBehaviour
 {
-    const float aiAxisUpdateTimeout = 0.25f;
-    const float aiTargetUpdateTimeout = 0.4f;
+    public static readonly int EASY = 8;
+    public static readonly int NORMAL = 4;
+    public static readonly int HARD = 1;
+    public static int difficulty = NORMAL;
+
+    static readonly float aiAxisUpdateTimeoutHard = 0.05f;
+    static readonly float aiTargetUpdateTimeoutHard = 0.1f;
+    static readonly float aiAxisUpdateTimeoutNormal = 0.25f;
+    static readonly float aiTargetUpdateTimeoutNormal = 0.4f;
+    static readonly float aiAxisUpdateTimeoutEasy = 0.35f;
+    static readonly float aiTargetUpdateTimeoutEasy = 0.65f;
+    static float aiAxisUpdateTimeout = aiAxisUpdateTimeoutNormal;
+    static float aiTargetUpdateTimeout = aiTargetUpdateTimeoutNormal;
 
     readonly Axis axis = new();
     float aiTargetUpdatedAt = 0f;
@@ -43,8 +54,9 @@ public class InputAIController : MonoBehaviour
             UpdateTarget();
         }
 
-        aiAxisVelocity.x = Random.Range(-0.4f, 0.4f);
-        aiAxisVelocity.z = Random.Range(-0.4f, 0.4f);
+        var randomFactor = 0.1f;
+        aiAxisVelocity.x = Random.Range(-randomFactor * difficulty, randomFactor * difficulty);
+        aiAxisVelocity.z = Random.Range(-randomFactor * difficulty, randomFactor * difficulty);
 
         var distance = Vector3.Distance(target, transform.position) / 4f;
         axis.SetX((target.x - transform.position.x) * distance + aiAxisVelocity.x);
@@ -60,7 +72,18 @@ public class InputAIController : MonoBehaviour
         target = Vector3.zero;
         isAttack = false;
 
+        var isTargetUpdated = false;
         Vector3 position = transform.position;
+
+        foreach(var respawnPoint in aid.respawnPoints)
+        {
+            var distanceToAidRespawn = Vector3.Distance(transform.position, respawnPoint);
+            var distanceToTarget = Vector3.Distance(transform.position, target);
+            if (target == Vector3.zero || distanceToAidRespawn < distanceToTarget)
+            {
+                target = respawnPoint;
+            }
+        }
         
         // To take First Aid
         if (!aid.isDead && unit.canTakeItems)
@@ -84,8 +107,9 @@ public class InputAIController : MonoBehaviour
                     var distanceToPlayer = Vector3.Distance(position, playerPosition);
                     var distanceToTarget = Vector3.Distance(position, target);
 
-                    if (distanceToPlayer < 50 && (target == Vector3.zero || distanceToPlayer < distanceToTarget))
+                    if (distanceToPlayer < 50 && (!isTargetUpdated || distanceToPlayer < distanceToTarget))
                     {
+                        isTargetUpdated = true;
                         target = playerPosition;
 
                         if (distanceToPlayer < 2f)
@@ -129,6 +153,28 @@ public class InputAIController : MonoBehaviour
 
                 target = new Vector3(targetX, target.y, targetZ);
             }
+        }
+    }
+
+    public static void ToggleDifficulty()
+    {
+        if (difficulty == EASY)
+        {
+            difficulty = NORMAL;
+            aiAxisUpdateTimeout = aiAxisUpdateTimeoutNormal;
+            aiTargetUpdateTimeout = aiTargetUpdateTimeoutNormal;
+        }
+        else if (difficulty == NORMAL)
+        {
+            difficulty = HARD;
+            aiAxisUpdateTimeout = aiAxisUpdateTimeoutHard;
+            aiTargetUpdateTimeout = aiTargetUpdateTimeoutHard;
+        }
+        else
+        {
+            difficulty = EASY;
+            aiAxisUpdateTimeout = aiAxisUpdateTimeoutEasy;
+            aiTargetUpdateTimeout = aiTargetUpdateTimeoutEasy;
         }
     }
 }

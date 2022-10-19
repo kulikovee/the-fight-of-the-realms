@@ -24,11 +24,11 @@ public class PlayerWonController : MonoBehaviour
         ActionsContoller.OnPlayerWon -= Show;
     }
 
-    public void Show(int playerId)
+    public void Show(PlayerController player)
     {
-        var color = playerColors[playerId];
-        var playerNumber = playerId + 1;
-        text.text = $"<color={color}>Player {playerNumber}</color> won the tournament!<br>He finished <u>{ScoreController.killsToWin}</u> Players!";
+        var color = playerColors[player.playerId];
+        var playerNumber = player.playerId + 1;
+        text.text = $"<color={color}>Player {playerNumber}</color> won the tournament!<br>His score is <u>{player.score}</u>!";
         animator.Play("Show");
     }
 

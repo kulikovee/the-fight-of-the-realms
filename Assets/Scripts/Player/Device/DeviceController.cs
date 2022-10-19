@@ -42,8 +42,12 @@ public class DeviceController : MonoBehaviour
 
     public void ResetDeviceId()
     {
+        if (IsGamepad())
+        {
+            inputGamepad.ResetGamepadId();
+        }
+
         deviceId = NO_DEVICE;
-        inputGamepad.ResetGamepadId();
     }
 
     public bool IsEquals(int checkDeviceId)

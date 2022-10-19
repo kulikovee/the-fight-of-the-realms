@@ -7,10 +7,14 @@ public class ActionsContoller : MonoBehaviour
     public delegate void VoidDelegate();
     public delegate void IntDelegate(int value);
     public delegate void TwoIntDelegate(int value1, int value2);
+    public delegate void PlayerDelegate(PlayerController player);
+    public delegate void PlayerIntDelegate(PlayerController player, int value);
     public delegate void TwoUnitDelegate(UnitController dead, UnitController killer);
+    public delegate void UnitItemDelegate(UnitController unit, AidKitController item);
 
     public static event VoidDelegate OnRoundEnd;
     public static event VoidDelegate OnRoundStart;
+    public static event VoidDelegate OnRoundRestart;
     public static event VoidDelegate OnFirstShowStartupMenu;
     public static event VoidDelegate OnJoinedPlayersReset;
     public static event VoidDelegate OnPlayerJoined;
@@ -18,17 +22,27 @@ public class ActionsContoller : MonoBehaviour
     public static event VoidDelegate OnStartGame;
     public static event IntDelegate OnTimerUpdate;
     public static event IntDelegate OnSelectPauseOption;
-    public static event TwoIntDelegate OnUpdateScore;
+    public static event PlayerIntDelegate OnUpdateScore;
     public static event TwoUnitDelegate OnUnitKilled;
-    public static event IntDelegate OnPlayerWon;
+    public static event PlayerDelegate OnPlayerWon;
+    public static event UnitItemDelegate OnItemPickUp;
+
+    static bool isRoundRestarting = false;
 
     public static ActionsContoller GetActions()
     {
         return GameObject.FindObjectOfType<ActionsContoller>();
     }
 
-    public void RoundRestart()
+    public void RestartRound()
     {
+        if (isRoundRestarting)
+        {
+            return;
+        }
+
+        isRoundRestarting = true;
+        OnRoundRestart?.Invoke();
         EndRound();
         StartCoroutine(StartRoundAfterDelay());
     }
@@ -37,6 +51,7 @@ public class ActionsContoller : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         StartRound();
+        isRoundRestarting = false;
     }
 
     public void EndRound()
@@ -74,14 +89,19 @@ public class ActionsContoller : MonoBehaviour
         OnStartGame?.Invoke();
     }
 
+    public void PickUpItem(UnitController unit, AidKitController item)
+    {
+        OnItemPickUp?.Invoke(unit, item);
+    }
+
     public void UpdateTimer(int seconds)
     {
         OnTimerUpdate?.Invoke(seconds);
     }
 
-    public void PlayerWon(int playerId)
+    public void PlayerWon(PlayerController player)
     {
-        OnPlayerWon?.Invoke(playerId);
+        OnPlayerWon?.Invoke(player);
     }
 
     public void SelectPauseOption(int option)
@@ -89,9 +109,9 @@ public class ActionsContoller : MonoBehaviour
         OnSelectPauseOption?.Invoke(option);
     }
 
-    public void UpdateScore(int playerId, int scoreUpdate)
+    public void UpdateScore(PlayerController player, int scoreUpdate)
     {
-        OnUpdateScore?.Invoke(playerId, scoreUpdate);
+        OnUpdateScore?.Invoke(player, scoreUpdate);
     }
     
     private void StartRound()

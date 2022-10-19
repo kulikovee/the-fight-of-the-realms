@@ -43,9 +43,13 @@ public class PlayerController : MonoBehaviour
         if (killer == unit)
         {
             var scorePoints = dead.team == "enemy" ? 3 : 1;
-            actions.UpdateScore(playerId, scorePoints);
-            AddScorePoint(scorePoints);
+            UpdateScore(scorePoints);
         }
+    }
+
+    public void UpdateScore(int scorePoints)
+    {
+        actions.UpdateScore(this, scorePoints);
     }
 
     internal void AddScorePoint(int scoreUpdate)

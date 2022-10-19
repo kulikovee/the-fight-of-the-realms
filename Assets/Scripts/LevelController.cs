@@ -7,19 +7,30 @@ public class LevelController : MonoBehaviour
 {
     static readonly int DEATHMATCH = 0;
     static readonly int FIGHT_BOSS = 1;
-    static List<int> LEVELS = new() { DEATHMATCH, FIGHT_BOSS };
+    static readonly int COLLECT_RABBITS = 2;
+    static readonly List<int> LEVELS = new() { DEATHMATCH, FIGHT_BOSS, COLLECT_RABBITS };
 
     public TextMeshProUGUI nextLevelText;
+    public TextMeshProUGUI scoreLevelText;
     public Animator animator;
+    public int rabbitsCollected = 0;
+    public readonly int rabbitsCollectToWin = 3;
 
+    ActionsContoller actions;
     int level = DEATHMATCH;
-    List<UnitController> enemies = new() { };
-    List<PlayerController> players = new() { };
+    bool isAnimationShow = true;
+    readonly List<UnitController> enemies = new() { };
+    readonly List<PlayerController> players = new() { };
 
     void Start()
     {
         ActionsContoller.OnRoundStart += StartNextLevel;
-        ActionsContoller.OnRoundEnd += ResetLevel;
+        ActionsContoller.OnRoundRestart += ResetLevel;
+        ActionsContoller.OnPlayerWon += DisableAnimation;
+        ActionsContoller.OnStartGame += EnableAnimation;
+        ActionsContoller.OnItemPickUp += OnItemPickUp;
+
+        actions = ActionsContoller.GetActions();
 
         foreach(var unit in GameObject.FindObjectsOfType<UnitController>())
         {
@@ -40,6 +51,20 @@ public class LevelController : MonoBehaviour
     void OnDestroy()
     {
         ActionsContoller.OnRoundStart -= StartNextLevel;
+        ActionsContoller.OnRoundRestart -= ResetLevel;
+        ActionsContoller.OnPlayerWon -= DisableAnimation;
+        ActionsContoller.OnStartGame -= EnableAnimation;
+        ActionsContoller.OnItemPickUp -= OnItemPickUp;
+    }
+
+    private void DisableAnimation(PlayerController _player)
+    {
+        isAnimationShow = false;
+    }
+
+    private void EnableAnimation()
+    {
+        isAnimationShow = true;
     }
 
     public static LevelController GetLevel()
@@ -57,17 +82,68 @@ public class LevelController : MonoBehaviour
         return level == FIGHT_BOSS;
     }
 
+    public bool IsRabbitsCollection()
+    {
+        return level == COLLECT_RABBITS;
+    }
+
     void ResetLevel()
     {
         level = LEVELS[Random.Range(0, LEVELS.Count)];
+        rabbitsCollected = 0;
 
-        nextLevelText.text = IsDeathmatch() ? "DEATH MATCH" : "FIGHT THE BOSS";
-        StartCoroutine(StartAnimation());
+        if (isAnimationShow)
+        {
+            var levelTip = "";
+
+            if (IsDeathmatch())
+            {
+                levelTip = "DEATH MATCH!";
+            }
+
+            if (IsBoss())
+            {
+                levelTip = "FIGHT THE BOSS!";
+            }
+
+            if (IsRabbitsCollection())
+            {
+                levelTip = "COLLECT RABBITS!";
+            }
+
+            nextLevelText.text = levelTip;
+            scoreLevelText.text = nextLevelText.text;
+            StartCoroutine(StartAnimation());
+        }
+    }
+    
+    void OnItemPickUp(UnitController unit, AidKitController item)
+    {
+        if (level == COLLECT_RABBITS)
+        {
+            rabbitsCollected++;
+
+            var player = unit.GetComponent<PlayerController>();
+
+            if (player != null)
+            {
+                var playerName = $"<color={PlayerWonController.playerColors[player.playerId]}>P{player.playerId + 1}</color>";
+                nextLevelText.text = $"{playerName} collected a rabbit! <u>{rabbitsCollectToWin - rabbitsCollected}</u> left!";
+                scoreLevelText.text = nextLevelText.text;
+                Show();
+                player.UpdateScore(1);
+            }
+        }
     }
 
     IEnumerator StartAnimation()
     {
         yield return new WaitForSeconds(1.5f);
+        Show();
+    }
+
+    void Show()
+    {
         animator.Play("Show");
     }
 
@@ -81,13 +157,16 @@ public class LevelController : MonoBehaviour
             }
         } 
 
-        if (level == FIGHT_BOSS)
+        if (level == FIGHT_BOSS || level == COLLECT_RABBITS)
         {
-            foreach(var player in players)
+            foreach (var player in players)
             {
                 player.GetUnit().team = "players";
             }
+        }
 
+        if (level == FIGHT_BOSS)
+        {
             foreach(var enemy in enemies)
             {
                 enemy.SetPosition(new Vector3(0, 10, 0));
