@@ -20,7 +20,7 @@ public class PauseMenuItemController : MonoBehaviour
             Debug.LogError("PauseMenuItemController optionId is not set!");
         }
 
-        ActionsContoller.OnSelectPauseOption += UpdateSelection;
+        ActionsController.OnSelectPauseOption += UpdateSelection;
 
         panel = GetComponent<Image>();
         panelOutline = GetComponent<Outline>();
@@ -32,7 +32,7 @@ public class PauseMenuItemController : MonoBehaviour
 
     void OnDestroy()
     {
-        ActionsContoller.OnSelectPauseOption -= UpdateSelection;
+        ActionsController.OnSelectPauseOption -= UpdateSelection;
     }
 
     void UpdateSelection(int option)

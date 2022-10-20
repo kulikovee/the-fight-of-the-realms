@@ -9,19 +9,19 @@ public class PlayerWonController : MonoBehaviour
     public AudioSource wonSound;
     Animator animator;
     TextMeshProUGUI text;
-    ActionsContoller actions;
+    ActionsController actions;
 
     void Start()
     {
-        ActionsContoller.OnPlayerWon += Show;
+        ActionsController.OnPlayerWon += Show;
         animator = GetComponent<Animator>();
         text = GetComponent<TextMeshProUGUI>();
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnPlayerWon -= Show;
+        ActionsController.OnPlayerWon -= Show;
     }
 
     public void Show(PlayerController player)

@@ -10,27 +10,25 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI playerScoreText;
 
     UnitController unit;
-    ActionsContoller actions;
+    ActionsController actions;
 
     void Start()
     {
-        ActionsContoller.OnJoinedPlayersReset += ResetJoinedTextToDefault;
-        ActionsContoller.OnPlayerJoined += UpdateJoinedText;
-        ActionsContoller.OnEndGame += ResetPlayer;
-        ActionsContoller.OnUnitKilled += UpdateScore;
-        ActionsContoller.OnStartGame += ResetScoreToDefault;
+        ActionsController.OnJoinedPlayersReset += ResetJoinedTextToDefault;
+        ActionsController.OnPlayerJoined += UpdateJoinedText;
+        ActionsController.OnEndGame += ResetPlayer;
+        ActionsController.OnStartGame += ResetScoreToDefault;
 
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
         unit = GetComponent<UnitController>();
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnJoinedPlayersReset -= ResetJoinedTextToDefault;
-        ActionsContoller.OnPlayerJoined -= UpdateJoinedText;
-        ActionsContoller.OnEndGame -= ResetPlayer;
-        ActionsContoller.OnUnitKilled -= UpdateScore;
-        ActionsContoller.OnStartGame -= ResetScoreToDefault;
+        ActionsController.OnJoinedPlayersReset -= ResetJoinedTextToDefault;
+        ActionsController.OnPlayerJoined -= UpdateJoinedText;
+        ActionsController.OnEndGame -= ResetPlayer;
+        ActionsController.OnStartGame -= ResetScoreToDefault;
     }
 
     public UnitController GetUnit()
@@ -38,24 +36,11 @@ public class PlayerController : MonoBehaviour
         return unit;
     }
 
-    public void UpdateScore(UnitController dead, UnitController killer)
+    public void AddScore(int scorePoints)
     {
-        if (killer == unit)
-        {
-            var scorePoints = dead.team == "enemy" ? 3 : 1;
-            UpdateScore(scorePoints);
-        }
-    }
-
-    public void UpdateScore(int scorePoints)
-    {
-        actions.UpdateScore(this, scorePoints);
-    }
-
-    internal void AddScorePoint(int scoreUpdate)
-    {
-        score += scoreUpdate;
+        score += scorePoints;
         UpdatedScoreText();
+        actions.UpdateScore();
     }
 
     internal void ResetScoreToDefault()

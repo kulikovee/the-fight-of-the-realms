@@ -2,21 +2,21 @@ using UnityEngine;
 
 public class LogoController : MonoBehaviour
 {
-    private ActionsContoller actions;
+    private ActionsController actions;
     private Animator animator;
 
     void Start()
     {
-        ActionsContoller.OnStartGame += Hide;
+        ActionsController.OnStartGame += Hide;
 
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
         animator = GetComponent<Animator>();
         Time.timeScale = 0;
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnStartGame -= Hide;
+        ActionsController.OnStartGame -= Hide;
     }
 
     public void Hide()

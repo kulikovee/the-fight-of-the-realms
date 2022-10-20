@@ -9,14 +9,14 @@ public class PlayerKilledController : MonoBehaviour
 
     void Start()
     {
-        ActionsContoller.OnUnitKilled += ShowKillMessage;
+        ActionsController.OnUnitKilled += ShowKillMessage;
         animator = GetComponent<Animator>();
         text = GetComponent<TextMeshProUGUI>();
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnUnitKilled -= ShowKillMessage;
+        ActionsController.OnUnitKilled -= ShowKillMessage;
     }
 
     private void ShowKillMessage(UnitController deadUnit, UnitController killerUnit)

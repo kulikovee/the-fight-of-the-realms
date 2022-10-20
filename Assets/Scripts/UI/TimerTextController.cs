@@ -7,13 +7,13 @@ public class TimerTextController : MonoBehaviour
 
     void Start()
     {
-        ActionsContoller.OnTimerUpdate += UpdateTimer;
+        ActionsController.OnTimerUpdate += UpdateTimer;
         text = GetComponent<TextMeshProUGUI>();
     }
 
     void OnDestroy()
     {
-        ActionsContoller.OnTimerUpdate -= UpdateTimer;
+        ActionsController.OnTimerUpdate -= UpdateTimer;
     }
 
     void UpdateTimer(int seconds)

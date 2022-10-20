@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UnitController : MonoBehaviour
 {
@@ -8,50 +9,49 @@ public class UnitController : MonoBehaviour
     public AnimationClip hitAnimation;
     public List<AudioSource> attackWaveSounds;
     public List<AudioSource> attackHitSounds;
+    public Image hpBarImage;
 
     public float maxHp = 150f;
     public float attackPower = 25f;
     public float speed = 1f;
     public string team = "";
-    public bool canTakeItems = true;
+    public bool canPickUpItems = true;
 
     public bool isStunOnHit = true;
 
-    private DeviceController device;
-    private KinematicCharacterAdapter characterAdapter;
+    DeviceController device;
+    KinematicCharacterAdapter characterAdapter;
 
-    private ActionsContoller actions;
-    private HpBarController hpBar;
-    private Vector3 defaultPosition;
-    private Quaternion defaultRotation;
+    ActionsController actions;
+    Vector3 defaultPosition;
+    Quaternion defaultRotation;
 
-    private float hp = 0;
-    private float attackRadius = 0.8f;
-    private float attackDistance = 0.5f;
-    private bool isAttack = false;
-    private bool isHit = false;
+    float hp = 0;
+    float attackRadius = 0.8f;
+    float attackDistance = 0.5f;
+    bool isAttack = false;
+    bool isHit = false;
 
     void Start()
     {
-        ActionsContoller.OnRoundEnd += FreezeAndResetPosition;
-        ActionsContoller.OnRoundStart += Unfreeze;
-        ActionsContoller.OnEndGame += ResetUnitDeviceAndFreeze;
+        ActionsController.OnRoundEnd += FreezeAndResetPosition;
+        ActionsController.OnRoundStart += Unfreeze;
+        ActionsController.OnEndGame += ResetUnitDeviceAndFreeze;
 
         characterAdapter = GetComponent<KinematicCharacterAdapter>();
         device = GetComponent<DeviceController>();
-        hpBar = GetComponent<HpBarController>();
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
 
         hp = maxHp;
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
     }
 
-    private void OnDestroy()
+    void OnDestroy()
     {
-        ActionsContoller.OnRoundEnd -= FreezeAndResetPosition;
-        ActionsContoller.OnRoundStart -= Unfreeze;
-        ActionsContoller.OnEndGame -= ResetUnitDeviceAndFreeze;
+        ActionsController.OnRoundEnd -= FreezeAndResetPosition;
+        ActionsController.OnRoundStart -= Unfreeze;
+        ActionsController.OnEndGame -= ResetUnitDeviceAndFreeze;
     }
 
     void Update()
@@ -108,8 +108,23 @@ public class UnitController : MonoBehaviour
             sound.Play();
         }
     }
+    
+    public bool IsAlive()
+    {
+        return hp > 0;
+    }
 
-    public void GetHit(float amountHp)
+    public bool CanPickUpItem(ItemController item)
+    {
+        return canPickUpItems;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        characterAdapter.SetPosition(position);
+    }
+
+    void GetHit(float amountHp)
     {
         AddHp(-amountHp);
 
@@ -119,77 +134,21 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public bool IsAlive()
-    {
-        return hp > 0;
-    }
-
-    public void Die()
-    {
-    }
-
-    public void SetPosition(Vector3 position)
-    {
-        characterAdapter.SetPosition(position);
-    }
-
-    public void RestoreHp()
-    {
-        SetHp(maxHp);
-    }
-
     public void AddHp(float addAmount)
     {
         var missingHp = maxHp - hp;
         SetHp(hp + Mathf.Min(addAmount, missingHp));
     }
-
-    public void SetHp(float amount)
-    {
-        hp = amount;
-        hpBar.UpdateValue(hp / maxHp);
-    }
-
-    public void ResetUnit()
-    {
-        RestoreHp();
-        characterAdapter.SetPosition(defaultPosition);
-        characterAdapter.SetRotation(defaultRotation);
-        device.GetUpdatedAxis().ResetAxis();
-    }
-
-    public void SetFrozen(bool frozen)
-    {
-        device.SetFrozen(frozen);
-    }
-
     public DeviceController GetDevice()
     {
         return device;
-    }
-    public void FreezeAndResetPosition()
-    {
-        SetFrozen(true);
-        ResetUnit();
-    }
-
-    public void Unfreeze()
-    {
-        SetFrozen(false);
-    }
-
-    public void ResetUnitDeviceAndFreeze()
-    {
-        GetDevice().ResetDeviceId();
-        SetFrozen(true);
-        ResetUnit();
     }
 
     public bool IsSameTeam(UnitController unit)
     {
         return team != "" && unit.team != "" && unit.team == team;
     }
-    
+
     public void SetIsAttack(bool _isAttack)
     {
         isAttack = _isAttack;
@@ -198,5 +157,51 @@ public class UnitController : MonoBehaviour
     public void SetIsHit(bool _isHit)
     {
         isHit = _isHit;
+    }
+
+    void Die()
+    {
+    }
+
+    void RestoreHp()
+    {
+        SetHp(maxHp);
+    }
+
+    void SetHp(float amount)
+    {
+        hp = amount;
+        hpBarImage.fillAmount = hp / maxHp;
+    }
+
+    void ResetUnit()
+    {
+        RestoreHp();
+        characterAdapter.SetPosition(defaultPosition);
+        characterAdapter.SetRotation(defaultRotation);
+        device.GetUpdatedAxis().ResetAxis();
+    }
+
+    void SetFrozen(bool frozen)
+    {
+        device.SetFrozen(frozen);
+    }
+
+    void FreezeAndResetPosition()
+    {
+        SetFrozen(true);
+        ResetUnit();
+    }
+
+    void Unfreeze()
+    {
+        SetFrozen(false);
+    }
+
+    void ResetUnitDeviceAndFreeze()
+    {
+        GetDevice().ResetDeviceId();
+        SetFrozen(true);
+        ResetUnit();
     }
 }

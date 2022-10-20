@@ -21,7 +21,7 @@ public class PauseMenuController : MonoBehaviour
     private bool isDisabled = true;
 
     // links
-    private ActionsContoller actions;
+    private ActionsController actions;
     private Animator animator;
 
     // togglers
@@ -33,18 +33,18 @@ public class PauseMenuController : MonoBehaviour
 
     void Start()
     {
-        ActionsContoller.OnEndGame += Disable;
-        ActionsContoller.OnStartGame += Enable;
+        ActionsController.OnEndGame += Disable;
+        ActionsController.OnStartGame += Enable;
 
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
         animator = GetComponent<Animator>();
         optionsCount = GameObject.FindObjectsOfType<PauseMenuItemController>().Length;
     }
     
     void OnDestroy()
     {
-        ActionsContoller.OnEndGame -= Disable;
-        ActionsContoller.OnStartGame -= Enable;
+        ActionsController.OnEndGame -= Disable;
+        ActionsController.OnStartGame -= Enable;
     }
 
     void Update()

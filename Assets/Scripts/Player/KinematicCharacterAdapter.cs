@@ -30,11 +30,12 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
             return unit.IsAlive() && colliderUnit.IsAlive();
         } else
         {
-            var colliderItem = collider.GetComponent<AidKitController>();
+            var colliderItem = collider.GetComponent<ItemController>();
 
             if (colliderItem)
             {
-                return unit.canTakeItems;
+                colliderItem.OnCollisionWithUnit(unit);
+                return false;
             }
         }
 

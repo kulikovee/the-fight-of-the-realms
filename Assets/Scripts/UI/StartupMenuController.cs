@@ -19,7 +19,7 @@ public class StartupMenuController : MonoBehaviour
     Animator animator;
 
     // links
-    ActionsContoller actions;
+    ActionsController actions;
 
     // timer
     int secondsToStartGame = 16;
@@ -27,10 +27,10 @@ public class StartupMenuController : MonoBehaviour
 
     void Start()
     {
-        ActionsContoller.OnFirstShowStartupMenu += FirstShowStartupMenu;
-        ActionsContoller.OnEndGame += ShowStartupMenu;
+        ActionsController.OnFirstShowStartupMenu += FirstShowStartupMenu;
+        ActionsController.OnEndGame += ShowStartupMenu;
 
-        actions = ActionsContoller.GetActions();
+        actions = ActionsController.GetActions();
         animator = GetComponent<Animator>();
 
         Cursor.visible = false;
@@ -38,8 +38,8 @@ public class StartupMenuController : MonoBehaviour
 
     void OnDestroy()
     {
-        ActionsContoller.OnFirstShowStartupMenu -= FirstShowStartupMenu;
-        ActionsContoller.OnEndGame -= ShowStartupMenu;
+        ActionsController.OnFirstShowStartupMenu -= FirstShowStartupMenu;
+        ActionsController.OnEndGame -= ShowStartupMenu;
     }
 
     void Update()

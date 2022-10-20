@@ -24,13 +24,13 @@ public class InputAIController : MonoBehaviour
     bool isAttack = false;
     UnitController unit;
     UnitController[] units;
-    AidKitController aid;
+    ItemAidController aidKit;
 
     private void Start()
     {
         unit = GetComponent<UnitController>();
         units = GameObject.FindObjectsOfType<UnitController>();
-        aid = GameObject.FindObjectOfType<AidKitController>();
+        aidKit = GameObject.FindObjectOfType<ItemAidController>();
     }
 
     public Axis GetUpdatedAxis()
@@ -75,7 +75,7 @@ public class InputAIController : MonoBehaviour
         var isTargetUpdated = false;
         Vector3 position = transform.position;
 
-        foreach(var respawnPoint in aid.respawnPoints)
+        foreach(var respawnPoint in aidKit.respawnPoints)
         {
             var distanceToAidRespawn = Vector3.Distance(transform.position, respawnPoint);
             var distanceToTarget = Vector3.Distance(transform.position, target);
@@ -86,10 +86,10 @@ public class InputAIController : MonoBehaviour
         }
         
         // To take First Aid
-        if (!aid.isDead && unit.canTakeItems)
+        if (!aidKit.GetComponent<ItemController>().isDead && unit.canPickUpItems)
         {
             isAttack = true;
-            target = aid.transform.position;
+            target = aidKit.transform.position;
         }
         else
         {
