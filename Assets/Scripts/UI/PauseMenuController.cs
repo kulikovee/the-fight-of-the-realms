@@ -156,6 +156,7 @@ public class PauseMenuController : MonoBehaviour
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                     break;
                 case 3:
+                    Screen.fullScreen = false;
                     Application.Quit();
                     break;
                 default:

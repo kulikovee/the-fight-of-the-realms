@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,18 +26,15 @@ public class StartupMenuController : MonoBehaviour
 
     void Start()
     {
-        ActionsController.OnFirstShowStartupMenu += FirstShowStartupMenu;
         ActionsController.OnEndGame += ShowStartupMenu;
 
         actions = ActionsController.GetActions();
         animator = GetComponent<Animator>();
-
-        Cursor.visible = false;
+        SetVisible(true);
     }
 
     void OnDestroy()
     {
-        ActionsController.OnFirstShowStartupMenu -= FirstShowStartupMenu;
         ActionsController.OnEndGame -= ShowStartupMenu;
     }
 
@@ -62,7 +58,7 @@ public class StartupMenuController : MonoBehaviour
         actions.ResetJoinedPlayers();
     }
 
-    public void SetVisible(bool visible, bool skipSounds = false)
+    public void SetVisible(bool visible)
     {
         if (isVisible != visible)
         {
@@ -73,12 +69,8 @@ public class StartupMenuController : MonoBehaviour
                 Time.timeScale = 0;
                 startTimerAt = Time.unscaledTime;
                 animator.Play("Startup Menu Show");
-
-                if (!skipSounds)
-                {
-                    mainTheme.Stop();
-                    menuTheme.Play();
-                }
+                mainTheme.Stop();
+                menuTheme.Play();
             }
             else
             {
@@ -88,11 +80,6 @@ public class StartupMenuController : MonoBehaviour
                 animator.Play("Startup Menu Hide");
             }
         }
-    }
-    
-    void FirstShowStartupMenu()
-    {
-        SetVisible(true, true);
     }
 
     void ShowStartupMenu()
@@ -136,7 +123,6 @@ public class StartupMenuController : MonoBehaviour
             TimerFinished();
         }
     }
-
 
     void StartGame()
     {

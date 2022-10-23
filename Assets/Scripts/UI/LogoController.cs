@@ -1,17 +1,19 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LogoController : MonoBehaviour
 {
-    private ActionsController actions;
+    public string arenaSceneName = "arena";
     private Animator animator;
 
     void Start()
     {
         ActionsController.OnStartGame += Hide;
 
-        actions = ActionsController.GetActions();
         animator = GetComponent<Animator>();
         Time.timeScale = 0;
+        Cursor.visible = false;
+        Screen.fullScreen = true;
     }
 
     void OnDestroy()
@@ -30,7 +32,7 @@ public class LogoController : MonoBehaviour
     /** Called from animation: Logo Idle **/
     public void ShowStartupMenu()
     {
-        actions.FirstShowStartupMenu();
+        SceneManager.LoadScene(arenaSceneName);
     }
 
     /** Called from animation: Logo Hide **/

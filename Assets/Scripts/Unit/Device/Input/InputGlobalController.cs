@@ -49,7 +49,13 @@ public class InputGlobalController : MonoBehaviour
             axisY = 1;
         }
 
-        if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter) || Input.GetKey(KeyCode.Space))
+        if (
+            Input.GetKey(KeyCode.Return) 
+            || Input.GetKey(KeyCode.KeypadEnter) 
+            || Input.GetKey(KeyCode.Space) 
+            || Input.GetMouseButton(0)
+            || Input.touches.Length > 0
+        )
         {
             isAction = true;
         }

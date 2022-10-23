@@ -16,7 +16,6 @@ public class ActionsController : MonoBehaviour
     public static event VoidDelegate OnRoundEnd;
     public static event VoidDelegate OnRoundStart;
     public static event VoidDelegate OnRoundRestart;
-    public static event VoidDelegate OnFirstShowStartupMenu;
     public static event VoidDelegate OnJoinedPlayersReset;
     public static event VoidDelegate OnPlayerJoined;
     public static event VoidDelegate OnEndGame;
@@ -63,11 +62,6 @@ public class ActionsController : MonoBehaviour
     public void UnitKilled(UnitController dead, UnitController killer)
     {
         OnUnitKilled?.Invoke(dead, killer);
-    }
-
-    public void FirstShowStartupMenu()
-    {
-        OnFirstShowStartupMenu?.Invoke();
     }
 
     public void ResetJoinedPlayers()
