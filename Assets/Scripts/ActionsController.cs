@@ -11,6 +11,7 @@ public class ActionsController : MonoBehaviour
     public delegate void PlayerIntDelegate(PlayerController player, int value);
     public delegate void TwoUnitDelegate(UnitController dead, UnitController killer);
     public delegate void UnitItemDelegate(UnitController unit, ItemController item);
+    public delegate void UnitDelegate(UnitController unit);
 
     public static event VoidDelegate OnRoundEnd;
     public static event VoidDelegate OnRoundStart;

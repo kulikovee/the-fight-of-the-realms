@@ -96,7 +96,7 @@ public class PauseMenuController : MonoBehaviour
                 SelectOption((int) axis.GetY());
             }
 
-            if (axis.GetAction() != 0)
+            if (axis.GetButtonA() != 0)
             {
                 Submit();
             }
