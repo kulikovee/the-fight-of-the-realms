@@ -16,7 +16,6 @@ public class LogoController : MonoBehaviour
         // Duplicated in LevelController
         Cursor.visible = false;
         Screen.fullScreen = true;
-        // Input.simulateMouseWithTouches = true;
     }
 
     void OnDestroy()
