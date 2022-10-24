@@ -63,16 +63,20 @@ public class InputWASDController : MonoBehaviour
 
     public static bool IsPressed()
     {
-        var isWasd = false;
-
-        KEYBOARD_WASD_KEYS.ForEach((keyCode) => {
+        foreach(var keyCode in KEYBOARD_WASD_KEYS)
+        {
             if (Input.GetKeyDown(keyCode))
             {
-                isWasd = true;
+                return true;
             }
-        });
+        }
 
-        return isWasd;
+        if (Input.touches.Length > 0 || Input.GetMouseButton(0))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public static bool IsSkip()

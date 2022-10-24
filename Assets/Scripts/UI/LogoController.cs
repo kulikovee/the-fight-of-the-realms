@@ -12,8 +12,11 @@ public class LogoController : MonoBehaviour
 
         animator = GetComponent<Animator>();
         Time.timeScale = 0;
+
+        // Duplicated in LevelController
         Cursor.visible = false;
         Screen.fullScreen = true;
+        // Input.simulateMouseWithTouches = true;
     }
 
     void OnDestroy()

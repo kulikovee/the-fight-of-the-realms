@@ -75,7 +75,7 @@ public class DeviceController : MonoBehaviour
         if (IsWASD()) return inputWASD.GetAxis();
         if (IsNumpad()) return inputNumpad.GetAxis();
 
-        return inputAI.GetUpdatedAxis();
+        return inputAI.GetAxis();
     }
 
     public bool IsPrevious(int checkDeviceId)

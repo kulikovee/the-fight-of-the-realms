@@ -43,6 +43,11 @@ public class LevelController : MonoBehaviour
         actions = ActionsController.GetActions();
         FillPlayersAndEnemies();
         UpdateScoreHint2Text();
+
+        // Duplicated in LogoController
+        Cursor.visible = false;
+        Screen.fullScreen = true;
+        // Input.simulateMouseWithTouches = true;
     }
 
     void OnDestroy()

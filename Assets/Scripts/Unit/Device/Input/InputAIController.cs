@@ -33,7 +33,7 @@ public class InputAIController : MonoBehaviour
         aidKit = GameObject.FindObjectOfType<ItemAidController>();
     }
 
-    public Axis GetUpdatedAxis()
+    public Axis GetAxis()
     {
         return axis;
     }
