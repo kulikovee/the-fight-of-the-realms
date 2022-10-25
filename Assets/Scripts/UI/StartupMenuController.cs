@@ -14,7 +14,6 @@ public class StartupMenuController : MonoBehaviour
     public AudioSource menuTheme;
 
     // animation
-    public bool isVisible = false;
     Animator animator;
 
     // links
@@ -40,7 +39,7 @@ public class StartupMenuController : MonoBehaviour
 
     void Update()
     {
-        if (isVisible)
+        if (animator.GetBool("visible"))
         {
             this.UpdateTimerText();
             this.CheckUserSelection();
@@ -60,15 +59,14 @@ public class StartupMenuController : MonoBehaviour
 
     public void SetVisible(bool visible)
     {
-        if (isVisible != visible)
+        if (animator.GetBool("visible") != visible)
         {
-            isVisible = visible;
+            animator.SetBool("visible", visible);
 
             if (visible)
             {
                 Time.timeScale = 0;
                 startTimerAt = Time.unscaledTime;
-                animator.Play("Startup Menu Show");
                 mainTheme.Stop();
                 menuTheme.Play();
             }
@@ -77,7 +75,6 @@ public class StartupMenuController : MonoBehaviour
                 Time.timeScale = 1;
                 menuTheme.Stop();
                 mainTheme.Play();
-                animator.Play("Startup Menu Hide");
             }
         }
     }
@@ -186,62 +183,92 @@ public class StartupMenuController : MonoBehaviour
         if (InputWASDController.IsPressed())
         {
             deviceId = DeviceController.KEYBOARD_WASD;
-        } else if (InputNumpadController.IsPressed())
+            Shake(deviceId);
+        }
+        
+        if (InputNumpadController.IsPressed())
         {
             deviceId = DeviceController.KEYBOARD_NUMPAD;
-        } else
-        {
-            var pressedGamepadIds = InputGamepadController.GetPressedIds();
-
-            if (pressedGamepadIds.Count > 0)
-            {
-                pressedGamepadIds.ForEach((gamePadId) => {
-                    if (!IsDeviceSelected(gamePadId))
-                    {
-                        deviceId = gamePadId;
-                    }
-                });
-            }
+            Shake(deviceId);
         }
 
-        if (deviceId != DeviceController.NO_DEVICE && !IsDeviceSelected(deviceId) && !IsAllDevicesSelected())
+        var pressedGamepadIds = InputGamepadController.GetPressedIds();
+
+        if (pressedGamepadIds.Count > 0)
         {
-            joinSound.Play();
-            AddSecondsToTimer();
-            SetNextPlayerDevice(deviceId);
+            pressedGamepadIds.ForEach((gamePadId) => {
+                if (IsDeviceSelected(gamePadId))
+                {
+                    Shake(gamePadId);
+                } else
+                {
+                    deviceId = gamePadId;
+                }
+            });
+        }
+
+        if (deviceId != DeviceController.NO_DEVICE)
+        {
+            if (!IsDeviceSelected(deviceId) && !IsAllDevicesSelected())
+            {
+                joinSound.Play();
+                AddSecondsToTimer();
+                SetNextPlayerDevice(deviceId);
+            }
+        }
+    }
+
+    void Shake(int deviceId)
+    {
+        foreach (var player in GetPlayers())
+        {
+            if (player.GetUnit().GetDevice().IsEquals(deviceId))
+            {
+                player.ShakeJoin();
+            }
         }
     }
 
     void SetNextPlayerDevice(int deviceId)
     {
-        PlayerController player = null;
         var players = GetPlayers();
+        PlayerController previousDeviceOwner = GetPreviousDevicePlayer(deviceId);
 
-        foreach (var _player in players)
+        if (previousDeviceOwner != null)
         {
-            if (_player.GetUnit().GetDevice().IsPrevious(deviceId) && !_player.GetUnit().GetDevice().IsSelected())
-            {
-                player = _player;
-                break;
-            }
-        }
-
-        if (player != null)
-        {
-            player.GetUnit().GetDevice().SetId(deviceId);
-            actions.PlayerJoined();
+            JoinPlayer(previousDeviceOwner, deviceId);
         } else
         {
-            foreach (var _player in players)
+            foreach (var player in players)
             {
-                if (!_player.GetUnit().GetDevice().IsSelected())
+                if (!player.GetUnit().GetDevice().IsSelected())
                 {
-                    _player.GetUnit().GetDevice().SetId(deviceId);
-                    actions.PlayerJoined();
+                    JoinPlayer(player, deviceId);
                     break;
                 }
             }
         }
+    }
+
+    void JoinPlayer(PlayerController player, int deviceId)
+    {
+        player.GetUnit().GetDevice().SetId(deviceId);
+        player.ResetShakeTimeout();
+        player.Join();
+        actions.PlayerJoined();
+    }
+
+    PlayerController GetPreviousDevicePlayer(int deviceId)
+    {
+        foreach (var _player in players)
+        {
+            if (_player.GetUnit().GetDevice().IsPrevious(deviceId) && !_player.GetUnit().GetDevice().IsSelected())
+            {
+                return _player;
+            }
+        }
+
+        return null;
     }
 
     void AddSecondsToTimer(float seconds = 5f)
