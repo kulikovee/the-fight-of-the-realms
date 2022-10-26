@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerWonController : MonoBehaviour
 {
-    public static List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#f3f", "#fff" };
+    public static List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#fff", "#fff" };
 
     public AudioSource wonSound;
     Animator animator;

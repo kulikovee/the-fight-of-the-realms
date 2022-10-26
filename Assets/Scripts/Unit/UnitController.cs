@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class UnitController : MonoBehaviour
 {
     public Image hpBarImage;
+    public Image hpBarImageUI;
 
     public float maxHp = 150f;
     public float attackPower = 25f;
@@ -162,6 +163,11 @@ public class UnitController : MonoBehaviour
     {
         hp = amount;
         hpBarImage.fillAmount = hp / maxHp;
+
+        if (hpBarImageUI != null)
+        {
+            hpBarImageUI.rectTransform.anchorMax = new Vector2(hp / maxHp, 1);
+        }
     }
 
     void ResetHpPositionRotation()

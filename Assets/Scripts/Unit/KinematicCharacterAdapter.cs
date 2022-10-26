@@ -28,7 +28,8 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
         if (colliderUnit != null)
         {
             return unit.IsAlive() && colliderUnit.IsAlive();
-        } else
+        }
+        else
         {
             var colliderItem = collider.GetComponent<ItemController>();
 
@@ -37,6 +38,11 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
                 colliderItem.OnCollisionWithUnit(unit);
                 return false;
             }
+        }
+
+        if (collider.GetComponent<Rigidbody>() != null)
+        {
+            return unit.IsAlive();
         }
 
         return true;

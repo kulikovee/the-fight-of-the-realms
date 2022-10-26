@@ -7,6 +7,7 @@ public class Bomb : MonoBehaviour
 
     float startAt = 0f;
     bool isExploded = false;
+    AudioSource explodeSound;
     UnitController ownerUnit;
     UnitController[] units;
     readonly float explodeTimeout = 1f;
@@ -16,6 +17,7 @@ public class Bomb : MonoBehaviour
     {
         ActionsController.OnRoundEnd += Destroy;
         units = GameObject.FindObjectsOfType<UnitController>();
+        explodeSound = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -25,6 +27,7 @@ public class Bomb : MonoBehaviour
             if (!isExploded && Time.time - startAt > explodeTimeout)
             {
                 isExploded = true;
+                explodeSound.Play();
                 particles.SetActive(true);
                 bomb.SetActive(false);
                 DoDamage();
