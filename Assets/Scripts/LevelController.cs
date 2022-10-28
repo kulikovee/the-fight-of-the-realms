@@ -46,7 +46,6 @@ public class LevelController : MonoBehaviour
 
         // Duplicated in LogoController
         Cursor.visible = false;
-        Screen.fullScreen = true;
     }
 
     void OnDestroy()
