@@ -76,12 +76,20 @@ public class AnimatedUnitController : MonoBehaviour
 
     public void PlayAttackWaveSound()
     {
-        PlaySound(attackWaveSounds[Random.Range(0, attackWaveSounds.Count)]);
+        var randomSound = Random.Range(0, attackWaveSounds.Count);
+        if (attackWaveSounds.Count > 0 && attackWaveSounds[randomSound] != null)
+        {
+            PlaySound(attackWaveSounds[randomSound]);
+        }
     }
 
     public void PlayAttackHitSound()
     {
-        PlaySound(attackHitSounds[Random.Range(0, attackHitSounds.Count)]);
+        var randomSound = Random.Range(0, attackHitSounds.Count);
+        if (attackHitSounds.Count > 0 && attackHitSounds[randomSound] != null)
+        {
+            PlaySound(attackHitSounds[Random.Range(0, attackHitSounds.Count)]);
+        }
     }
 
     public void Hit()

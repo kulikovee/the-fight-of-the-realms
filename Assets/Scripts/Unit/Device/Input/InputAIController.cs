@@ -2,19 +2,8 @@ using UnityEngine;
 
 public class InputAIController : MonoBehaviour
 {
-    public static readonly int EASY = 8;
-    public static readonly int NORMAL = 4;
-    public static readonly int HARD = 1;
-    public static int difficulty = NORMAL;
-
-    static readonly float aiAxisUpdateTimeoutHard = 0.05f;
-    static readonly float aiTargetUpdateTimeoutHard = 0.1f;
-    static readonly float aiAxisUpdateTimeoutNormal = 0.25f;
-    static readonly float aiTargetUpdateTimeoutNormal = 0.4f;
-    static readonly float aiAxisUpdateTimeoutEasy = 0.35f;
-    static readonly float aiTargetUpdateTimeoutEasy = 0.65f;
-    static float aiAxisUpdateTimeout = aiAxisUpdateTimeoutNormal;
-    static float aiTargetUpdateTimeout = aiTargetUpdateTimeoutNormal;
+    static float aiAxisUpdateTimeout = 0.25f;
+    static float aiTargetUpdateTimeout = 0.4f;
 
     readonly Axis axis = new();
     float aiTargetUpdatedAt = 0f;
@@ -54,23 +43,22 @@ public class InputAIController : MonoBehaviour
             UpdateTarget();
         }
 
-        var randomFactor = 0.1f;
-        aiAxisVelocity.x = Random.Range(-randomFactor * difficulty, randomFactor * difficulty);
-        aiAxisVelocity.z = Random.Range(-randomFactor * difficulty, randomFactor * difficulty);
+        var randomFactor = 0.4f;
+        aiAxisVelocity.x = Random.Range(-randomFactor, randomFactor);
+        aiAxisVelocity.z = Random.Range(-randomFactor, randomFactor);
 
         var distance = Vector3.Distance(target, transform.position) / 4f;
         axis.SetX((target.x - transform.position.x) * distance + aiAxisVelocity.x);
         axis.SetY((target.z - transform.position.z) * distance + aiAxisVelocity.z);
         axis.SetButtonA(distance > 2f && Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
         axis.SetButtonX(isAttack ? 1 : 0);
-
-        return;
     }
 
     void UpdateTarget()
     {
         target = Vector3.zero;
         isAttack = false;
+        units = GameObject.FindObjectsOfType<UnitController>();
 
         var isTargetUpdated = false;
         Vector3 position = transform.position;
@@ -96,26 +84,23 @@ public class InputAIController : MonoBehaviour
             // To attack Players
             foreach (var targetUnit in units)
             {
-                if (targetUnit.IsSameTeam(unit))
+                if (targetUnit.IsSameTeam(unit) || !targetUnit.IsAlive() || targetUnit == unit)
                 {
                     continue;
                 }
 
-                if (targetUnit.IsAlive() && targetUnit != unit)
+                var playerPosition = targetUnit.transform.position;
+                var distanceToPlayer = Vector3.Distance(position, playerPosition);
+                var distanceToTarget = Vector3.Distance(position, target);
+
+                if (distanceToPlayer < 50 && (!isTargetUpdated || distanceToPlayer < distanceToTarget))
                 {
-                    var playerPosition = targetUnit.transform.position;
-                    var distanceToPlayer = Vector3.Distance(position, playerPosition);
-                    var distanceToTarget = Vector3.Distance(position, target);
+                    isTargetUpdated = true;
+                    target = playerPosition;
 
-                    if (distanceToPlayer < 50 && (!isTargetUpdated || distanceToPlayer < distanceToTarget))
+                    if (distanceToPlayer < 2f)
                     {
-                        isTargetUpdated = true;
-                        target = playerPosition;
-
-                        if (distanceToPlayer < 2f)
-                        {
-                            isAttack = true;
-                        }
+                        isAttack = true;
                     }
                 }
             }
@@ -153,28 +138,6 @@ public class InputAIController : MonoBehaviour
 
                 target = new Vector3(targetX, target.y, targetZ);
             }
-        }
-    }
-
-    public static void ToggleDifficulty()
-    {
-        if (difficulty == EASY)
-        {
-            difficulty = NORMAL;
-            aiAxisUpdateTimeout = aiAxisUpdateTimeoutNormal;
-            aiTargetUpdateTimeout = aiTargetUpdateTimeoutNormal;
-        }
-        else if (difficulty == NORMAL)
-        {
-            difficulty = HARD;
-            aiAxisUpdateTimeout = aiAxisUpdateTimeoutHard;
-            aiTargetUpdateTimeout = aiTargetUpdateTimeoutHard;
-        }
-        else
-        {
-            difficulty = EASY;
-            aiAxisUpdateTimeout = aiAxisUpdateTimeoutEasy;
-            aiTargetUpdateTimeout = aiTargetUpdateTimeoutEasy;
         }
     }
 }

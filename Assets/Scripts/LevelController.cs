@@ -8,7 +8,8 @@ public class LevelController : MonoBehaviour
     static readonly int DEATHMATCH = 0;
     static readonly int FIGHT_BOSS = 1;
     static readonly int COLLECT_RABBITS = 2;
-    static readonly List<int> LEVELS = new() { DEATHMATCH, FIGHT_BOSS, COLLECT_RABBITS };
+    static readonly int SURVIVE = 3;
+    static readonly List<int> LEVELS = new() { DEATHMATCH, FIGHT_BOSS, COLLECT_RABBITS, SURVIVE };
 
     public static int scoreToWin = 15;
 
@@ -18,6 +19,7 @@ public class LevelController : MonoBehaviour
     public TextMeshProUGUI nextLevelText;
     public TextMeshProUGUI scoreHint1Text;
     public TextMeshProUGUI scoreHint2Text;
+    public GameObject bossPrefab;
 
     int level = DEATHMATCH;
     int rabbitsCollected = 0;
@@ -27,12 +29,11 @@ public class LevelController : MonoBehaviour
     PlayerController winnerPlayer = null;
 
     readonly int rabbitsCollectToWin = 3;
-    readonly List<UnitController> enemies = new() { };
-    readonly List<PlayerController> players = new() { };
 
     void Start()
     {
         ActionsController.OnRoundStart += OnRoundStart;
+        ActionsController.OnRoundEnd += OnRoundEnd;
         ActionsController.OnRoundRestart += OnRoundRestart;
         ActionsController.OnPlayerWon += DisableAnimation;
         ActionsController.OnStartGame += EnableAnimation;
@@ -41,7 +42,6 @@ public class LevelController : MonoBehaviour
         ActionsController.OnScoreUpdate += OnScoreUpdate;
 
         actions = ActionsController.GetActions();
-        FillPlayersAndEnemies();
         UpdateScoreHint2Text();
 
         // Duplicated in LogoController
@@ -51,6 +51,7 @@ public class LevelController : MonoBehaviour
     void OnDestroy()
     {
         ActionsController.OnRoundStart -= OnRoundStart;
+        ActionsController.OnRoundEnd -= OnRoundEnd;
         ActionsController.OnRoundRestart -= OnRoundRestart;
         ActionsController.OnPlayerWon -= DisableAnimation;
         ActionsController.OnStartGame -= EnableAnimation;
@@ -59,23 +60,14 @@ public class LevelController : MonoBehaviour
         ActionsController.OnScoreUpdate -= OnScoreUpdate;
     }
 
-    void FillPlayersAndEnemies()
+    PlayerController[] GetPlayers()
     {
-        foreach (var unit in GameObject.FindObjectsOfType<UnitController>())
-        {
-            if (unit.team == "enemy")
-            {
-                enemies.Add(unit);
-            }
-            else
-            {
-                var player = unit.GetComponent<PlayerController>();
-                if (player != null)
-                {
-                    players.Add(player);
-                }
-            }
-        }
+        return GameObject.FindObjectsOfType<PlayerController>();
+    }
+
+    NpcController[] GetEnemies()
+    {
+        return GameObject.FindObjectsOfType<NpcController>();
     }
 
     void UpdateScoreHint2Text()
@@ -113,6 +105,11 @@ public class LevelController : MonoBehaviour
         return level == COLLECT_RABBITS;
     }
 
+    public bool IsSurvival()
+    {
+        return level == SURVIVE;
+    }
+
     void OnRoundRestart()
     {
         level = LEVELS[Random.Range(0, LEVELS.Count)];
@@ -136,6 +133,11 @@ public class LevelController : MonoBehaviour
             if (IsRabbitsCollection())
             {
                 levelTip = "COLLECT RABBITS!";
+            }
+
+            if (IsSurvival())
+            {
+                levelTip = "SURVIVE!";
             }
 
             nextLevelText.text = levelTip;
@@ -177,31 +179,40 @@ public class LevelController : MonoBehaviour
         nextLevelTextAnimator.Play("Show");
     }
 
+    void OnRoundEnd()
+    {
+        foreach (var enemy in GetEnemies())
+        {
+            Destroy(enemy.gameObject);
+        }
+    }
+
     void OnRoundStart()
     {
-        if (level == DEATHMATCH)
+        foreach(var player in GetPlayers())
         {
-            foreach(var player in players)
-            {
-                player.GetUnit().team = "";
-            }
-        } 
-
-        if (level == FIGHT_BOSS || level == COLLECT_RABBITS)
-        {
-            foreach (var player in players)
-            {
-                player.GetUnit().team = "players";
-            }
+            player.GetUnit().team = level == DEATHMATCH ? "" : "allies";
         }
 
-        if (level == FIGHT_BOSS)
+        if (IsBoss())
         {
-            foreach(var enemy in enemies)
-            {
-                enemy.SetPosition(new Vector3(0, 10, 0));
-            }
+            CreateBoss(new Vector3(0, 10, 0), 0.9f);
         }
+
+        if (IsSurvival())
+        {
+            CreateBoss(new Vector3(1, 10, 1), 1.1f);
+            CreateBoss(new Vector3(-1, 10, 1), 1.2f);
+            CreateBoss(new Vector3(1, 10, -1), 1.3f);
+            CreateBoss(new Vector3(-1, 10, -1), 1.4f);
+        }
+    }
+
+    void CreateBoss(Vector3 position, float speed)
+    {
+        var boss = Instantiate(bossPrefab, position, Quaternion.identity);
+        boss.GetComponent<DeviceController>().SetFrozen(false);
+        boss.GetComponent<UnitController>().speed = speed;
     }
 
     void OnUnitKilled(UnitController dead, UnitController killer)
@@ -213,8 +224,17 @@ public class LevelController : MonoBehaviour
             // Killer is not a player
             if (IsRoundEnded())
             {
-                // Restart if boss killed all players
-                RestartRound();
+                var alivePlayers = GetAlivePlayers();
+
+                if (IsSurvival() && alivePlayers.Count == 1)
+                {
+                    // OnScoreUpdate will restart the level
+                    alivePlayers.ForEach(player => player.AddScore(3));
+                } else
+                {
+                    // Restart if boss killed all players
+                    RestartRound();
+                }
             }
         } else
         {
@@ -222,6 +242,19 @@ public class LevelController : MonoBehaviour
             var scorePoints = dead.team == "enemy" ? 3 : 1;
             killerPlayer.AddScore(scorePoints);
         }
+    }
+
+    List<PlayerController> GetAlivePlayers()
+    {
+        var alivePlayers = new List<PlayerController>() { };
+        foreach (var player in GetPlayers())
+        {
+            if (player.GetUnit().IsAlive())
+            {
+                alivePlayers.Add(player);
+            }
+        }
+        return alivePlayers;
     }
 
     void OnScoreUpdate()
@@ -267,7 +300,7 @@ public class LevelController : MonoBehaviour
 
     PlayerController GetWinnerPlayer()
     {
-        foreach (var player in players)
+        foreach (var player in GetPlayers())
         {
             if (player.score >= scoreToWin)
             {
@@ -291,14 +324,14 @@ public class LevelController : MonoBehaviour
         else
         {
             // Check if all players dead
-            var alivePlayersCount = 0;
+            List<PlayerController> alivePlayers = new() { };
             var aliveControlledPlayersCount = 0;
 
-            foreach (var player in players)
+            foreach (var player in GetPlayers())
             {
                 if (player.GetUnit().IsAlive())
                 {
-                    alivePlayersCount++;
+                    alivePlayers.Add(player);
 
                     if (player.GetUnit().GetDevice().IsSelected())
                     {
@@ -307,7 +340,7 @@ public class LevelController : MonoBehaviour
                 }
             }
 
-            if (alivePlayersCount <= (IsBoss() ? 0 : 1) || aliveControlledPlayersCount == 0)
+            if (alivePlayers.Count <= (IsBoss() ? 0 : 1) || aliveControlledPlayersCount == 0)
             {
                 return true;
             }
@@ -318,9 +351,9 @@ public class LevelController : MonoBehaviour
             // Check if Boss dead
             var aliveEnemiesCount = 0;
 
-            foreach (var enemy in enemies)
+            foreach (var enemy in GetEnemies())
             {
-                if (enemy.IsAlive())
+                if (enemy.unit.IsAlive())
                 {
                     aliveEnemiesCount++;
                 }

@@ -8,12 +8,10 @@ public class PauseMenuController : MonoBehaviour
     public AudioSource toggleSound;
     public AudioSource showSound;
     public AudioSource hideSound;
-    public TextMeshProUGUI botLevelText;
 
     // consts
     private const float togglePauseTimeout = 0.25f;
     private const float toggleValueTimeout = 0.2f;
-    private const float submitPauseTimeout = 0.25f;
     private const float submitValueTimeout = 0.2f;
 
     // params
@@ -149,38 +147,14 @@ public class PauseMenuController : MonoBehaviour
                     SetVisibility(false);
                     break;
                 case 1:
-                    InputAIController.ToggleDifficulty();
-                    UpdateBotLevelText();
-                    break;
-                case 2:
                     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                     break;
-                case 3:
+                case 2:
                     Application.Quit();
                     break;
                 default:
                     break;
             }
-        }
-    }
-
-    void UpdateBotLevelText()
-    {
-        var buttonPrefix = "Bot level: ";
-
-        if (InputAIController.difficulty == InputAIController.EASY)
-        {
-            botLevelText.text = buttonPrefix + "Easy";
-        }
-
-        if (InputAIController.difficulty == InputAIController.NORMAL)
-        {
-            botLevelText.text = buttonPrefix + "Normal";
-        }
-
-        if (InputAIController.difficulty == InputAIController.HARD)
-        {
-            botLevelText.text = buttonPrefix + "Hard";
         }
     }
 }
