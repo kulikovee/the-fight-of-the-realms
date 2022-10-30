@@ -6,8 +6,11 @@ public class UnitController : MonoBehaviour
 {
     public Image hpBarImage;
     public Image hpBarImageUI;
+    public Image manaBarImage;
+    public Image manaBarImageUI;
 
     public float maxHp = 150f;
+    public float maxMana = 50f;
     public float attackPower = 25f;
     public float specialAttackPower = 40f;
     public float speed = 1f;
@@ -25,8 +28,13 @@ public class UnitController : MonoBehaviour
     Quaternion defaultRotation;
 
     float hp = 0;
+    float mana = 0;
     float attackRadius = 0.8f;
     float attackDistance = 0.5f;
+    float manaRestoreTimeout = 0.5f;
+    float manaRestoredAt = 0;
+    float specialAttackManaCost = 25f;
+    float spellManaCost = 50f;
 
     void Start()
     {
@@ -40,6 +48,7 @@ public class UnitController : MonoBehaviour
         actions = ActionsController.GetActions();
 
         hp = maxHp;
+        mana = maxMana;
         defaultPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         defaultRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
     }
@@ -53,19 +62,10 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-    }
-
-    public void SpecialAttack()
-    {
-        if (bombPrefab != null)
+        if (IsAlive() && mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
         {
-            var createBombPosition = transform.position + transform.forward + Vector3.up;
-            var bomb = Instantiate(bombPrefab, createBombPosition, Quaternion.identity);
-            var bombController = bomb.GetComponent<Bomb>();
-            if (bombController != null)
-            {
-                bombController.Throw(this, transform.forward * 400f + Vector3.up * 3f);
-            }
+            manaRestoredAt = Time.time;
+            AddMana(1f);
         }
     }
 
@@ -97,7 +97,60 @@ public class UnitController : MonoBehaviour
             }
         }
     }
-    
+
+    public void SpecialAttack()
+    {
+        if (bombPrefab != null)
+        {
+            AddMana(-specialAttackManaCost);
+
+            var createBombPosition = transform.position + transform.forward + Vector3.up;
+            var bomb = Instantiate(bombPrefab, createBombPosition, Quaternion.identity);
+            var bombController = bomb.GetComponent<Bomb>();
+            if (bombController != null)
+            {
+                bombController.Throw(this, transform.forward * 400f + Vector3.up * 3f);
+            }
+        }
+    }
+
+    public void CastSpell()
+    {
+        var teammatesToRevive = new List<UnitController>();
+
+        foreach (var unit in GameObject.FindObjectsOfType<UnitController>())
+        {
+            if (
+                IsSameTeam(unit) 
+                && !unit.IsAlive()
+                && Vector3.Distance(unit.transform.position, transform.position) < 3
+            )
+            {
+                teammatesToRevive.Add(unit);
+            }
+        }
+
+        if (teammatesToRevive.Count > 0)
+        {
+            AddMana(-spellManaCost);
+
+            foreach(var unit in teammatesToRevive)
+            {
+                unit.AddHp(maxMana);
+            }
+        }
+    }
+
+    public bool IsEnoughManaToSpell()
+    {
+        return mana >= spellManaCost;
+    }
+
+    public bool IsEnoughManaToSpecialAttack()
+    {
+        return mana >= specialAttackManaCost;
+    }
+
     public bool IsAlive()
     {
         return hp > 0;
@@ -135,9 +188,14 @@ public class UnitController : MonoBehaviour
 
     public void AddHp(float addAmount)
     {
-        var missingHp = maxHp - hp;
-        SetHp(hp + Mathf.Min(addAmount, missingHp));
+        SetHp(Mathf.Clamp(hp + addAmount, 0f, maxHp));
     }
+
+    public void AddMana(float addAmount)
+    {
+        SetMana(Mathf.Clamp(mana + addAmount, 0f, maxMana));
+    }
+
     public DeviceController GetDevice()
     {
         return device;
@@ -154,25 +212,49 @@ public class UnitController : MonoBehaviour
         actions.UnitKilled(this, killer);
     }
 
-    void RestoreHp()
+    void RestoreHpAndMana()
     {
         SetHp(maxHp);
+        SetMana(maxMana);
     }
 
     void SetHp(float amount)
     {
         hp = amount;
-        hpBarImage.fillAmount = hp / maxHp;
+        hpBarImage.rectTransform.anchorMax = new Vector2(
+            hp / maxHp,
+            hpBarImage.rectTransform.anchorMax.y
+        );
 
         if (hpBarImageUI != null)
         {
-            hpBarImageUI.rectTransform.anchorMax = new Vector2(hp / maxHp, 1);
+            hpBarImageUI.rectTransform.anchorMax = new Vector2(
+                hp / maxHp,
+                hpBarImageUI.rectTransform.anchorMax.y
+            );
+        }
+    }
+
+    void SetMana(float amount)
+    {
+        mana = amount;
+        manaBarImage.rectTransform.anchorMax = new Vector2(
+            mana / maxMana,
+            manaBarImage.rectTransform.anchorMax.y
+        );
+
+        if (manaBarImageUI != null)
+        {
+            manaBarImageUI.rectTransform.anchorMax = new Vector2(
+                mana / maxMana,
+                manaBarImageUI.rectTransform.anchorMax.y
+            );
         }
     }
 
     void ResetHpPositionRotation()
     {
-        RestoreHp();
+        RestoreHpAndMana();
         characterAdapter.SetPosition(defaultPosition);
         characterAdapter.SetRotation(defaultRotation);
         device.GetAxis().ResetAxis();

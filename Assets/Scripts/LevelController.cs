@@ -5,13 +5,20 @@ using UnityEngine;
 
 public class LevelController : MonoBehaviour
 {
-    static readonly int DEATHMATCH = 0;
-    static readonly int FIGHT_BOSS = 1;
-    static readonly int COLLECT_RABBITS = 2;
-    static readonly int SURVIVE = 3;
-    static readonly List<int> LEVELS = new() { DEATHMATCH, FIGHT_BOSS, COLLECT_RABBITS, SURVIVE };
+    static readonly string DEATHMATCH = "DEATHMATCH";
+    static readonly string FIGHT_BOSS = "FIGHT_BOSS";
+    static readonly string COLLECT_RABBITS = "COLLECT_RABBITS";
+    static readonly string SURVIVE = "SURVIVE";
+    static readonly string PLATFORMER = "PLATFORMER";
+    static readonly List<string> LEVELS = new() {
+        PLATFORMER,
+        DEATHMATCH,
+        FIGHT_BOSS,
+        COLLECT_RABBITS,
+        SURVIVE,
+    };
 
-    public static int scoreToWin = 15;
+    public static int scoreToWin = 25;
 
     // Configurable params
     public AudioSource gameOverSound;
@@ -20,13 +27,21 @@ public class LevelController : MonoBehaviour
     public TextMeshProUGUI scoreHint1Text;
     public TextMeshProUGUI scoreHint2Text;
     public GameObject bossPrefab;
+    public GameObject bossPrefab1;
+    public GameObject bossPrefab2;
+    public GameObject rabbitPrefab;
+    public GameObject platform;
+    public GameObject arena;
+    public List<Vector3> arenaRabbitRespawns;
+    public Vector3 platformerRabbitRespawn = new Vector3(0, 0.02f, 0);
 
-    int level = DEATHMATCH;
+    string level = LEVELS[0];
     int rabbitsCollected = 0;
     ActionsController actions;
     bool isRestarting = false;
     bool isAnimationShow = true;
     PlayerController winnerPlayer = null;
+    ItemController levelRabbit = null;
 
     readonly int rabbitsCollectToWin = 3;
 
@@ -43,6 +58,7 @@ public class LevelController : MonoBehaviour
 
         actions = ActionsController.GetActions();
         UpdateScoreHint2Text();
+        StartCoroutine(CreateLevelRabbitAfterDelay());
 
         // Duplicated in LogoController
         Cursor.visible = false;
@@ -68,6 +84,11 @@ public class LevelController : MonoBehaviour
     NpcController[] GetEnemies()
     {
         return GameObject.FindObjectsOfType<NpcController>();
+    }
+
+    ItemController[] GetItems()
+    {
+        return GameObject.FindObjectsOfType<ItemController>();
     }
 
     void UpdateScoreHint2Text()
@@ -110,11 +131,33 @@ public class LevelController : MonoBehaviour
         return level == SURVIVE;
     }
 
+    public bool IsPlatformer()
+    {
+        return level == PLATFORMER;
+    }
+
     void OnRoundRestart()
     {
-        level = LEVELS[Random.Range(0, LEVELS.Count)];
+        var currentLevelIndex = LEVELS.FindIndex((_level) => _level == level);
+        var nextLevelIndex = currentLevelIndex + 1 < LEVELS.Count ? currentLevelIndex + 1 : 0;
+        level = LEVELS[nextLevelIndex];
+
+        if (IsPlatformer())
+        {
+            foreach (var item in GetItems())
+            {
+                if (item == levelRabbit)
+                {
+                    item.transform.position = platformerRabbitRespawn;
+                }
+            }
+        }
+
         rabbitsCollected = 0;
         winnerPlayer = null;
+
+        platform.SetActive(IsPlatformer());
+        arena.SetActive(!IsPlatformer());
 
         if (isAnimationShow)
         {
@@ -138,6 +181,11 @@ public class LevelController : MonoBehaviour
             if (IsSurvival())
             {
                 levelTip = "SURVIVE!";
+            }
+
+            if (IsPlatformer())
+            {
+                levelTip = "DEFEAT BAD GUYS!";
             }
 
             nextLevelText.text = levelTip;
@@ -166,6 +214,28 @@ public class LevelController : MonoBehaviour
                 player.AddScore(1);
             }
         }
+
+        if (item == levelRabbit)
+        {
+            StartCoroutine(CreateLevelRabbitAfterDelay());
+        }
+    }
+
+    IEnumerator CreateLevelRabbitAfterDelay()
+    {
+        yield return new WaitForSeconds(IsRabbitsCollection() ? 5f : 15f);
+
+        var newLevelRabbitPosition = IsPlatformer()
+            ? platformerRabbitRespawn
+            : arenaRabbitRespawns[Random.Range(0, arenaRabbitRespawns.Count)];
+
+        var newLevelRabbit = CreateRabbit(newLevelRabbitPosition);
+        levelRabbit = newLevelRabbit.GetComponent<ItemController>();
+    }
+
+    GameObject CreateRabbit(Vector3 position)
+    {
+        return Instantiate(rabbitPrefab, position, Quaternion.Euler(0, Random.Range(0, 360), 0));
     }
 
     IEnumerator StartAnimation()
@@ -185,6 +255,14 @@ public class LevelController : MonoBehaviour
         {
             Destroy(enemy.gameObject);
         }
+
+        foreach (var item in GetItems())
+        {
+            if (item != levelRabbit)
+            {
+                Destroy(item.gameObject);
+            }
+        }
     }
 
     void OnRoundStart()
@@ -196,23 +274,39 @@ public class LevelController : MonoBehaviour
 
         if (IsBoss())
         {
-            CreateBoss(new Vector3(0, 10, 0), 0.9f);
+            CreateBoss(bossPrefab, new Vector3(0, 10, 0));
         }
 
         if (IsSurvival())
         {
-            CreateBoss(new Vector3(1, 10, 1), 1.1f);
-            CreateBoss(new Vector3(-1, 10, 1), 1.2f);
-            CreateBoss(new Vector3(1, 10, -1), 1.3f);
-            CreateBoss(new Vector3(-1, 10, -1), 1.4f);
+            CreateBoss(bossPrefab1, new Vector3(1, 10, 1), 800f, 1.1f);
+            CreateBoss(bossPrefab, new Vector3(-1, 10, 1), 800f, 1.2f);
+            CreateBoss(bossPrefab, new Vector3(1, 10, -1), 800f, 1.3f);
+            CreateBoss(bossPrefab1, new Vector3(-1, 10, -1), 800f, 1.4f);
+        }
+
+        if (IsPlatformer())
+        {
+            CreateBoss(bossPrefab, new Vector3(15, 1, 1), 150f, 0.9f, 25f);
+            CreateBoss(bossPrefab, new Vector3(15, 1, -1), 150f, 0.9f, 25f);
+            CreateBoss(bossPrefab, new Vector3(30, 1, 1), 300f, 0.9f, 35f);
+            CreateBoss(bossPrefab1, new Vector3(45, 1, -1), 200f, 0.9f, 45f);
+            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 200f, 0.9f, 45f);
+            CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 400f, 0.9f, 45f);
+            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 500f, 0.9f, 45f);
         }
     }
 
-    void CreateBoss(Vector3 position, float speed)
+    void CreateBoss(GameObject prefab, Vector3 position, float hp = 400f, float speed = 0.9f, float attackPower = 45f)
     {
-        var boss = Instantiate(bossPrefab, position, Quaternion.identity);
+        var boss = Instantiate(prefab, position, Quaternion.identity);
         boss.GetComponent<DeviceController>().SetFrozen(false);
-        boss.GetComponent<UnitController>().speed = speed;
+        boss.transform.Find("Grunt").localScale = Vector3.one * (0.65f + (hp / 400f) / 10f);
+        var unit = boss.GetComponent<UnitController>();
+        unit.speed = speed;
+        unit.attackPower = attackPower;
+        unit.maxHp = hp;
+        unit.AddHp(unit.maxHp);
     }
 
     void OnUnitKilled(UnitController dead, UnitController killer)
@@ -238,8 +332,13 @@ public class LevelController : MonoBehaviour
             }
         } else
         {
+            if (IsPlatformer() && dead.GetComponent<NpcController>() != null)
+            {
+                CreateRabbit(dead.transform.position);
+            }
+
             // Killer is a player
-            var scorePoints = dead.team == "enemy" ? 3 : 1;
+            var scorePoints = dead.team == "enemy" && IsBoss() ? 3 : 1;
             killerPlayer.AddScore(scorePoints);
         }
     }
@@ -340,13 +439,13 @@ public class LevelController : MonoBehaviour
                 }
             }
 
-            if (alivePlayers.Count <= (IsBoss() ? 0 : 1) || aliveControlledPlayersCount == 0)
+            if (alivePlayers.Count <= (IsBoss() || IsPlatformer() ? 0 : 1) || aliveControlledPlayersCount == 0)
             {
                 return true;
             }
         }
 
-        if (IsBoss())
+        if (IsBoss() || IsPlatformer())
         {
             // Check if Boss dead
             var aliveEnemiesCount = 0;

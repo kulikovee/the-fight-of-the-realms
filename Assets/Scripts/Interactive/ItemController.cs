@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ItemController : MonoBehaviour
@@ -5,44 +6,45 @@ public class ItemController : MonoBehaviour
     public Animator animator;
     public AudioSource createAidKitSound;
     public AudioSource takeAidKitSound;
-    public bool isDead = true;
 
     float pickUpTimeout = 0.3f;
     float createdAt = 0;
+    bool isDead = false;
     ActionsController actions;
 
     void Start()
     {
         actions = ActionsController.GetActions();
+        animator.Play("Show");
+        createdAt = Time.time;
+        // createAidKitSound.Play();
     }
 
     public void OnCollisionWithUnit(UnitController unit)
     {
         if (
-            !isDead 
+            !isDead
             && (Time.time - createdAt >= pickUpTimeout) 
             && unit.IsAlive() 
             && unit.CanPickUpItem(this)
         )
         {
-            Destroy();
+            Die();
             actions.PickUpItem(unit, this);
         }
     }
 
-    public void Create(Vector3 position, Quaternion rotation)
-    {
-        createdAt = Time.time;
-        transform.SetPositionAndRotation(position, rotation);
-        isDead = false;
-        createAidKitSound.Play();
-        animator.Play("Show");
-    }
-
-    public void Destroy()
+    public void Die()
     {
         isDead = true;
-        takeAidKitSound.Play();
-        animator.Play("Die");
+        // takeAidKitSound.Play();
+        animator.Play("Die"); 
+        StartCoroutine(DestroyAfterDelay());
+    }
+
+    IEnumerator DestroyAfterDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Destroy(gameObject);
     }
 }

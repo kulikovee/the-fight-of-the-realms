@@ -18,6 +18,7 @@ public class AnimatedUnitEvents : MonoBehaviour
     /** Called from animation: Attack01 **/
     public void AttackStarted()
     {
+        CastSpellFinished();
         SpecialAttackFinished();
         animatedUnit.isAttackInProgress = true;
     }
@@ -37,6 +38,7 @@ public class AnimatedUnitEvents : MonoBehaviour
     /** Called from animation: Attack02 **/
     public void SpecialAttackStarted()
     {
+        CastSpellFinished();
         AttackFinished();
         animatedUnit.isSpecialAttackInProgress = true;
     }
@@ -47,9 +49,29 @@ public class AnimatedUnitEvents : MonoBehaviour
         animatedUnit.isSpecialAttackInProgress = false;
     }
 
+    /** Called from animation: Revive **/
+    public void CastSpell()
+    {
+        animatedUnit.CastSpell();
+    }
+
+    /** Called from animation: Attack01 **/
+    public void CastSpellStarted()
+    {
+        SpecialAttackFinished();
+        animatedUnit.isCastSpellInProgress = true;
+    }
+
+    /** Called from animation: Attack01 **/
+    public void CastSpellFinished()
+    {
+        animatedUnit.isCastSpellInProgress = false;
+    }
+
     /** Called from animation: GetHit **/
     public void HitStarted()
     {
+        CastSpellFinished();
         AttackFinished();
         SpecialAttackFinished();
         animatedUnit.isHitInProgress = true;
@@ -64,6 +86,7 @@ public class AnimatedUnitEvents : MonoBehaviour
     /** Called from animation: Die **/
     public void DieStarted()
     {
+        CastSpellFinished();
         HitFinished();
         AttackFinished();
         SpecialAttackFinished();

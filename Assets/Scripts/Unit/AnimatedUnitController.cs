@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class AnimatedUnitController : MonoBehaviour
@@ -6,16 +6,21 @@ public class AnimatedUnitController : MonoBehaviour
     public Animator animator;
     public List<AudioSource> attackWaveSounds;
     public List<AudioSource> attackHitSounds;
-    // Controlled by AnimatedUnitEvents
+
+    // <Controlled by AnimatedUnitEvents>
+    public bool isCastSpellInProgress = false;
     public bool isSpecialAttackInProgress = false;
     public bool isAttackInProgress = false;
     public bool isHitInProgress = false;
     public bool isHit = false;
+    // </Controlled by AnimatedUnitEvents>
 
     float lastAttackStartedAt = 0f;
     float lastSpecialAttackStartedAt = 0f;
+    float lastCastSpellStartedAt = 0f;
     readonly float lastAttackStartedTimeout = 0.2f;
     readonly float lastSpecialAttackStartedTimeout = 0.2f;
+    readonly float lastCastSpellStartedTimeout = 0.2f;
 
     DeviceController device;
     UnitController unit;
@@ -41,12 +46,16 @@ public class AnimatedUnitController : MonoBehaviour
         var isSpecialAttackAnimation = !isPlayingAnimation && (isSpecialAttackInProgress || IsSpecialAttackPressed());
         isPlayingAnimation |= isSpecialAttackAnimation;
 
+        var isCastSpellAnimation = !isPlayingAnimation && (isCastSpellInProgress || IsCastSpellPressed());
+        isPlayingAnimation |= isCastSpellAnimation;
+
         var isRunAnimation = !isPlayingAnimation && (Mathf.Abs(axis.GetX()) + Mathf.Abs(axis.GetY()) > 0.2f);
 
         animator.SetBool("die", isDeadAnimation);
         animator.SetBool("run", isRunAnimation);
         animator.SetBool("hit", isHitAnimation);
         animator.SetBool("attack", isAttackAnimation);
+        animator.SetBool("cast", isCastSpellAnimation);
         animator.SetBool("specialAttack", isSpecialAttackAnimation);
 
         isHit = false;
@@ -67,11 +76,22 @@ public class AnimatedUnitController : MonoBehaviour
     {
         var axis = device.GetAxis();
         var isSpecialAttackPressed = axis.GetButtonO() != 0f;
-        if (isSpecialAttackPressed)
+        if (isSpecialAttackPressed && unit.IsEnoughManaToSpecialAttack())
         {
             lastSpecialAttackStartedAt = Time.time;
         }
         return lastSpecialAttackStartedAt != 0f && Time.time - lastSpecialAttackStartedAt <= lastSpecialAttackStartedTimeout;
+    }
+
+    bool IsCastSpellPressed()
+    {
+        var axis = device.GetAxis();
+        var isCastSpellPressed = axis.GetButtonY() != 0f;
+        if (isCastSpellPressed && unit.IsEnoughManaToSpell())
+        {
+            lastCastSpellStartedAt = Time.time;
+        }
+        return lastCastSpellStartedAt != 0f && Time.time - lastCastSpellStartedAt <= lastCastSpellStartedTimeout;
     }
 
     public void PlayAttackWaveSound()
@@ -105,18 +125,24 @@ public class AnimatedUnitController : MonoBehaviour
         }
     }
 
-    /** Called from animation: Attack01 **/
+    /** Called from AnimatedUnitEvents => Attack01 **/
     public void Attack()
     {
         unit.Attack();
     }
 
-    /** Called from animation: Attack02 **/
+    /** Called from AnimatedUnitEvents => Attack02 **/
     public void SpecialAttack()
     {
         if (animator.GetBool("specialAttack"))
         {
             unit.SpecialAttack();
         }
+    }
+
+    /** Called from AnimatedUnitEvents => Revive animation **/
+    public void CastSpell()
+    {
+        unit.CastSpell();
     }
 }
