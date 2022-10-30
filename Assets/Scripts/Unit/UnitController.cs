@@ -13,11 +13,15 @@ public class UnitController : MonoBehaviour
     public float maxMana = 50f;
     public float attackPower = 25f;
     public float specialAttackPower = 40f;
+    public float attackRadius = 0.8f;
     public float speed = 1f;
     public string team = "";
     public bool canPickUpItems = true;
     public bool isStunOnHit = true;
     public GameObject bombPrefab;
+    public GameObject revivePrefab;
+    public GameObject revivedPrefab;
+    public AudioSource reviveSound;
 
     DeviceController device;
     AnimatedUnitController animatedUnit;
@@ -29,12 +33,11 @@ public class UnitController : MonoBehaviour
 
     float hp = 0;
     float mana = 0;
-    float attackRadius = 0.8f;
     float attackDistance = 0.5f;
-    float manaRestoreTimeout = 0.5f;
+    float manaRestoreTimeout = 0.125f;
     float manaRestoredAt = 0;
-    float specialAttackManaCost = 25f;
-    float spellManaCost = 50f;
+    public float specialAttackManaCost = 25f;
+    public float spellManaCost = 50f;
 
     void Start()
     {
@@ -65,7 +68,13 @@ public class UnitController : MonoBehaviour
         if (IsAlive() && mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
         {
             manaRestoredAt = Time.time;
-            AddMana(1f);
+            AddMana(0.25f);
+        }
+
+        if (transform.position.y < -50f)
+        {
+            SetHp(0);
+            Die(this);
         }
     }
 
@@ -134,8 +143,25 @@ public class UnitController : MonoBehaviour
         {
             AddMana(-spellManaCost);
 
+            if (revivePrefab != null)
+            {
+                var reviveEffect = Instantiate(revivePrefab, transform.position, Quaternion.identity);
+                reviveEffect.transform.parent = gameObject.transform;
+            }
+
+            if (reviveSound != null)
+            {
+                reviveSound.Play();
+            }
+
             foreach(var unit in teammatesToRevive)
             {
+                if (revivedPrefab != null)
+                {
+                    var revivedEffect = Instantiate(revivedPrefab, unit.transform.position, Quaternion.identity);
+                    revivedEffect.transform.parent = unit.transform;
+                }
+
                 unit.AddHp(maxMana);
             }
         }
@@ -206,6 +232,15 @@ public class UnitController : MonoBehaviour
         return team != "" && unit.team != "" && unit.team == team;
     }
 
+    public float GetHp()
+    {
+        return hp;
+    }
+
+    public float GetMana()
+    {
+        return mana;
+    }
 
     void Die(UnitController killer)
     {

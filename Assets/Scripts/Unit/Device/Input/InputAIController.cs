@@ -51,7 +51,9 @@ public class InputAIController : MonoBehaviour
             axis.SetX((target.x - transform.position.x) * distance + aiAxisVelocity.x);
             axis.SetY((target.z - transform.position.z) * distance + aiAxisVelocity.z);
 
-            axis.SetButtonA(distance > 2f && Random.Range(0f, 1f) >= 0.9f ? 1f : 0f);
+            var isSurvivingAlly = level.IsSurvival() && unit.team == "allies" && Random.Range(0f, 1f) >= 0.5f;
+            var isRandomJump = distance > 2f && Random.Range(0f, 1f) >= 0.9f;
+            axis.SetButtonA(isSurvivingAlly || isRandomJump ? 1f : 0f);
             axis.SetButtonX(isAttack ? 1 : 0);
         } else
         {
@@ -102,6 +104,11 @@ public class InputAIController : MonoBehaviour
                         isAttack = true;
                     }
                 }
+            }
+
+            if (level.IsSurvival() && isTargetUpdated && unit.team == "allies")
+            {
+                target = transform.position - target;
             }
         }
 

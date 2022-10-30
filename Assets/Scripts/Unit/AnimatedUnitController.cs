@@ -6,6 +6,7 @@ public class AnimatedUnitController : MonoBehaviour
     public Animator animator;
     public List<AudioSource> attackWaveSounds;
     public List<AudioSource> attackHitSounds;
+    public AudioSource notEnoughManaSound;
 
     // <Controlled by AnimatedUnitEvents>
     public bool isCastSpellInProgress = false;
@@ -80,18 +81,47 @@ public class AnimatedUnitController : MonoBehaviour
         {
             lastSpecialAttackStartedAt = Time.time;
         }
-        return lastSpecialAttackStartedAt != 0f && Time.time - lastSpecialAttackStartedAt <= lastSpecialAttackStartedTimeout;
+
+        var isRecentlyPressed = lastSpecialAttackStartedAt != 0f && Time.time - lastSpecialAttackStartedAt <= lastSpecialAttackStartedTimeout;
+
+        if (
+            !isRecentlyPressed
+            && isSpecialAttackPressed
+            && !unit.IsEnoughManaToSpell()
+            && notEnoughManaSound != null
+            && !notEnoughManaSound.isPlaying
+        )
+        {
+            notEnoughManaSound.Play();
+        }
+
+        return isRecentlyPressed;
     }
 
     bool IsCastSpellPressed()
     {
         var axis = device.GetAxis();
         var isCastSpellPressed = axis.GetButtonY() != 0f;
+
         if (isCastSpellPressed && unit.IsEnoughManaToSpell())
         {
             lastCastSpellStartedAt = Time.time;
         }
-        return lastCastSpellStartedAt != 0f && Time.time - lastCastSpellStartedAt <= lastCastSpellStartedTimeout;
+
+        var isRecentlyPressed = lastCastSpellStartedAt != 0f && Time.time - lastCastSpellStartedAt <= lastCastSpellStartedTimeout;
+
+        if (
+            !isRecentlyPressed
+            && isCastSpellPressed
+            && !unit.IsEnoughManaToSpell()
+            && notEnoughManaSound != null
+            && !notEnoughManaSound.isPlaying
+        )
+        {
+            notEnoughManaSound.Play();
+        }
+
+        return isRecentlyPressed;
     }
 
     public void PlayAttackWaveSound()

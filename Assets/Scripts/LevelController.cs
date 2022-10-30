@@ -10,15 +10,17 @@ public class LevelController : MonoBehaviour
     static readonly string COLLECT_RABBITS = "COLLECT_RABBITS";
     static readonly string SURVIVE = "SURVIVE";
     static readonly string PLATFORMER = "PLATFORMER";
-    static readonly List<string> LEVELS = new() {
-        PLATFORMER,
+    static readonly List<string> LEVELS = new()
+    {
         DEATHMATCH,
-        FIGHT_BOSS,
         COLLECT_RABBITS,
+        FIGHT_BOSS,
+        DEATHMATCH,
         SURVIVE,
+        PLATFORMER,
     };
 
-    public static int scoreToWin = 25;
+    public static int scoreToWin = 15;
 
     // Configurable params
     public AudioSource gameOverSound;
@@ -35,11 +37,12 @@ public class LevelController : MonoBehaviour
     public List<Vector3> arenaRabbitRespawns;
     public Vector3 platformerRabbitRespawn = new Vector3(0, 0.02f, 0);
 
-    string level = LEVELS[0];
+    int levelId = 0;
     int rabbitsCollected = 0;
     ActionsController actions;
     bool isRestarting = false;
     bool isAnimationShow = true;
+    bool isFirstLevelRun = true;
     PlayerController winnerPlayer = null;
     ItemController levelRabbit = null;
 
@@ -113,34 +116,43 @@ public class LevelController : MonoBehaviour
 
     public bool IsDeathmatch()
     {
-        return level == DEATHMATCH;
+        return LEVELS[levelId] == DEATHMATCH;
     }
 
     public bool IsBoss()
     {
-        return level == FIGHT_BOSS;
+        return LEVELS[levelId] == FIGHT_BOSS;
     }
 
     public bool IsRabbitsCollection()
     {
-        return level == COLLECT_RABBITS;
+        return LEVELS[levelId] == COLLECT_RABBITS;
     }
 
     public bool IsSurvival()
     {
-        return level == SURVIVE;
+        return LEVELS[levelId] == SURVIVE;
     }
 
     public bool IsPlatformer()
     {
-        return level == PLATFORMER;
+        return LEVELS[levelId] == PLATFORMER;
     }
 
     void OnRoundRestart()
     {
-        var currentLevelIndex = LEVELS.FindIndex((_level) => _level == level);
-        var nextLevelIndex = currentLevelIndex + 1 < LEVELS.Count ? currentLevelIndex + 1 : 0;
-        level = LEVELS[nextLevelIndex];
+        if (isFirstLevelRun)
+        {
+            isFirstLevelRun = false;
+        } else
+        {
+            levelId++;
+        }
+
+        if (levelId >= LEVELS.Count)
+        {
+            levelId = 0;
+        }
 
         if (IsPlatformer())
         {
@@ -185,7 +197,7 @@ public class LevelController : MonoBehaviour
 
             if (IsPlatformer())
             {
-                levelTip = "DEFEAT BAD GUYS!";
+                levelTip = "DEFEND THE FOREST!";
             }
 
             nextLevelText.text = levelTip;
@@ -196,7 +208,7 @@ public class LevelController : MonoBehaviour
     
     void OnItemPickUp(UnitController unit, ItemController item)
     {
-        if (level == COLLECT_RABBITS)
+        if (IsRabbitsCollection())
         {
             rabbitsCollected++;
 
@@ -269,20 +281,20 @@ public class LevelController : MonoBehaviour
     {
         foreach(var player in GetPlayers())
         {
-            player.GetUnit().team = level == DEATHMATCH ? "" : "allies";
+            player.GetUnit().team = IsDeathmatch() ? "" : "allies";
         }
 
         if (IsBoss())
         {
-            CreateBoss(bossPrefab, new Vector3(0, 10, 0));
+            CreateBoss(bossPrefab, new Vector3(0, 10, 0), 800f);
         }
 
         if (IsSurvival())
         {
-            CreateBoss(bossPrefab1, new Vector3(1, 10, 1), 800f, 1.1f);
-            CreateBoss(bossPrefab, new Vector3(-1, 10, 1), 800f, 1.2f);
-            CreateBoss(bossPrefab, new Vector3(1, 10, -1), 800f, 1.3f);
-            CreateBoss(bossPrefab1, new Vector3(-1, 10, -1), 800f, 1.4f);
+            CreateBoss(bossPrefab1, new Vector3(1, 10, 1), 800f, 1.4f, 60f, 1.5f);
+            CreateBoss(bossPrefab, new Vector3(-1, 10, 1), 800f, 1.4f, 60f, 1.5f);
+            CreateBoss(bossPrefab, new Vector3(1, 10, -1), 800f, 1.4f, 60f, 1.5f);
+            CreateBoss(bossPrefab1, new Vector3(-1, 10, -1), 800f, 1.4f, 60f, 1.5f);
         }
 
         if (IsPlatformer())
@@ -297,7 +309,7 @@ public class LevelController : MonoBehaviour
         }
     }
 
-    void CreateBoss(GameObject prefab, Vector3 position, float hp = 400f, float speed = 0.9f, float attackPower = 45f)
+    void CreateBoss(GameObject prefab, Vector3 position, float hp = 400f, float speed = 0.9f, float attackPower = 45f, float attackRaidus = 0.8f)
     {
         var boss = Instantiate(prefab, position, Quaternion.identity);
         boss.GetComponent<DeviceController>().SetFrozen(false);
@@ -306,14 +318,16 @@ public class LevelController : MonoBehaviour
         unit.speed = speed;
         unit.attackPower = attackPower;
         unit.maxHp = hp;
+        unit.attackRadius = attackRaidus;
         unit.AddHp(unit.maxHp);
     }
 
     void OnUnitKilled(UnitController dead, UnitController killer)
     {
         var killerPlayer = killer.GetComponent<PlayerController>();
+        var isKilledHimself = killer == dead;
 
-        if (killerPlayer == null)
+        if (killerPlayer == null || isKilledHimself)
         {
             // Killer is not a player
             if (IsRoundEnded())

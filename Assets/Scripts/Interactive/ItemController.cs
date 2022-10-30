@@ -17,7 +17,10 @@ public class ItemController : MonoBehaviour
         actions = ActionsController.GetActions();
         animator.Play("Show");
         createdAt = Time.time;
-        // createAidKitSound.Play();
+        if (createAidKitSound != null)
+        {
+            createAidKitSound.Play();
+        }
     }
 
     public void OnCollisionWithUnit(UnitController unit)
@@ -37,7 +40,12 @@ public class ItemController : MonoBehaviour
     public void Die()
     {
         isDead = true;
-        // takeAidKitSound.Play();
+
+        if (takeAidKitSound != null)
+        {
+            takeAidKitSound.Play();
+        }
+
         animator.Play("Die"); 
         StartCoroutine(DestroyAfterDelay());
     }

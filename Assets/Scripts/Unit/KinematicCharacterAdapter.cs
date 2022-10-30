@@ -43,6 +43,11 @@ public class KinematicCharacterAdapter : MonoBehaviour, ICharacterController
             return unit.IsAlive();
         }
 
+        if (collider.GetComponent<PlayerBlocker>() != null)
+        {
+            return unit.IsAlive() && GetComponent<PlayerController>() != null;
+        }
+
         return true;
     }
 
