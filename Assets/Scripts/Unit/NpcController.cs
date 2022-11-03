@@ -7,7 +7,7 @@ public class NpcController : MonoBehaviour
 
     public UnitController unit;
 
-    // Start is called before the first frame update
+    // This class needed only as a marker of non-playable character
     void Start()
     {
         unit = GetComponent<UnitController>();

@@ -35,7 +35,7 @@ public class LevelController : MonoBehaviour
     public GameObject platform;
     public GameObject arena;
     public List<Vector3> arenaRabbitRespawns;
-    public Vector3 platformerRabbitRespawn = new Vector3(0, 0.02f, 0);
+    public Vector3 platformerRabbitRespawn = new Vector3(-7, 0.02f, 0);
 
     int levelId = 0;
     int rabbitsCollected = 0;

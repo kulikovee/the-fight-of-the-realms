@@ -42,13 +42,14 @@ public class InputWASDController : MonoBehaviour
             bool isButtonA =
                 Input.GetKey(KeyCode.Space)
                 || (isMouseLeftPressed && Input.GetMouseButton(1));
-            bool isButtonX = Input.GetKey(KeyCode.LeftShift) || isMouseLeftPressed;
+            bool isButtonX = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.X) || isMouseLeftPressed;
             bool isButtonO =
                 Input.GetKey(KeyCode.F)
+                || Input.GetKey(KeyCode.B)
                 || Input.GetKey(KeyCode.LeftControl)
                 || Input.GetKey(KeyCode.LeftCommand)
                 || Input.GetMouseButton(1);
-            bool isButtonY = Input.GetKey(KeyCode.R);
+            bool isButtonY = Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.Y);
 
             axis.SetX((isLeft ? -1 : (isRight ? 1 : 0)) * keyboardMovementFactor);
             axis.SetY((isDown ? -1 : (isUp ? 1 : 0)) * keyboardMovementFactor);

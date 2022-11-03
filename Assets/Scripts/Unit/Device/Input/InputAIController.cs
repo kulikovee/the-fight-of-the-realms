@@ -27,8 +27,7 @@ public class InputAIController : MonoBehaviour
 
     public void UpdateAxis()
     {
-
-        if (Time.time - aiAxisUpdatedAt < aiAxisUpdateTimeout)
+        if (!unit.IsAlive() || Time.time - aiAxisUpdatedAt < aiAxisUpdateTimeout)
         {
             return;
         }
@@ -66,7 +65,7 @@ public class InputAIController : MonoBehaviour
         var units = GameObject.FindObjectsOfType<UnitController>();
         var aidKit = GameObject.FindObjectOfType<ItemAidController>();
 
-        target = GetDefaultAiTarget();
+        target = GetDefaultAiTarget(units);
         isAttack = false;
 
         var isTargetUpdated = false;
@@ -150,7 +149,7 @@ public class InputAIController : MonoBehaviour
         }
     }
 
-    public Vector3 GetDefaultAiTarget()
+    public Vector3 GetDefaultAiTarget(UnitController[] units)
     {
         var defaultTarget = Vector3.zero;
 
@@ -158,7 +157,24 @@ public class InputAIController : MonoBehaviour
         {
             if (unit.team == "allies")
             {
-                defaultTarget = unit.transform.position + Vector3.right;
+                foreach (var ally in units)
+                {
+                    if (!ally.IsSameTeam(unit) || !ally.IsAlive() || ally == unit)
+                    {
+                        continue;
+                    }
+
+                    if (ally.GetDevice().IsSelected())
+                    {
+                        var distanceToAlly = Vector3.Distance(transform.position, ally.transform.position);
+                        var distanceToTarget = Vector3.Distance(transform.position, defaultTarget);
+
+                        if (defaultTarget == Vector3.zero || distanceToAlly < distanceToTarget)
+                        {
+                            defaultTarget = ally.transform.position - Vector3.right;
+                        }
+                    }
+                }
             }
         }
         else

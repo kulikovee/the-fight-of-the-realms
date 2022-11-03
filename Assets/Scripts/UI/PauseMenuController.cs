@@ -1,4 +1,3 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,7 +37,7 @@ public class PauseMenuController : MonoBehaviour
         animator = GetComponent<Animator>();
         optionsCount = GameObject.FindObjectsOfType<PauseMenuItemController>().Length;
     }
-    
+
     void OnDestroy()
     {
         ActionsController.OnEndGame -= Disable;

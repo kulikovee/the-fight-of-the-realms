@@ -29,6 +29,26 @@ public class ActionsController : MonoBehaviour
 
     static bool isRoundRestarting = false;
 
+    private void OnDestroy()
+    {
+        // Static values should reset to default
+        isRoundRestarting = false;
+
+        OnRoundEnd = null;
+        OnRoundStart = null;
+        OnRoundRestart = null;
+        OnJoinedPlayersReset = null;
+        OnPlayerJoined = null;
+        OnEndGame = null;
+        OnStartGame = null;
+        OnTimerUpdate = null;
+        OnSelectPauseOption = null;
+        OnScoreUpdate = null;
+        OnUnitKilled = null;
+        OnPlayerWon = null;
+        OnItemPickUp = null;
+    }
+
     public static ActionsController GetActions()
     {
         return GameObject.FindObjectOfType<ActionsController>();
