@@ -299,21 +299,33 @@ public class LevelController : MonoBehaviour
 
         if (IsPlatformer())
         {
-            CreateBoss(bossPrefab, new Vector3(15, 1, 1), 150f, 0.9f, 25f);
-            CreateBoss(bossPrefab, new Vector3(15, 1, -1), 150f, 0.9f, 25f);
-            CreateBoss(bossPrefab, new Vector3(30, 1, 1), 300f, 0.9f, 35f);
-            CreateBoss(bossPrefab1, new Vector3(45, 1, -1), 200f, 0.9f, 45f);
-            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 200f, 0.9f, 45f);
-            CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 400f, 0.9f, 45f);
-            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 500f, 0.9f, 45f);
+            CreateBoss(bossPrefab, new Vector3(14, 1, -1f), 70f, 0.5f, 10f);
+            CreateBoss(bossPrefab, new Vector3(14, 1, 1f), 70f, 0.5f, 10f);
+            CreateBoss(bossPrefab1, new Vector3(15, 1, 0), 150f, 0.6f, 25f);
+
+            CreateBoss(bossPrefab, new Vector3(29, 1, -1f), 100f, 0.5f, 15f);
+            CreateBoss(bossPrefab, new Vector3(29, 1, 1f), 100f, 0.5f, 15f);
+            CreateBoss(bossPrefab1, new Vector3(30, 1, 0), 200f, 0.6f, 35f);
+
+            CreateBoss(bossPrefab, new Vector3(44, 1, -1f), 100f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(44, 1, 0), 100f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(44, 1, 1f), 100f, 0.6f, 20f);
+            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 200f, 0.7f, 35f);
+
+            CreateBoss(bossPrefab, new Vector3(59, 1, -1f), 150f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(59, 1, 0), 150f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(59, 1, 1f), 150f, 0.6f, 20f);
+            CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 300f, 0.7f, 35f);
+
+            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 500f, 0.8f, 40f);
         }
     }
 
     void CreateBoss(GameObject prefab, Vector3 position, float hp = 400f, float speed = 0.9f, float attackPower = 45f, float attackRaidus = 0.8f)
     {
-        var boss = Instantiate(prefab, position, Quaternion.identity);
+        var boss = Instantiate(prefab, position, Quaternion.Euler(0, Random.Range(0, 360), 0));
         boss.GetComponent<DeviceController>().SetFrozen(false);
-        boss.transform.Find("Grunt").localScale = Vector3.one * (0.65f + (hp / 400f) / 10f);
+        boss.transform.Find("Grunt").localScale = Vector3.one * (0.55f + (hp / 300f) / 10f);
         var unit = boss.GetComponent<UnitController>();
         unit.speed = speed;
         unit.attackPower = attackPower;
@@ -346,11 +358,6 @@ public class LevelController : MonoBehaviour
             }
         } else
         {
-            if (IsPlatformer() && dead.GetComponent<NpcController>() != null)
-            {
-                CreateRabbit(dead.transform.position);
-            }
-
             // Killer is a player
             var scorePoints = dead.team == "enemy" && IsBoss() ? 3 : 1;
             killerPlayer.AddScore(scorePoints);

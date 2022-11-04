@@ -8,10 +8,7 @@ public class PauseMenuItemController : MonoBehaviour
 
     private TextMeshProUGUI text;
     private Image panel;
-    private Outline panelOutline;
-    private string buttonText;
     private Color buttonColor;
-    private Color outlineColor;
 
     void Start()
     {
@@ -23,11 +20,8 @@ public class PauseMenuItemController : MonoBehaviour
         ActionsController.OnSelectPauseOption += UpdateSelection;
 
         panel = GetComponent<Image>();
-        panelOutline = GetComponent<Outline>();
         text = GetComponentInChildren<TextMeshProUGUI>();
-        buttonText = text.text;
         buttonColor = panel.color;
-        outlineColor = panelOutline.effectColor;
     }
 
     void OnDestroy()
@@ -38,7 +32,6 @@ public class PauseMenuItemController : MonoBehaviour
     void UpdateSelection(int option)
     {
         text.fontStyle = option == optionId ? FontStyles.Bold : FontStyles.Normal;
-        panel.color = new Color(buttonColor.r, buttonColor.g, buttonColor.b, option == optionId ? 1 : 0.7f);
-        panelOutline.effectColor = new Color(outlineColor.r, outlineColor.g, outlineColor.b, option == optionId ? 1 : 0);
+        panel.color = new Color(buttonColor.r, buttonColor.g, buttonColor.b, option == optionId ? 0.1f : 0);
     }
 }

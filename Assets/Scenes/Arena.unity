@@ -839,7 +839,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &91080273
 AudioSource:
@@ -1050,7 +1050,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &96039011
 AudioSource:
@@ -1310,7 +1310,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 'Jump: <u><b>A</b></u> | Attack: <u><b>X</b></u> | Bomb: <u><b>B</b></u>
-    | Revive: <u><b>Y</b></u>'
+    | Heal: <u><b>Y</b></u>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3859,6 +3859,7 @@ GameObject:
   - component: {fileID: 268390121}
   - component: {fileID: 268390120}
   - component: {fileID: 268390119}
+  - component: {fileID: 268390131}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -3893,13 +3894,8 @@ MonoBehaviour:
   isStunOnHit: 1
   bombPrefab: {fileID: 5133868869961008886, guid: 52e774f7fe344014ab2a7192d02d399c,
     type: 3}
-  revivePrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
-    type: 3}
-  revivedPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
-    type: 3}
-  reviveSound: {fileID: 1875451825}
-  specialAttackManaCost: 25
-  spellManaCost: 50
+  abilities:
+  - {fileID: 268390131}
 --- !u!114 &268390119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4102,6 +4098,23 @@ MonoBehaviour:
   isAttackInProgress: 0
   isHitInProgress: 0
   isHit: 0
+--- !u!114 &268390131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268390116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  effectSound: {fileID: 639298533}
 --- !u!1001 &278751150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4297,7 +4310,7 @@ Transform:
   m_GameObject: {fileID: 302063970}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 77.50705, y: -1.0935614, z: -1.9164277}
-  m_LocalScale: {x: 13.150241, y: 0.75635344, z: 13.150241}
+  m_LocalScale: {x: 13.150241, y: 0.22670181, z: 13.150241}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 724862391}
@@ -5140,14 +5153,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 342711033}
-  m_LocalRotation: {x: -0.14571108, y: -0.8502339, z: -0.36524484, w: 0.3499526}
-  m_LocalPosition: {x: 72.27, y: 7.3, z: -7.44}
+  m_LocalRotation: {x: -0.13392691, y: -0.8610159, z: -0.36972845, w: 0.32251537}
+  m_LocalPosition: {x: 72.83, y: 7.3, z: -8.22}
   m_LocalScale: {x: 5.0086617, y: 2.5685444, z: 2.5685444}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 724862391}
   m_RootOrder: 50
-  m_LocalEulerAnglesHint: {x: -46.309, y: -134.978, z: -0.652}
+  m_LocalEulerAnglesHint: {x: -46.309, y: -138.652, z: -0.652}
 --- !u!23 &342711035
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5242,6 +5255,7 @@ Transform:
   - {fileID: 1780056810}
   - {fileID: 1925848279}
   - {fileID: 1919134930}
+  - {fileID: 639298532}
   - {fileID: 1636919373}
   - {fileID: 1898715006}
   - {fileID: 96039010}
@@ -5308,7 +5322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2, g: 0, b: 0.09411765, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -6395,7 +6409,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 130, y: 30}
+  m_SizeDelta: {x: 105, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &455843788
 MonoBehaviour:
@@ -6417,7 +6431,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Revive
+  m_text: Heal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6644,7 +6658,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &460621630
 AudioSource:
@@ -10387,6 +10401,134 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 82705343}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &639298531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 639298532}
+  - component: {fileID: 639298533}
+  m_Layer: 0
+  m_Name: Heal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &639298532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639298531}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 347254421}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &639298533
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639298531}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 67d7f93d4c648df468cf29df2eaf0439, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &664854447
 GameObject:
   m_ObjectHideFlags: 0
@@ -12541,7 +12683,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &724862391
 Transform:
   m_ObjectHideFlags: 0
@@ -13993,8 +14135,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -14082,6 +14224,7 @@ GameObject:
   - component: {fileID: 891500614}
   - component: {fileID: 891500613}
   - component: {fileID: 891500612}
+  - component: {fileID: 891500624}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Untagged
@@ -14116,13 +14259,8 @@ MonoBehaviour:
   isStunOnHit: 1
   bombPrefab: {fileID: 5133868869961008886, guid: 52e774f7fe344014ab2a7192d02d399c,
     type: 3}
-  revivePrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
-    type: 3}
-  revivedPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
-    type: 3}
-  reviveSound: {fileID: 1875451825}
-  specialAttackManaCost: 25
-  spellManaCost: 50
+  abilities:
+  - {fileID: 891500624}
 --- !u!114 &891500612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14325,6 +14463,23 @@ MonoBehaviour:
   isAttackInProgress: 0
   isHitInProgress: 0
   isHit: 0
+--- !u!114 &891500624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891500609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  effectSound: {fileID: 639298533}
 --- !u!1 &895490071
 GameObject:
   m_ObjectHideFlags: 0
@@ -16057,6 +16212,7 @@ GameObject:
   - component: {fileID: 1050814421}
   - component: {fileID: 1050814420}
   - component: {fileID: 1050814419}
+  - component: {fileID: 1050814431}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Untagged
@@ -16091,13 +16247,8 @@ MonoBehaviour:
   isStunOnHit: 1
   bombPrefab: {fileID: 5133868869961008886, guid: 52e774f7fe344014ab2a7192d02d399c,
     type: 3}
-  revivePrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
-    type: 3}
-  revivedPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
-    type: 3}
-  reviveSound: {fileID: 1875451825}
-  specialAttackManaCost: 25
-  spellManaCost: 50
+  abilities:
+  - {fileID: 1050814431}
 --- !u!114 &1050814419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16300,6 +16451,23 @@ MonoBehaviour:
   isAttackInProgress: 0
   isHitInProgress: 0
   isHit: 0
+--- !u!114 &1050814431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050814416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  effectSound: {fileID: 639298533}
 --- !u!1001 &1063894091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17941,8 +18109,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -18020,7 +18188,6 @@ GameObject:
   - component: {fileID: 1246887105}
   - component: {fileID: 1246887107}
   - component: {fileID: 1246887106}
-  - component: {fileID: 1246887108}
   - component: {fileID: 1246887109}
   m_Layer: 5
   m_Name: Resume
@@ -18063,7 +18230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -18088,21 +18255,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1246887104}
   m_CullTransparentMesh: 1
---- !u!114 &1246887108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1246887104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 0.9318118, b: 0, a: 1}
-  m_EffectDistance: {x: 5, y: -5}
-  m_UseGraphicAlpha: 1
 --- !u!114 &1246887109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19517,8 +19669,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -20182,6 +20334,7 @@ GameObject:
   - component: {fileID: 1407574994}
   - component: {fileID: 1407574993}
   - component: {fileID: 1407574992}
+  - component: {fileID: 1407575005}
   m_Layer: 0
   m_Name: Player 0
   m_TagString: Untagged
@@ -20391,13 +20544,8 @@ MonoBehaviour:
   isStunOnHit: 1
   bombPrefab: {fileID: 5133868869961008886, guid: 52e774f7fe344014ab2a7192d02d399c,
     type: 3}
-  revivePrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
-    type: 3}
-  revivedPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
-    type: 3}
-  reviveSound: {fileID: 1875451825}
-  specialAttackManaCost: 25
-  spellManaCost: 50
+  abilities:
+  - {fileID: 1407575005}
 --- !u!114 &1407575003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20425,6 +20573,23 @@ MonoBehaviour:
   isAttackInProgress: 0
   isHitInProgress: 0
   isHit: 0
+--- !u!114 &1407575005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407574990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  effectSound: {fileID: 639298533}
 --- !u!21 &1410763801
 Material:
   serializedVersion: 8
@@ -20526,7 +20691,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 130, y: 30}
+  m_SizeDelta: {x: 105, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1413122773
 MonoBehaviour:
@@ -20548,7 +20713,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Revive
+  m_text: Heal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -21200,7 +21365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4528302, g: 0.12456122, b: 0, a: 1}
+  m_Color: {r: 0.27450982, g: 0, b: 0.12941177, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -21326,7 +21491,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: 'Jump: <u><b>A</b></u> | Attack: <u><b>X</b></u> | Bomb: <u><b>B</b></u>
-    | Revive: <u><b>Y</b></u>'
+    | Heal: <u><b>Y</b></u>'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -21335,8 +21500,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -22055,7 +22220,6 @@ GameObject:
   - component: {fileID: 1547841396}
   - component: {fileID: 1547841398}
   - component: {fileID: 1547841397}
-  - component: {fileID: 1547841399}
   - component: {fileID: 1547841400}
   m_Layer: 5
   m_Name: Restart
@@ -22098,7 +22262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -22123,21 +22287,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1547841395}
   m_CullTransparentMesh: 1
---- !u!114 &1547841399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547841395}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 0.90825653, b: 0, a: 0}
-  m_EffectDistance: {x: 5, y: -5}
-  m_UseGraphicAlpha: 1
 --- !u!114 &1547841400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22580,7 +22729,6 @@ GameObject:
   - component: {fileID: 1614408786}
   - component: {fileID: 1614408789}
   - component: {fileID: 1614408788}
-  - component: {fileID: 1614408787}
   - component: {fileID: 1614408790}
   m_Layer: 5
   m_Name: Exit
@@ -22610,21 +22758,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1614408787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1614408785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 1, g: 0.90825653, b: 0, a: 0}
-  m_EffectDistance: {x: 5, y: -5}
-  m_UseGraphicAlpha: 1
 --- !u!114 &1614408788
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22638,7 +22771,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
+  m_Color: {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -22985,7 +23118,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1636919374
 AudioSource:
@@ -23662,7 +23795,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1667150969}
   m_LocalRotation: {x: -0.39315334, y: -0.0090545425, z: -0.008146201, w: 0.9193923}
-  m_LocalPosition: {x: 76.85, y: 7.3, z: 17.92}
+  m_LocalPosition: {x: 76.85, y: 7.23, z: 17.59}
   m_LocalScale: {x: 5.0086617, y: 2.5685444, z: 2.5685444}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -25525,7 +25658,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 130, y: 30}
+  m_SizeDelta: {x: 105, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1730324001
 MonoBehaviour:
@@ -25547,7 +25680,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Revive
+  m_text: Heal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -27336,7 +27469,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1898715007
 AudioSource:
@@ -28292,8 +28425,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -28703,7 +28836,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100020, guid: c685db5bd3a0f9b4d8ddb667b78d772f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100020, guid: c685db5bd3a0f9b4d8ddb667b78d772f, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -29136,7 +29269,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 130, y: 30}
+  m_SizeDelta: {x: 105, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2017077289
 MonoBehaviour:
@@ -29158,7 +29291,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Revive
+  m_text: Heal
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

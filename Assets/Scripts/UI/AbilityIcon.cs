@@ -7,6 +7,7 @@ public class AbilityIcon : MonoBehaviour
     {
         BOMB,
         REVIVE,
+        HEAL,
         ATTACK,
         JUMP,
     };
@@ -24,11 +25,11 @@ public class AbilityIcon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (abilityType == AbilityType.BOMB || abilityType == AbilityType.REVIVE)
+        if (abilityType == AbilityType.BOMB || abilityType == AbilityType.REVIVE || abilityType == AbilityType.HEAL)
         {
             var manaRequired = abilityType == AbilityType.BOMB 
-                ? unit.specialAttackManaCost
-                : unit.spellManaCost;
+                ? unit.GetSpecialManaRequired()
+                : unit.GetSpellManaRequired();
             var value = unit.GetMana() < manaRequired
                 ? unit.GetMana() / manaRequired
                 : 1;

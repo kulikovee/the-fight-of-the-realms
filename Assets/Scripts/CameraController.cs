@@ -25,7 +25,6 @@ public class CameraController : MonoBehaviour
         {
             var alivePlayersCount = 0;
             var maxPlayersDistance = 0f;
-            var previousPosition = averagePosition;
             averagePosition = Vector3.zero;
 
             foreach (var player in players)

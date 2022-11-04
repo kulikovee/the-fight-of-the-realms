@@ -19,9 +19,7 @@ public class UnitController : MonoBehaviour
     public bool canPickUpItems = true;
     public bool isStunOnHit = true;
     public GameObject bombPrefab;
-    public GameObject revivePrefab;
-    public GameObject revivedPrefab;
-    public AudioSource reviveSound;
+    public List<Ability> abilities;
 
     DeviceController device;
     AnimatedUnitController animatedUnit;
@@ -36,8 +34,7 @@ public class UnitController : MonoBehaviour
     float attackDistance = 0.5f;
     float manaRestoreTimeout = 0.125f;
     float manaRestoredAt = 0;
-    public float specialAttackManaCost = 25f;
-    public float spellManaCost = 50f;
+    float specialAttackManaCost = 25f;
 
     void Start()
     {
@@ -68,7 +65,7 @@ public class UnitController : MonoBehaviour
         if (IsAlive() && mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
         {
             manaRestoredAt = Time.time;
-            AddMana(0.25f);
+            AddMana(1f);
         }
 
         if (transform.position.y < -50f)
@@ -123,53 +120,19 @@ public class UnitController : MonoBehaviour
         }
     }
 
+    Ability GetAbility()
+    {
+        return abilities.Count > 0 ? abilities[0] : null;
+    }
+
     public void CastSpell()
     {
-        var teammatesToRevive = new List<UnitController>();
-
-        foreach (var unit in GameObject.FindObjectsOfType<UnitController>())
-        {
-            if (
-                IsSameTeam(unit) 
-                && !unit.IsAlive()
-                && Vector3.Distance(unit.transform.position, transform.position) < 3
-            )
-            {
-                teammatesToRevive.Add(unit);
-            }
-        }
-
-        if (teammatesToRevive.Count > 0)
-        {
-            AddMana(-spellManaCost);
-
-            if (revivePrefab != null)
-            {
-                var reviveEffect = Instantiate(revivePrefab, transform.position, Quaternion.identity);
-                reviveEffect.transform.parent = gameObject.transform;
-            }
-
-            if (reviveSound != null)
-            {
-                reviveSound.Play();
-            }
-
-            foreach(var unit in teammatesToRevive)
-            {
-                if (revivedPrefab != null)
-                {
-                    var revivedEffect = Instantiate(revivedPrefab, unit.transform.position, Quaternion.identity);
-                    revivedEffect.transform.parent = unit.transform;
-                }
-
-                unit.AddHp(maxMana);
-            }
-        }
+        if (GetAbility() != null) GetAbility().Cast();
     }
 
     public bool IsEnoughManaToSpell()
     {
-        return mana >= spellManaCost;
+        return GetAbility() == null || GetAbility().IsEnoughMana();
     }
 
     public bool IsEnoughManaToSpecialAttack()
@@ -240,6 +203,16 @@ public class UnitController : MonoBehaviour
     public float GetMana()
     {
         return mana;
+    }
+    public float GetSpecialManaRequired()
+    {
+        return specialAttackManaCost;
+    }
+
+    public float GetSpellManaRequired()
+    {
+        var ability = GetAbility();
+        return ability != null ? ability.GetManaRequired() : 0f;
     }
 
     void Die(UnitController killer)

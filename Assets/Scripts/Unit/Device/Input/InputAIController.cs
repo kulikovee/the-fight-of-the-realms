@@ -91,7 +91,7 @@ public class InputAIController : MonoBehaviour
                 var distanceToTarget = Vector3.Distance(position, target);
 
                 if (
-                    distanceToEnemyUnit < (level.IsPlatformer() ? 10f : 25f)
+                    distanceToEnemyUnit < (level.IsPlatformer() ? 5f : 25f)
                     && (!isTargetUpdated || distanceToEnemyUnit < distanceToTarget)
                 )
                 {
