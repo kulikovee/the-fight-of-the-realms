@@ -87,9 +87,11 @@ public abstract class Ability : MonoBehaviour
         return GetAliveUnits(radius, atPosition).Where(_unit => unit != _unit && !_unit.IsSameTeam(unit)).ToArray();
     }
 
-    protected UnitController[] GetAliveAllies(float? radius = null, Vector3? atPosition = null)
+    protected UnitController[] GetAliveAllies(float? radius = null, Vector3? atPosition = null, bool applyToSelf = true)
     {
-        return GetAliveUnits(radius, atPosition).Where(_unit => _unit.IsSameTeam(unit)).ToArray();
+        return GetAliveUnits(radius, atPosition).Where(
+            _unit => (applyToSelf && _unit == unit) || _unit.IsSameTeam(unit)
+        ).ToArray();
     }
 
     protected UnitController[] GetAliveUnits(float? radius = null, Vector3? atPosition = null)

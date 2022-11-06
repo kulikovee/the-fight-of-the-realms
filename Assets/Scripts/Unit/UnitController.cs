@@ -15,7 +15,6 @@ public class UnitController : MonoBehaviour
     public float attackRadius = 0.8f;
     public float attackDistance = 0.5f;
     public float speed = 1f;
-    public string team = "";
     public bool canPickUpItems = true;
     public bool isStunOnHit = true;
     public GameObject bombPrefab;
@@ -31,6 +30,7 @@ public class UnitController : MonoBehaviour
 
     float hp = 0;
     float mana = 0;
+    string team = "";
 
     float manaRestoreTimeout = 0.125f;
     float manaRestoredAt = 0;
@@ -68,7 +68,12 @@ public class UnitController : MonoBehaviour
 
     void Update()
     {
-        if (IsAlive() && mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
+        if (!IsAlive())
+        {
+            return;
+        }
+
+        if (mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
         {
             manaRestoredAt = Time.time;
             AddMana(1f);
@@ -199,11 +204,6 @@ public class UnitController : MonoBehaviour
         return device;
     }
 
-    public bool IsSameTeam(UnitController unit)
-    {
-        return team != "" && unit.team != "" && unit.team == team;
-    }
-
     public float GetHp()
     {
         return hp;
@@ -216,6 +216,46 @@ public class UnitController : MonoBehaviour
     public float GetSecondAbilityManaRequired()
     {
         return secondAbilityManaCost;
+    }
+
+    public void MakeTeamAlly()
+    {
+        team = "allies";
+    }
+
+    public void MakeTeamEnemy()
+    {
+        team = "enemies";
+    }
+
+    public void MakeTeamEmpty()
+    {
+        team = "";
+    }
+
+    public bool IsTeamAlly()
+    {
+        return team == "allies";
+    }
+
+    public bool IsTeamEnemy()
+    {
+        return team == "enemies";
+    }
+
+    public bool IsTeamEmpty()
+    {
+        return team == "";
+    }
+    
+    public bool IsSameTeam(UnitController unit)
+    {
+        return unit.IsSameTeam(team);
+    }
+
+    public bool IsSameTeam(string compareTeam)
+    {
+        return compareTeam != "" && team != "" && compareTeam == team;
     }
 
     void UpdateCurrentAbility()

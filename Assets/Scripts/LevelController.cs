@@ -20,7 +20,7 @@ public class LevelController : MonoBehaviour
         PLATFORMER,
     };
 
-    public static int scoreToWin = 15;
+    public static int scoreToWin = 20;
 
     // Configurable params
     public AudioSource gameOverSound;
@@ -197,7 +197,7 @@ public class LevelController : MonoBehaviour
 
             if (IsPlatformer())
             {
-                levelTip = "DEFEND THE FOREST!";
+                levelTip = "KILL ORCS!";
             }
 
             nextLevelText.text = levelTip;
@@ -281,7 +281,13 @@ public class LevelController : MonoBehaviour
     {
         foreach(var player in GetPlayers())
         {
-            player.GetUnit().team = IsDeathmatch() ? "" : "allies";
+            if (IsDeathmatch() || IsSurvival())
+            {
+                player.GetUnit().MakeTeamEmpty();
+            } else
+            {
+                player.GetUnit().MakeTeamAlly();
+            }
         }
 
         if (IsBoss())
@@ -299,25 +305,25 @@ public class LevelController : MonoBehaviour
 
         if (IsPlatformer())
         {
-            CreateBoss(bossPrefab, new Vector3(14, 1, -1f), 70f, 0.5f, 10f);
-            CreateBoss(bossPrefab, new Vector3(14, 1, 1f), 70f, 0.5f, 10f);
+            CreateBoss(bossPrefab, new Vector3(14, 1, -1f), 100f, 0.5f, 10f);
+            CreateBoss(bossPrefab, new Vector3(14, 1, 1f), 100f, 0.5f, 10f);
             CreateBoss(bossPrefab1, new Vector3(15, 1, 0), 150f, 0.6f, 25f);
 
-            CreateBoss(bossPrefab, new Vector3(29, 1, -1f), 100f, 0.5f, 15f);
-            CreateBoss(bossPrefab, new Vector3(29, 1, 1f), 100f, 0.5f, 15f);
-            CreateBoss(bossPrefab1, new Vector3(30, 1, 0), 200f, 0.6f, 35f);
+            CreateBoss(bossPrefab, new Vector3(29, 1, -1f), 120f, 0.5f, 15f);
+            CreateBoss(bossPrefab, new Vector3(29, 1, 1f), 120f, 0.5f, 15f);
+            CreateBoss(bossPrefab1, new Vector3(30, 1, 0), 230f, 0.6f, 35f);
 
-            CreateBoss(bossPrefab, new Vector3(44, 1, -1f), 100f, 0.6f, 20f);
-            CreateBoss(bossPrefab, new Vector3(44, 1, 0), 100f, 0.6f, 20f);
-            CreateBoss(bossPrefab, new Vector3(44, 1, 1f), 100f, 0.6f, 20f);
-            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 200f, 0.7f, 35f);
+            CreateBoss(bossPrefab, new Vector3(44, 1, -1f), 120f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(44, 1, 0), 120f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(44, 1, 1f), 130f, 0.6f, 20f);
+            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 230f, 0.7f, 35f);
 
             CreateBoss(bossPrefab, new Vector3(59, 1, -1f), 150f, 0.6f, 20f);
             CreateBoss(bossPrefab, new Vector3(59, 1, 0), 150f, 0.6f, 20f);
             CreateBoss(bossPrefab, new Vector3(59, 1, 1f), 150f, 0.6f, 20f);
             CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 300f, 0.7f, 35f);
 
-            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 500f, 0.8f, 40f);
+            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 700f, 0.8f, 40f);
         }
     }
 
@@ -332,6 +338,7 @@ public class LevelController : MonoBehaviour
         unit.maxHp = hp;
         unit.attackRadius = attackRaidus;
         unit.AddHp(unit.maxHp);
+        unit.MakeTeamEnemy();
     }
 
     void OnUnitKilled(UnitController dead, UnitController killer)
@@ -359,7 +366,7 @@ public class LevelController : MonoBehaviour
         } else
         {
             // Killer is a player
-            var scorePoints = dead.team == "enemy" && IsBoss() ? 3 : 1;
+            var scorePoints = dead.IsTeamEnemy() && IsBoss() ? 3 : 1;
             killerPlayer.AddScore(scorePoints);
         }
     }

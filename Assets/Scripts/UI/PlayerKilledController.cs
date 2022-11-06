@@ -36,7 +36,12 @@ public class PlayerKilledController : MonoBehaviour
         var deadName = $"<color={PlayerWonController.playerColors[deadId]}>P{deadId + 1}</color>";
         var killerName = $"<color={PlayerWonController.playerColors[killerId]}>P{killerId + 1}</color>";
 
-        if (Random.Range(0f, 1f) <= 0.3f)
+        if (deadId == killerId)
+        {
+            return $"{killerName} gracefully kills himself";
+        }
+
+        if (Random.Range(0f, 1f) <= 0.25f)
         {
             // Default message
             return $"{killerName} kills {deadName}";

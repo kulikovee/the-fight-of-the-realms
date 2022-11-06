@@ -7,7 +7,7 @@ public class Revive : Ability
     Revive()
     {
         title = "Revive";
-        manaRequired = 50f;
+        manaRequired = 70f;
     }
 
     override protected void CastApply()

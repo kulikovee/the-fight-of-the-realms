@@ -16,7 +16,7 @@ public class Heal : Ability
         var healAtPosition = GetForwardAtDistance(castDistance);
         var teammatesToHeal = GetAliveAllies(castRadius, healAtPosition);
 
-        if (teammatesToHeal.Length > 1)
+        if (teammatesToHeal.Length > 0)
         {
             unit.AddMana(-manaRequired);
 
@@ -37,7 +37,7 @@ public class Heal : Ability
                     CreateEffect(selfEffectPrefab, ally.gameObject);
                 }
 
-                ally.AddHp(unit.maxMana);
+                ally.AddHp(unit.maxMana / 1.5f);
             }
         }
     }
