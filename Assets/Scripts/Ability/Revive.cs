@@ -2,12 +2,18 @@
 
 public class Revive : Ability
 {
+    NotificationController notifications;
     float castRadius = 3f;
 
     Revive()
     {
         title = "Revive";
         manaRequired = 70f;
+    }
+
+    void Start()
+    {
+        notifications = NotificationController.GetNotifications();
     }
 
     override protected void CastApply()
@@ -37,6 +43,9 @@ public class Revive : Ability
 
                 ally.AddHp(unit.maxMana);
             }
+        } else
+        {
+            notifications.Notify(unit, "No allies to Revive");
         }
     }
 }

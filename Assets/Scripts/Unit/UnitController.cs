@@ -25,6 +25,7 @@ public class UnitController : MonoBehaviour
     KinematicCharacterAdapter characterAdapter;
 
     ActionsController actions;
+    NotificationController notifications;
     Vector3 defaultPosition;
     Quaternion defaultRotation;
 
@@ -52,6 +53,7 @@ public class UnitController : MonoBehaviour
         device = GetComponent<DeviceController>();
         animatedUnit = GetComponent<AnimatedUnitController>();
         actions = ActionsController.GetActions();
+        notifications = NotificationController.GetNotifications();
 
         hp = maxHp;
         mana = maxMana;
@@ -171,6 +173,9 @@ public class UnitController : MonoBehaviour
 
     public void GetHit(UnitController attacker, float damage)
     {
+        var randomizedBounds = Random.Range((int)(-damage / 10f), (int)(damage / 10f));
+        damage += randomizedBounds;
+
         if (IsAlive())
         {
             AddHp(-damage);
@@ -192,6 +197,7 @@ public class UnitController : MonoBehaviour
     public void AddHp(float addAmount)
     {
         SetHp(Mathf.Clamp(hp + addAmount, 0f, maxHp));
+        notifications.Notify(this, (addAmount > 0 ? "+" : "") + Mathf.Round(addAmount));
     }
 
     public void AddMana(float addAmount)

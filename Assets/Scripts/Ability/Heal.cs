@@ -30,6 +30,8 @@ public class Heal : Ability
                 effectSound.Play();
             }
 
+            var restoreHp = unit.maxMana / 1.5f;
+
             foreach (var ally in teammatesToHeal)
             {
                 if (selfEffectPrefab != null)
@@ -37,7 +39,7 @@ public class Heal : Ability
                     CreateEffect(selfEffectPrefab, ally.gameObject);
                 }
 
-                ally.AddHp(unit.maxMana / 1.5f);
+                ally.AddHp(restoreHp);
             }
         }
     }

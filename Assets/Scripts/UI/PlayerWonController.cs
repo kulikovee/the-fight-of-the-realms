@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class PlayerWonController : MonoBehaviour
 {
-    public static List<string> playerColors = new() { "#f66", "#6f6", "#33f", "#fff", "#fff" };
+    public static List<string> playerColors = new() { 
+        "#f66",
+        "#6f6", 
+        "#33f",
+        "#fff",
+        "#ccc" // <-- NPC
+    };
 
     public AudioSource wonSound;
     Animator animator;

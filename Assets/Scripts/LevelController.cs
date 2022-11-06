@@ -307,23 +307,23 @@ public class LevelController : MonoBehaviour
         {
             CreateBoss(bossPrefab, new Vector3(14, 1, -1f), 100f, 0.5f, 10f);
             CreateBoss(bossPrefab, new Vector3(14, 1, 1f), 100f, 0.5f, 10f);
-            CreateBoss(bossPrefab1, new Vector3(15, 1, 0), 150f, 0.6f, 25f);
+            CreateBoss(bossPrefab1, new Vector3(15, 1, 0), 170f, 0.6f, 25f);
 
             CreateBoss(bossPrefab, new Vector3(29, 1, -1f), 120f, 0.5f, 15f);
             CreateBoss(bossPrefab, new Vector3(29, 1, 1f), 120f, 0.5f, 15f);
-            CreateBoss(bossPrefab1, new Vector3(30, 1, 0), 230f, 0.6f, 35f);
+            CreateBoss(bossPrefab1, new Vector3(30, 1, 0), 250f, 0.6f, 35f);
 
             CreateBoss(bossPrefab, new Vector3(44, 1, -1f), 120f, 0.6f, 20f);
             CreateBoss(bossPrefab, new Vector3(44, 1, 0), 120f, 0.6f, 20f);
             CreateBoss(bossPrefab, new Vector3(44, 1, 1f), 130f, 0.6f, 20f);
-            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 230f, 0.7f, 35f);
+            CreateBoss(bossPrefab1, new Vector3(45, 1, 1), 250f, 0.7f, 35f);
 
-            CreateBoss(bossPrefab, new Vector3(59, 1, -1f), 150f, 0.6f, 20f);
-            CreateBoss(bossPrefab, new Vector3(59, 1, 0), 150f, 0.6f, 20f);
-            CreateBoss(bossPrefab, new Vector3(59, 1, 1f), 150f, 0.6f, 20f);
-            CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 300f, 0.7f, 35f);
+            CreateBoss(bossPrefab, new Vector3(59, 1, -1f), 175f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(59, 1, 0), 175f, 0.6f, 20f);
+            CreateBoss(bossPrefab, new Vector3(59, 1, 1f), 175f, 0.6f, 20f);
+            CreateBoss(bossPrefab1, new Vector3(60, 1, -1), 350f, 0.7f, 35f);
 
-            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 700f, 0.8f, 40f);
+            CreateBoss(bossPrefab2, new Vector3(75, 1, 0), 900f, 0.8f, 40f);
         }
     }
 
@@ -337,7 +337,6 @@ public class LevelController : MonoBehaviour
         unit.attackPower = attackPower;
         unit.maxHp = hp;
         unit.attackRadius = attackRaidus;
-        unit.AddHp(unit.maxHp);
         unit.MakeTeamEnemy();
     }
 

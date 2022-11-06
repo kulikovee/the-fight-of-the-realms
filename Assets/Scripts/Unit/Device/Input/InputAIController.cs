@@ -13,10 +13,12 @@ public class InputAIController : MonoBehaviour
     bool isAttack = false;
     LevelController level;
     UnitController unit;
+    PlayerController player;
 
     private void Start()
     {
         unit = GetComponent<UnitController>();
+        player = GetComponent<PlayerController>();
         level = LevelController.GetLevel();
     }
 
@@ -54,6 +56,7 @@ public class InputAIController : MonoBehaviour
             var isRandomJump = distance > 2f && Random.Range(0f, 1f) >= 0.9f;
             axis.SetButtonA(isSurvivingAlly || isRandomJump ? 1f : 0f);
             axis.SetButtonX(isAttack ? 1 : 0);
+            axis.SetButtonY(IsPlayer() && unit.GetHp() < 65f ? 1 : 0);
         } else
         {
             axis.ResetAxis();
@@ -191,5 +194,10 @@ public class InputAIController : MonoBehaviour
         }
 
         return defaultTarget;
+    }
+
+    bool IsPlayer()
+    {
+        return player != null;
     }
 }
