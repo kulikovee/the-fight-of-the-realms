@@ -6,12 +6,14 @@ public class Bomb : MonoBehaviour
     public GameObject bomb;
 
     float startAt = 0f;
+    float attackPower = 0f;
     bool isExploded = false;
     AudioSource explodeSound;
     UnitController ownerUnit;
     UnitController[] units;
     readonly float explodeTimeout = 1f;
     readonly float destroyTimeout = 1.45f;
+
 
     void Start()
     {
@@ -55,6 +57,11 @@ public class Bomb : MonoBehaviour
         startAt = Time.time;
     }
 
+    public void SetAttackPower(float newAttackPower)
+    {
+        attackPower = newAttackPower;
+    }
+
     public void DoDamage()
     {
         foreach (var unit in units)
@@ -73,7 +80,7 @@ public class Bomb : MonoBehaviour
 
                 if (distanceMultiplier > 0f)
                 {
-                    unit.GetHit(ownerUnit, ownerUnit.specialAttackPower * distanceMultiplier);
+                    unit.GetHit(ownerUnit, attackPower * distanceMultiplier);
                 }
             }
         }

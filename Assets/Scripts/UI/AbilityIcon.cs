@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,16 +6,14 @@ public class AbilityIcon : MonoBehaviour
 {
     public enum AbilityType
     {
-        BOMB,
-        REVIVE,
-        HEAL,
-        ATTACK,
-        JUMP,
+        SECOND_ABILITY,
+        MAIN_ABILITY,
     };
 
     public UnitController unit;
-    public AbilityType abilityType = AbilityType.BOMB;
+    public AbilityType abilityType = AbilityType.SECOND_ABILITY;
     public GameObject outline;
+    public TextMeshProUGUI title;
     Image icon;
 
     void Start()
@@ -25,11 +24,18 @@ public class AbilityIcon : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (abilityType == AbilityType.BOMB || abilityType == AbilityType.REVIVE || abilityType == AbilityType.HEAL)
+        if (abilityType == AbilityType.SECOND_ABILITY || abilityType == AbilityType.MAIN_ABILITY)
         {
-            var manaRequired = abilityType == AbilityType.BOMB 
-                ? unit.GetSpecialManaRequired()
-                : unit.GetSpellManaRequired();
+            if (abilityType == AbilityType.MAIN_ABILITY)
+            {
+                title.text = unit.GetMainAbility().GetTitle();
+                title.rectTransform.sizeDelta = new Vector2(title.text.Length * 16, 30);
+            }
+
+            var manaRequired = abilityType == AbilityType.SECOND_ABILITY 
+                ? unit.GetSecondAbilityManaRequired()
+                : unit.GetMainAbility().GetManaRequired();
+
             var value = unit.GetMana() < manaRequired
                 ? unit.GetMana() / manaRequired
                 : 1;

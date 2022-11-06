@@ -77,7 +77,7 @@ public class AnimatedUnitController : MonoBehaviour
     {
         var axis = device.GetAxis();
         var isSpecialAttackPressed = axis.GetButtonO() != 0f;
-        if (isSpecialAttackPressed && unit.IsEnoughManaToSpecialAttack())
+        if (isSpecialAttackPressed && unit.IsEnoughManaToSecondAbility())
         {
             lastSpecialAttackStartedAt = Time.time;
         }
@@ -87,7 +87,7 @@ public class AnimatedUnitController : MonoBehaviour
         if (
             !isRecentlyPressed
             && isSpecialAttackPressed
-            && !unit.IsEnoughManaToSpell()
+            && !unit.IsEnoughManaToMainAbility()
             && notEnoughManaSound != null
             && !notEnoughManaSound.isPlaying
         )
@@ -103,7 +103,7 @@ public class AnimatedUnitController : MonoBehaviour
         var axis = device.GetAxis();
         var isCastSpellPressed = axis.GetButtonY() != 0f;
 
-        if (isCastSpellPressed && unit.IsEnoughManaToSpell())
+        if (isCastSpellPressed && unit.IsEnoughManaToMainAbility())
         {
             lastCastSpellStartedAt = Time.time;
         }
@@ -113,7 +113,7 @@ public class AnimatedUnitController : MonoBehaviour
         if (
             !isRecentlyPressed
             && isCastSpellPressed
-            && !unit.IsEnoughManaToSpell()
+            && !unit.IsEnoughManaToMainAbility()
             && notEnoughManaSound != null
             && !notEnoughManaSound.isPlaying
         )
@@ -166,13 +166,13 @@ public class AnimatedUnitController : MonoBehaviour
     {
         if (animator.GetBool("specialAttack"))
         {
-            unit.SpecialAttack();
+            unit.SecondAbility();
         }
     }
 
     /** Called from AnimatedUnitEvents => Revive animation **/
     public void CastSpell()
     {
-        unit.CastSpell();
+        unit.MainAbility();
     }
 }

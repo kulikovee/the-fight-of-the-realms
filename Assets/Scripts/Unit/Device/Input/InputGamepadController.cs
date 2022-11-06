@@ -51,6 +51,8 @@ public class InputGamepadController : MonoBehaviour
         axis.SetButtonX(gamePad.buttonWest.ReadValue());
         axis.SetButtonO(gamePad.buttonEast.ReadValue());
         axis.SetButtonY(gamePad.buttonNorth.ReadValue());
+        axis.SetButtonLB(gamePad.leftShoulder.ReadValue());
+        axis.SetButtonRB(gamePad.rightShoulder.ReadValue());
     }
 
     public static List<int> GetPressedIds()

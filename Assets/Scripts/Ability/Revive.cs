@@ -2,11 +2,13 @@
 
 public class Revive : Ability
 {
-    [System.NonSerialized]
-    public new string title = "Revive";
-    [System.NonSerialized]
-    protected new float manaRequired = 50f;
     float castRadius = 3f;
+
+    Revive()
+    {
+        title = "Revive";
+        manaRequired = 50f;
+    }
 
     override protected void CastApply()
     {
@@ -26,14 +28,14 @@ public class Revive : Ability
                 effectSound.Play();
             }
 
-            foreach (var unit in teammatesToRevive)
+            foreach (var ally in teammatesToRevive)
             {
                 if (targetEffectPrefab != null)
                 {
-                    CreateEffect(targetEffectPrefab, unit.gameObject);
+                    CreateEffect(targetEffectPrefab, ally.gameObject);
                 }
 
-                unit.AddHp(unit.maxMana);
+                ally.AddHp(unit.maxMana);
             }
         }
     }

@@ -50,6 +50,7 @@ public class InputWASDController : MonoBehaviour
                 || Input.GetKey(KeyCode.LeftCommand)
                 || Input.GetMouseButton(1);
             bool isButtonY = Input.GetKey(KeyCode.R) || Input.GetKey(KeyCode.Y);
+            bool isButtonRB = Input.GetKey(KeyCode.Tab);
 
             axis.SetX((isLeft ? -1 : (isRight ? 1 : 0)) * keyboardMovementFactor);
             axis.SetY((isDown ? -1 : (isUp ? 1 : 0)) * keyboardMovementFactor);
@@ -57,6 +58,7 @@ public class InputWASDController : MonoBehaviour
             axis.SetButtonX(isButtonX ? 1 : 0);
             axis.SetButtonO(isButtonO ? 1 : 0);
             axis.SetButtonY(isButtonY ? 1 : 0);
+            axis.SetButtonRB(isButtonRB ? 1 : 0);
 
             if (!isUp && !isDown && !isRight && !isLeft)
             {

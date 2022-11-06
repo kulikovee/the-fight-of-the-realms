@@ -8,6 +8,8 @@ public class Axis
     private float buttonX = 0f;
     private float buttonO = 0f;
     private float buttonY = 0f;
+    private float buttonRB = 0f;
+    private float buttonLB = 0f;
     private float pause = 0f;
     
     public void SetX(float newX)
@@ -69,14 +71,34 @@ public class Axis
         return pause;
     }
 
-    public void SetButtonO(float newCancel)
+    public void SetButtonO(float newButtonO)
     {
-        buttonO = newCancel;
+        buttonO = newButtonO;
     }  
 
     public float GetButtonO()
     {
         return buttonO;
+    }
+
+    public void SetButtonRB(float newButtonRB)
+    {
+        buttonRB = newButtonRB;
+    }  
+
+    public float GetButtonRB()
+    {
+        return buttonRB;
+    }
+
+    public void SetButtonLB(float newButtonLB)
+    {
+        buttonLB = newButtonLB;
+    }  
+
+    public float GetButtonLB()
+    {
+        return buttonLB;
     }
 
     public void ResetAxis()

@@ -2,16 +2,18 @@
 
 public class Heal : Ability
 {
-    [System.NonSerialized]
-    public new string title = "Heal";
-    [System.NonSerialized]
-    protected new float manaRequired = 40f;
     float castDistance = 0.5f;
     float castRadius = 2f;
 
+    Heal()
+    {
+        title = "Heal";
+        manaRequired = 40f;
+    }
+
     override protected void CastApply()
     {
-        var healAtPosition = transform.position + transform.forward * castDistance + transform.up;
+        var healAtPosition = GetForwardAtDistance(castDistance);
         var teammatesToHeal = GetAliveAllies(castRadius, healAtPosition);
 
         if (teammatesToHeal.Length > 1)
@@ -28,14 +30,14 @@ public class Heal : Ability
                 effectSound.Play();
             }
 
-            foreach (var unit in teammatesToHeal)
+            foreach (var ally in teammatesToHeal)
             {
                 if (selfEffectPrefab != null)
                 {
-                    CreateEffect(selfEffectPrefab, unit.gameObject);
+                    CreateEffect(selfEffectPrefab, ally.gameObject);
                 }
 
-                unit.AddHp(unit.maxMana);
+                ally.AddHp(unit.maxMana);
             }
         }
     }

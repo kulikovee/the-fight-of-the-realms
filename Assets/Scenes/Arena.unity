@@ -839,7 +839,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 21
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &91080273
 AudioSource:
@@ -1050,7 +1050,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &96039011
 AudioSource:
@@ -3349,7 +3349,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &178121191
 AudioSource:
@@ -3586,6 +3586,7 @@ MonoBehaviour:
   unit: {fileID: 268390118}
   abilityType: 0
   outline: {fileID: 1610465414}
+  title: {fileID: 0}
 --- !u!114 &245286925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3662,7 +3663,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &261105084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3860,6 +3861,8 @@ GameObject:
   - component: {fileID: 268390120}
   - component: {fileID: 268390119}
   - component: {fileID: 268390131}
+  - component: {fileID: 268390132}
+  - component: {fileID: 268390133}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -3886,8 +3889,8 @@ MonoBehaviour:
   maxHp: 150
   maxMana: 75
   attackPower: 25
-  specialAttackPower: 25
   attackRadius: 0.8
+  attackDistance: 0.5
   speed: 1
   team: players
   canPickUpItems: 1
@@ -3896,6 +3899,8 @@ MonoBehaviour:
     type: 3}
   abilities:
   - {fileID: 268390131}
+  - {fileID: 268390132}
+  - {fileID: 268390133}
 --- !u!114 &268390119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4115,6 +4120,40 @@ MonoBehaviour:
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
     type: 3}
   effectSound: {fileID: 639298533}
+--- !u!114 &268390132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268390116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4842650f12d971439acefbadd24ddc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
+    type: 3}
+  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+    type: 3}
+  effectSound: {fileID: 1875451825}
+--- !u!114 &268390133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268390116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+    type: 3}
+  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+    type: 3}
+  effectSound: {fileID: 2079312424}
 --- !u!1001 &278751150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5245,6 +5284,7 @@ Transform:
   - {fileID: 777094658}
   - {fileID: 1175450476}
   - {fileID: 1926178254}
+  - {fileID: 2079312423}
   - {fileID: 1875451824}
   - {fileID: 828003497}
   - {fileID: 1159339339}
@@ -5772,6 +5812,7 @@ MonoBehaviour:
   unit: {fileID: 268390118}
   abilityType: 1
   outline: {fileID: 1506944678}
+  title: {fileID: 1730324001}
 --- !u!114 &393754419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6409,7 +6450,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 105, y: 30}
+  m_SizeDelta: {x: 65, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &455843788
 MonoBehaviour:
@@ -6658,7 +6699,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 20
+  m_RootOrder: 21
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &460621630
 AudioSource:
@@ -6953,6 +6994,7 @@ MonoBehaviour:
   unit: {fileID: 891500611}
   abilityType: 0
   outline: {fileID: 1082159002}
+  title: {fileID: 0}
 --- !u!114 &476510688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7909,6 +7951,7 @@ MonoBehaviour:
   unit: {fileID: 1407575002}
   abilityType: 1
   outline: {fileID: 1753230226}
+  title: {fileID: 455843788}
 --- !u!114 &545963447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9609,7 +9652,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &575479084
 AudioSource:
@@ -10431,7 +10474,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &639298533
 AudioSource:
@@ -12909,7 +12952,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &741180532
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13167,7 +13210,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &770660074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13838,7 +13881,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
@@ -14225,6 +14268,8 @@ GameObject:
   - component: {fileID: 891500613}
   - component: {fileID: 891500612}
   - component: {fileID: 891500624}
+  - component: {fileID: 891500625}
+  - component: {fileID: 891500626}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Untagged
@@ -14251,8 +14296,8 @@ MonoBehaviour:
   maxHp: 150
   maxMana: 75
   attackPower: 25
-  specialAttackPower: 25
   attackRadius: 0.8
+  attackDistance: 0.5
   speed: 1
   team: players
   canPickUpItems: 1
@@ -14261,6 +14306,8 @@ MonoBehaviour:
     type: 3}
   abilities:
   - {fileID: 891500624}
+  - {fileID: 891500625}
+  - {fileID: 891500626}
 --- !u!114 &891500612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14480,6 +14527,40 @@ MonoBehaviour:
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
     type: 3}
   effectSound: {fileID: 639298533}
+--- !u!114 &891500625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891500609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4842650f12d971439acefbadd24ddc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
+    type: 3}
+  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+    type: 3}
+  effectSound: {fileID: 1875451825}
+--- !u!114 &891500626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891500609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+    type: 3}
+  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+    type: 3}
+  effectSound: {fileID: 2079312424}
 --- !u!1 &895490071
 GameObject:
   m_ObjectHideFlags: 0
@@ -15208,6 +15289,7 @@ MonoBehaviour:
   unit: {fileID: 1050814418}
   abilityType: 1
   outline: {fileID: 1595669076}
+  title: {fileID: 1413122773}
 --- !u!114 &974754552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15591,6 +15673,7 @@ MonoBehaviour:
   unit: {fileID: 1407575002}
   abilityType: 0
   outline: {fileID: 926905403}
+  title: {fileID: 0}
 --- !u!114 &1004807203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16213,6 +16296,8 @@ GameObject:
   - component: {fileID: 1050814420}
   - component: {fileID: 1050814419}
   - component: {fileID: 1050814431}
+  - component: {fileID: 1050814432}
+  - component: {fileID: 1050814433}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Untagged
@@ -16239,8 +16324,8 @@ MonoBehaviour:
   maxHp: 150
   maxMana: 75
   attackPower: 25
-  specialAttackPower: 25
   attackRadius: 0.8
+  attackDistance: 0.5
   speed: 1
   team: players
   canPickUpItems: 1
@@ -16249,6 +16334,8 @@ MonoBehaviour:
     type: 3}
   abilities:
   - {fileID: 1050814431}
+  - {fileID: 1050814432}
+  - {fileID: 1050814433}
 --- !u!114 &1050814419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16468,6 +16555,40 @@ MonoBehaviour:
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
     type: 3}
   effectSound: {fileID: 639298533}
+--- !u!114 &1050814432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050814416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4842650f12d971439acefbadd24ddc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
+    type: 3}
+  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+    type: 3}
+  effectSound: {fileID: 1875451825}
+--- !u!114 &1050814433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050814416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+    type: 3}
+  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+    type: 3}
+  effectSound: {fileID: 2079312424}
 --- !u!1001 &1063894091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17151,7 +17272,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1159339340
 AudioSource:
@@ -19311,7 +19432,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1335207976
 AudioSource:
@@ -20335,6 +20456,8 @@ GameObject:
   - component: {fileID: 1407574993}
   - component: {fileID: 1407574992}
   - component: {fileID: 1407575005}
+  - component: {fileID: 1407575006}
+  - component: {fileID: 1407575007}
   m_Layer: 0
   m_Name: Player 0
   m_TagString: Untagged
@@ -20536,8 +20659,8 @@ MonoBehaviour:
   maxHp: 150
   maxMana: 75
   attackPower: 25
-  specialAttackPower: 25
   attackRadius: 0.8
+  attackDistance: 0.5
   speed: 1
   team: players
   canPickUpItems: 1
@@ -20546,6 +20669,8 @@ MonoBehaviour:
     type: 3}
   abilities:
   - {fileID: 1407575005}
+  - {fileID: 1407575006}
+  - {fileID: 1407575007}
 --- !u!114 &1407575003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20590,6 +20715,40 @@ MonoBehaviour:
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
     type: 3}
   effectSound: {fileID: 639298533}
+--- !u!114 &1407575006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407574990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4842650f12d971439acefbadd24ddc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
+    type: 3}
+  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+    type: 3}
+  effectSound: {fileID: 1875451825}
+--- !u!114 &1407575007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407574990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+    type: 3}
+  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+    type: 3}
+  effectSound: {fileID: 2079312424}
 --- !u!21 &1410763801
 Material:
   serializedVersion: 8
@@ -20691,7 +20850,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 105, y: 30}
+  m_SizeDelta: {x: 65, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1413122773
 MonoBehaviour:
@@ -23118,7 +23277,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1636919374
 AudioSource:
@@ -25582,7 +25741,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 40, y: 40}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1722824150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25658,7 +25817,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 105, y: 30}
+  m_SizeDelta: {x: 65, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1730324001
 MonoBehaviour:
@@ -25936,7 +26095,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1765620108
 AudioSource:
@@ -26089,6 +26248,7 @@ MonoBehaviour:
   unit: {fileID: 1050814418}
   abilityType: 0
   outline: {fileID: 26835406}
+  title: {fileID: 0}
 --- !u!114 &1766912770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26327,7 +26487,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 13
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1780056811
 AudioSource:
@@ -26960,7 +27120,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1875451825
 AudioSource:
@@ -27469,7 +27629,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1898715007
 AudioSource:
@@ -27836,7 +27996,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1925848278
 GameObject:
@@ -27868,7 +28028,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 347254421}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1925848280
 AudioSource:
@@ -28263,6 +28423,7 @@ MonoBehaviour:
   unit: {fileID: 891500611}
   abilityType: 1
   outline: {fileID: 1326449454}
+  title: {fileID: 2017077289}
 --- !u!114 &1938850467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29269,7 +29430,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 135, y: 0}
-  m_SizeDelta: {x: 105, y: 30}
+  m_SizeDelta: {x: 65, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2017077289
 MonoBehaviour:
@@ -30283,6 +30444,134 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &2079312422
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2079312423}
+  - component: {fileID: 2079312424}
+  m_Layer: 0
+  m_Name: Thunder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2079312423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079312422}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 347254421}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &2079312424
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079312422}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 21c4a490b24ba2045bc815f7626a40ef, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.5
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2101157760
 GameObject:
   m_ObjectHideFlags: 0

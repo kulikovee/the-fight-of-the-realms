@@ -5,8 +5,6 @@ using System;
 
 public abstract class Ability : MonoBehaviour
 {
-    [System.NonSerialized]
-    public string title = "NOT_SET";
 
     public GameObject selfEffectPrefab;
     public GameObject targetEffectPrefab;
@@ -14,12 +12,17 @@ public abstract class Ability : MonoBehaviour
 
     [System.NonSerialized]
     protected float manaRequired = 25f;
+
     [System.NonSerialized]
     protected UnitController unit;
+
     [System.NonSerialized]
     protected float castApplyDelay = 1f;
 
-    void Start()
+    [System.NonSerialized]
+    protected string title = "NOT_SET";
+
+    protected void Awake()
     {
         unit = GetComponent<UnitController>();
     }
@@ -39,6 +42,16 @@ public abstract class Ability : MonoBehaviour
     public float GetManaRequired()
     {
         return manaRequired;
+    }
+
+    public string GetTitle()
+    {
+        return title;
+    }
+
+    protected Vector3 GetForwardAtDistance(float distance)
+    {
+        return transform.position + transform.forward * distance + transform.up;
     }
 
     protected GameObject CreateEffect(GameObject prefab, Vector3? atPosition)
@@ -71,7 +84,7 @@ public abstract class Ability : MonoBehaviour
 
     protected UnitController[] GetAliveEnemies(float? radius = null, Vector3? atPosition = null)
     {
-        return GetAliveUnits(radius, atPosition).Where(_unit => !_unit.IsSameTeam(unit)).ToArray();
+        return GetAliveUnits(radius, atPosition).Where(_unit => unit != _unit && !_unit.IsSameTeam(unit)).ToArray();
     }
 
     protected UnitController[] GetAliveAllies(float? radius = null, Vector3? atPosition = null)

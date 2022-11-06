@@ -12,8 +12,8 @@ public class UnitController : MonoBehaviour
     public float maxHp = 150f;
     public float maxMana = 50f;
     public float attackPower = 25f;
-    public float specialAttackPower = 40f;
     public float attackRadius = 0.8f;
+    public float attackDistance = 0.5f;
     public float speed = 1f;
     public string team = "";
     public bool canPickUpItems = true;
@@ -31,10 +31,16 @@ public class UnitController : MonoBehaviour
 
     float hp = 0;
     float mana = 0;
-    float attackDistance = 0.5f;
+
     float manaRestoreTimeout = 0.125f;
     float manaRestoredAt = 0;
-    float specialAttackManaCost = 25f;
+
+    float secondAbilityAttackPower = 40f;
+    float secondAbilityManaCost = 25f;
+
+    int currentAbilityId = 0;
+    float currentAbilityUpdatedAt = 0;
+    float currentAbilityUpdateTimeout = 0.25f;
 
     void Start()
     {
@@ -73,6 +79,8 @@ public class UnitController : MonoBehaviour
             SetHp(0);
             Die(this);
         }
+
+        UpdateCurrentAbility();
     }
 
     public void Attack()
@@ -104,40 +112,41 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    public void SpecialAttack()
+    public void SecondAbility()
     {
         if (bombPrefab != null)
         {
-            AddMana(-specialAttackManaCost);
+            AddMana(-secondAbilityManaCost);
 
             var createBombPosition = transform.position + transform.forward + Vector3.up;
             var bomb = Instantiate(bombPrefab, createBombPosition, Quaternion.identity);
             var bombController = bomb.GetComponent<Bomb>();
             if (bombController != null)
             {
+                bombController.SetAttackPower(secondAbilityAttackPower);
                 bombController.Throw(this, transform.forward * 400f + Vector3.up * 3f);
             }
         }
     }
 
-    Ability GetAbility()
+    public Ability GetMainAbility()
     {
-        return abilities.Count > 0 ? abilities[0] : null;
+        return abilities.Count > currentAbilityId ? abilities[currentAbilityId] : null;
     }
 
-    public void CastSpell()
+    public void MainAbility()
     {
-        if (GetAbility() != null) GetAbility().Cast();
+        if (GetMainAbility() != null) GetMainAbility().Cast();
     }
 
-    public bool IsEnoughManaToSpell()
+    public bool IsEnoughManaToMainAbility()
     {
-        return GetAbility() == null || GetAbility().IsEnoughMana();
+        return GetMainAbility() == null || GetMainAbility().IsEnoughMana();
     }
 
-    public bool IsEnoughManaToSpecialAttack()
+    public bool IsEnoughManaToSecondAbility()
     {
-        return mana >= specialAttackManaCost;
+        return mana >= secondAbilityManaCost;
     }
 
     public bool IsAlive()
@@ -204,15 +213,40 @@ public class UnitController : MonoBehaviour
     {
         return mana;
     }
-    public float GetSpecialManaRequired()
+    public float GetSecondAbilityManaRequired()
     {
-        return specialAttackManaCost;
+        return secondAbilityManaCost;
     }
 
-    public float GetSpellManaRequired()
+    void UpdateCurrentAbility()
     {
-        var ability = GetAbility();
-        return ability != null ? ability.GetManaRequired() : 0f;
+            if (device.GetAxis().GetButtonRB() > 0)
+            {
+                if (Time.time - currentAbilityUpdatedAt > currentAbilityUpdateTimeout)
+                {
+                    currentAbilityUpdatedAt = Time.time;
+                    currentAbilityId++;
+
+                    if (currentAbilityId >= abilities.Count)
+                    {
+                        currentAbilityId = 0;
+                    }
+                }
+            }
+
+            if (device.GetAxis().GetButtonLB() > 0)
+            {
+                if (Time.time - currentAbilityUpdatedAt > currentAbilityUpdateTimeout)
+                {
+                    currentAbilityUpdatedAt = Time.time;
+                    currentAbilityId--;
+
+                    if (currentAbilityId < 0)
+                    {
+                        currentAbilityId = abilities.Count - 1;
+                    }
+                }
+            }
     }
 
     void Die(UnitController killer)
