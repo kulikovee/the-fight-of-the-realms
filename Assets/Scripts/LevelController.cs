@@ -187,7 +187,7 @@ public class LevelController : MonoBehaviour
 
             if (IsRabbitsCollection())
             {
-                levelTip = "COLLECT RABBITS!";
+                levelTip = "COLLECT CHICKEN!";
             }
 
             if (IsSurvival())
@@ -197,7 +197,7 @@ public class LevelController : MonoBehaviour
 
             if (IsPlatformer())
             {
-                levelTip = "KILL ORCS!";
+                levelTip = "KILL THE ORCS!";
             }
 
             nextLevelText.text = levelTip;
@@ -219,7 +219,7 @@ public class LevelController : MonoBehaviour
                 var playerName = $"<color={PlayerWonController.playerColors[player.playerId]}>P{player.playerId + 1}</color>";
                 var rabbitsLeft = rabbitsCollectToWin - rabbitsCollected;
 
-                nextLevelText.text = $"{playerName} collected a rabbit! <u>{rabbitsLeft}</u> left!";
+                nextLevelText.text = $"{playerName} collected a chicken! <u>{rabbitsLeft}</u> left!";
                 scoreHint1Text.text = nextLevelText.text;
                 
                 Show();

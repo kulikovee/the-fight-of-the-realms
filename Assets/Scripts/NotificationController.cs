@@ -20,7 +20,7 @@ public class NotificationController : MonoBehaviour
     {
         if (unit != null && unit.hpBarImage != null)
         {
-            var notification = Instantiate(notificationPrefab, Vector3.zero, Quaternion.identity);
+            var notification = Instantiate(notificationPrefab, Vector3.zero, Quaternion.Euler(0, 0, 0));
             var textMesh = notification.GetComponent<TextMeshProUGUI>();
             var color = GetUnitColor(unit);
             textMesh.transform.SetParent(unit.hpBarImage.transform.parent, false);

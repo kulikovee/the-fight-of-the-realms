@@ -34,9 +34,9 @@ public class Thunder : Ability
 
         unit.AddMana(-manaRequired);
 
-        if (selfEffectPrefab != null)
+        if (targetEffectPrefab != null)
         {
-            CreateEffect(selfEffectPrefab, castPosition);
+            CreateEffect(targetEffectPrefab, castPosition);
         }
 
         if (effectSound != null)
@@ -44,7 +44,7 @@ public class Thunder : Ability
             effectSound.Play();
         }
 
-        DoDamage(castPosition);
+        StartCoroutine(DoDamageDelayed(castPosition, 0.5f));
         StartCoroutine(DoDamageDelayed(castPosition, 1f));
         StartCoroutine(DoDamageDelayed(castPosition, 2f));
     }
@@ -62,9 +62,9 @@ public class Thunder : Ability
         {
             foreach (var enemy in aliveEnemies)
             {
-                if (targetEffectPrefab != null)
+                if (affectedEffectPrefab != null)
                 {
-                    CreateEffect(targetEffectPrefab, enemy.gameObject);
+                    CreateEffect(affectedEffectPrefab, enemy.gameObject);
                 }
 
                 enemy.GetHit(unit, unit.maxMana / 3f);

@@ -34,9 +34,9 @@ public class Heal : Ability
 
             foreach (var ally in teammatesToHeal)
             {
-                if (selfEffectPrefab != null)
+                if (affectedEffectPrefab != null)
                 {
-                    CreateEffect(selfEffectPrefab, ally.gameObject);
+                    CreateEffect(affectedEffectPrefab, ally.gameObject);
                 }
 
                 ally.AddHp(restoreHp);

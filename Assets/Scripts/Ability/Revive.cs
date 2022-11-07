@@ -36,9 +36,9 @@ public class Revive : Ability
 
             foreach (var ally in teammatesToRevive)
             {
-                if (targetEffectPrefab != null)
+                if (affectedEffectPrefab != null)
                 {
-                    CreateEffect(targetEffectPrefab, ally.gameObject);
+                    CreateEffect(affectedEffectPrefab, ally.gameObject);
                 }
 
                 ally.AddHp(unit.maxMana);

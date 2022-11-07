@@ -8,6 +8,7 @@ public abstract class Ability : MonoBehaviour
 
     public GameObject selfEffectPrefab;
     public GameObject targetEffectPrefab;
+    public GameObject affectedEffectPrefab;
     public AudioSource effectSound;
 
     [System.NonSerialized]
@@ -58,21 +59,21 @@ public abstract class Ability : MonoBehaviour
     {
         return Instantiate(
             prefab,
-            atPosition != null ? (Vector3)atPosition : (transform.position + transform.up + transform.forward * 0.25f),
-            Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0)
+            atPosition != null ? (Vector3)atPosition : GetEffectPosition(transform),
+            transform.rotation
         );
     }
 
     protected GameObject CreateEffect(GameObject prefab, GameObject parent)
     {
-        var instantiatedPrefab = Instantiate(
-            prefab,
-            parent.transform.position + parent.transform.up + parent.transform.forward * 0.25f,
-            Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0)
-        );
-        instantiatedPrefab.transform.parent = parent.transform;
-
+        var instantiatedPrefab = Instantiate(prefab, GetEffectPosition(parent.transform), parent.transform.rotation);
+        instantiatedPrefab.transform.SetParent(parent.transform, true);
         return instantiatedPrefab;
+    }
+
+    protected Vector3 GetEffectPosition(Transform t)
+    {
+        return t.position + t.up + t.forward * 0.25f;
     }
 
     protected UnitController[] GetDeadAllies(float? radius = null, Vector3? atPosition = null)

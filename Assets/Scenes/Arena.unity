@@ -3863,6 +3863,7 @@ GameObject:
   - component: {fileID: 268390131}
   - component: {fileID: 268390132}
   - component: {fileID: 268390133}
+  - component: {fileID: 268390134}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -3900,6 +3901,7 @@ MonoBehaviour:
   - {fileID: 268390131}
   - {fileID: 268390132}
   - {fileID: 268390133}
+  - {fileID: 268390134}
 --- !u!114 &268390119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4114,9 +4116,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
-    type: 3}
+  selfEffectPrefab: {fileID: 0}
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
     type: 3}
   effectSound: {fileID: 639298533}
 --- !u!114 &268390132
@@ -4133,7 +4136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
     type: 3}
-  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+  targetEffectPrefab: {fileID: 0}
+  affectedEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
     type: 3}
   effectSound: {fileID: 1875451825}
 --- !u!114 &268390133
@@ -4148,11 +4152,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
     type: 3}
-  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+  affectedEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
     type: 3}
   effectSound: {fileID: 2079312424}
+--- !u!114 &268390134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268390116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509dd80bab82f184a9963acebbe70cff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 2284039578810342890, guid: bad2dbf1a51e51242be15795b9c6b22f,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  effectSound: {fileID: 0}
 --- !u!1001 &278751150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4729,7 +4752,7 @@ MonoBehaviour:
     type: 3}
   bossPrefab2: {fileID: 1550732647289706051, guid: 743dbb8ba73d65943aebe0511af8cd4f,
     type: 3}
-  rabbitPrefab: {fileID: 1826182421432455251, guid: 74000a83c895b814c9e06ae24ba996e1,
+  rabbitPrefab: {fileID: 6865022891066777426, guid: 3f74d2b6e9f40f0428f6d75a499d0b81,
     type: 3}
   platform: {fileID: 724862390}
   arena: {fileID: 1804948522}
@@ -14285,6 +14308,7 @@ GameObject:
   - component: {fileID: 891500624}
   - component: {fileID: 891500625}
   - component: {fileID: 891500626}
+  - component: {fileID: 891500627}
   m_Layer: 0
   m_Name: Player 3
   m_TagString: Untagged
@@ -14322,6 +14346,7 @@ MonoBehaviour:
   - {fileID: 891500624}
   - {fileID: 891500625}
   - {fileID: 891500626}
+  - {fileID: 891500627}
 --- !u!114 &891500612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14536,9 +14561,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
-    type: 3}
+  selfEffectPrefab: {fileID: 0}
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
     type: 3}
   effectSound: {fileID: 639298533}
 --- !u!114 &891500625
@@ -14555,7 +14581,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
     type: 3}
-  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+  targetEffectPrefab: {fileID: 0}
+  affectedEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
     type: 3}
   effectSound: {fileID: 1875451825}
 --- !u!114 &891500626
@@ -14570,11 +14597,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
     type: 3}
-  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+  affectedEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
     type: 3}
   effectSound: {fileID: 2079312424}
+--- !u!114 &891500627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891500609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509dd80bab82f184a9963acebbe70cff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 2284039578810342890, guid: bad2dbf1a51e51242be15795b9c6b22f,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  effectSound: {fileID: 0}
 --- !u!1 &895490071
 GameObject:
   m_ObjectHideFlags: 0
@@ -16312,6 +16358,7 @@ GameObject:
   - component: {fileID: 1050814431}
   - component: {fileID: 1050814432}
   - component: {fileID: 1050814433}
+  - component: {fileID: 1050814434}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Untagged
@@ -16349,6 +16396,7 @@ MonoBehaviour:
   - {fileID: 1050814431}
   - {fileID: 1050814432}
   - {fileID: 1050814433}
+  - {fileID: 1050814434}
 --- !u!114 &1050814419
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16563,9 +16611,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
-    type: 3}
+  selfEffectPrefab: {fileID: 0}
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
     type: 3}
   effectSound: {fileID: 639298533}
 --- !u!114 &1050814432
@@ -16582,7 +16631,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
     type: 3}
-  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+  targetEffectPrefab: {fileID: 0}
+  affectedEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
     type: 3}
   effectSound: {fileID: 1875451825}
 --- !u!114 &1050814433
@@ -16597,11 +16647,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
     type: 3}
-  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+  affectedEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
     type: 3}
   effectSound: {fileID: 2079312424}
+--- !u!114 &1050814434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050814416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509dd80bab82f184a9963acebbe70cff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 2284039578810342890, guid: bad2dbf1a51e51242be15795b9c6b22f,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  effectSound: {fileID: 0}
 --- !u!1001 &1063894091
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20471,6 +20540,7 @@ GameObject:
   - component: {fileID: 1407575005}
   - component: {fileID: 1407575006}
   - component: {fileID: 1407575007}
+  - component: {fileID: 1407575008}
   m_Layer: 0
   m_Name: Player 0
   m_TagString: Untagged
@@ -20683,6 +20753,7 @@ MonoBehaviour:
   - {fileID: 1407575005}
   - {fileID: 1407575006}
   - {fileID: 1407575007}
+  - {fileID: 1407575008}
 --- !u!114 &1407575003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20722,9 +20793,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09d5342146dd65b449b07f32f23d8408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
-    type: 3}
+  selfEffectPrefab: {fileID: 0}
   targetEffectPrefab: {fileID: 7791828547628610380, guid: 97cce4b529c9cff428a2e5e0a930f6a9,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
     type: 3}
   effectSound: {fileID: 639298533}
 --- !u!114 &1407575006
@@ -20741,7 +20813,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selfEffectPrefab: {fileID: 4118217076953282151, guid: 349b6833ce5a06142a3d07287498dd40,
     type: 3}
-  targetEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
+  targetEffectPrefab: {fileID: 0}
+  affectedEffectPrefab: {fileID: 5621925222193930152, guid: 6b67ea105b7b10f41aace42ded55c7ac,
     type: 3}
   effectSound: {fileID: 1875451825}
 --- !u!114 &1407575007
@@ -20756,11 +20829,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f0e258d5d5fecc459215accc396e0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selfEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 6455943722745644008, guid: 36a396c163a274e4ba768cb5a1cd83cc,
     type: 3}
-  targetEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
+  affectedEffectPrefab: {fileID: 3947735277575110264, guid: 28e8f08d9aaef33439a7c04c055fb50f,
     type: 3}
   effectSound: {fileID: 2079312424}
+--- !u!114 &1407575008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407574990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509dd80bab82f184a9963acebbe70cff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selfEffectPrefab: {fileID: 0}
+  targetEffectPrefab: {fileID: 2284039578810342890, guid: bad2dbf1a51e51242be15795b9c6b22f,
+    type: 3}
+  affectedEffectPrefab: {fileID: 7633952265713811170, guid: e0883e51937757941ae2bbe4d2b11ae2,
+    type: 3}
+  effectSound: {fileID: 0}
 --- !u!21 &1410763801
 Material:
   serializedVersion: 8
