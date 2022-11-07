@@ -1,29 +1,30 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class NotificationController : MonoBehaviour
 {
+    public static string npcColor = "#ccc";
+    public static List<string> playerColors = new() { "#faa", "#afa", "#aaf", "#fff" };
+
     public GameObject notificationPrefab;
     public GameObject container;
-    Camera mainCamera;
     PlayerController[] players;
 
     void Start()
     {
-        mainCamera = GetComponent<Camera>();
         players = GameObject.FindObjectsOfType<PlayerController>();
     }
 
     public void Notify(UnitController unit, string text)
     {
-        var screenPosition = mainCamera.WorldToScreenPoint(unit.transform.position + Vector3.up);
-        if (screenPosition.z > 0)
+        if (unit != null && unit.hpBarImage != null)
         {
             var notification = Instantiate(notificationPrefab, Vector3.zero, Quaternion.identity);
             var textMesh = notification.GetComponent<TextMeshProUGUI>();
             var color = GetUnitColor(unit);
-            textMesh.transform.SetParent(container.transform, false);
-            textMesh.rectTransform.anchoredPosition = new Vector3(screenPosition.x, screenPosition.y, 0);
+            textMesh.transform.SetParent(unit.hpBarImage.transform.parent, false);
+            textMesh.rectTransform.anchoredPosition = new Vector3(55, -155, 0);
             textMesh.text = $"<color={color}>{text}</color>";
         }
     }
@@ -35,8 +36,6 @@ public class NotificationController : MonoBehaviour
 
     string GetUnitColor(UnitController unit)
     {
-        var playerColors = PlayerWonController.playerColors;
-
         foreach (var player in players)
         {
             if (player.GetUnit() == unit)

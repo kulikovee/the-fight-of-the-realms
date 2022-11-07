@@ -78,7 +78,7 @@ public class UnitController : MonoBehaviour
         if (mana < maxMana && Time.time - manaRestoredAt > manaRestoreTimeout)
         {
             manaRestoredAt = Time.time;
-            AddMana(1f);
+            AddMana(0.75f);
         }
 
         if (transform.position.y < -50f)
@@ -266,33 +266,19 @@ public class UnitController : MonoBehaviour
 
     void UpdateCurrentAbility()
     {
-            if (device.GetAxis().GetButtonRB() > 0)
+        if (device.GetAxis().GetButtonRB() > 0 || device.GetAxis().GetButtonLB() > 0)
+        {
+            if (Time.time - currentAbilityUpdatedAt > currentAbilityUpdateTimeout)
             {
-                if (Time.time - currentAbilityUpdatedAt > currentAbilityUpdateTimeout)
-                {
-                    currentAbilityUpdatedAt = Time.time;
-                    currentAbilityId++;
+                currentAbilityUpdatedAt = Time.time;
+                currentAbilityId += device.GetAxis().GetButtonRB() > 0 ? 1 : -1;
 
-                    if (currentAbilityId >= abilities.Count)
-                    {
-                        currentAbilityId = 0;
-                    }
-                }
+                if (currentAbilityId >= abilities.Count) currentAbilityId = 0;
+                if (currentAbilityId < 0) currentAbilityId = abilities.Count - 1;
+
+                notifications.Notify(this, GetMainAbility().GetTitle());
             }
-
-            if (device.GetAxis().GetButtonLB() > 0)
-            {
-                if (Time.time - currentAbilityUpdatedAt > currentAbilityUpdateTimeout)
-                {
-                    currentAbilityUpdatedAt = Time.time;
-                    currentAbilityId--;
-
-                    if (currentAbilityId < 0)
-                    {
-                        currentAbilityId = abilities.Count - 1;
-                    }
-                }
-            }
+        }
     }
 
     void Die(UnitController killer)

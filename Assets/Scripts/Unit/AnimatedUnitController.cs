@@ -16,6 +16,8 @@ public class AnimatedUnitController : MonoBehaviour
     public bool isHit = false;
     // </Controlled by AnimatedUnitEvents>
 
+    NotificationController notifications;
+
     float lastAttackStartedAt = 0f;
     float lastSpecialAttackStartedAt = 0f;
     float lastCastSpellStartedAt = 0f;
@@ -30,6 +32,7 @@ public class AnimatedUnitController : MonoBehaviour
     {
         unit = GetComponent<UnitController>();
         device = GetComponent<DeviceController>();
+        notifications = NotificationController.GetNotifications();
     }
 
     void Update()
@@ -87,11 +90,12 @@ public class AnimatedUnitController : MonoBehaviour
         if (
             !isRecentlyPressed
             && isSpecialAttackPressed
-            && !unit.IsEnoughManaToMainAbility()
+            && !unit.IsEnoughManaToSecondAbility()
             && notEnoughManaSound != null
             && !notEnoughManaSound.isPlaying
         )
         {
+            notifications.Notify(unit, "Not enough mana");
             notEnoughManaSound.Play();
         }
 
@@ -118,6 +122,7 @@ public class AnimatedUnitController : MonoBehaviour
             && !notEnoughManaSound.isPlaying
         )
         {
+            notifications.Notify(unit, "Not enough mana");
             notEnoughManaSound.Play();
         }
 
