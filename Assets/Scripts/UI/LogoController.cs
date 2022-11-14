@@ -14,9 +14,9 @@ public class LogoController : MonoBehaviour
     void Start()
     {
         Time.timeScale = 0.75f;
-        StartCoroutine(SetTimeScaleAfterDelay(2.95f, 0.01f));
-        StartCoroutine(SetTimeScaleAfterDelay(2.97f, 0.0075f));
-        StartCoroutine(SetTimeScaleAfterDelay(2.99f, 0.0050f));
+        StartCoroutine(SetTimeScaleAfterDelay(2.95f, 0.02f));
+        StartCoroutine(SetTimeScaleAfterDelay(2.97f, 0.01f));
+        StartCoroutine(SetTimeScaleAfterDelay(2.99f, 0.005f));
     }
 
     IEnumerator SetTimeScaleAfterDelay(float delay, float timeScale)
